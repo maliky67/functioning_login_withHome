@@ -2,16 +2,28 @@ package com.example.functioninglogin.LoginUIClasses;
 
 public class HelperClass {
 
-    String  name, email, username, password;
+    private String uid; // Firebase Auth UID
+    private String name;
+    private String email;
 
-    public HelperClass(String name, String email, String username, String password) {
+    // Constructor with all fields
+    public HelperClass(String uid, String name, String email) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
-        this.username = username;
-        this.password = password;
     }
 
+    // Default Constructor (Needed for Firebase)
     public HelperClass() {
+    }
+
+    // Getters and Setters
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -28,21 +40,5 @@ public class HelperClass {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
