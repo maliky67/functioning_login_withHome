@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 class MyViewHolder extends RecyclerView.ViewHolder{
 
     ImageView recImage;
-    TextView recTitle, recDesc, recPriority, recLang;
+    TextView recTitle, recDesc, recPriority;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -33,7 +33,7 @@ class MyViewHolder extends RecyclerView.ViewHolder{
         recDesc = itemView.findViewById(R.id.recDesc);
         recPriority = itemView.findViewById(R.id.recPriority);
         recTitle = itemView.findViewById(R.id.recTitle);
-        if (recTitle == null || recDesc == null || recLang == null) {
+        if (recTitle == null || recDesc == null || recPriority == null) {
             throw new RuntimeException("View IDs are incorrect. Check recycler_item.xml.");
         }
     }
@@ -77,12 +77,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             holder.recDesc.setText("No Description");
         }
 
-        if (data.getDataLang() != null) {
-            holder.recLang.setText(data.getDataLang());
-        } else {
-            holder.recLang.setText("No Language");
-        }
-
         // Load image with Glide
         if (data.getDataImage() != null) {
             Glide.with(context).load(data.getDataImage()).into(holder.recImage);
@@ -92,8 +86,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         Glide.with(context).load(dataList.get(position).getDataImage()).into(holder.recImage);
         holder.recTitle.setText(dataList.get(position).getDataTitle());
         holder.recDesc.setText(dataList.get(position).getDataDesc());
-        holder.recLang.setText(dataList.get(position).getDataLang());
-
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
