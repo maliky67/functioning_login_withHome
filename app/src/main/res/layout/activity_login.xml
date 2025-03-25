@@ -72,7 +72,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
-                android:drawableStart="@drawable/baseline_account_box_24"
+                android:drawableStart="@drawable/baseline_ac_unit_24"
                 android:drawablePadding="8dp"
                 android:hint="Password"
                 android:padding="8dp"
