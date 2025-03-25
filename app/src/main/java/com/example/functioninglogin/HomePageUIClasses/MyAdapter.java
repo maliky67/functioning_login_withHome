@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.HomePageUIClasses;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.functioninglogin.HomePageUIClasses.DataHelperClass;
-import com.example.functioninglogin.HomePageUIClasses.DetailActivity;
+import com.example.functioninglogin.R;
 
 import java.util.ArrayList;
 import java.util.List;

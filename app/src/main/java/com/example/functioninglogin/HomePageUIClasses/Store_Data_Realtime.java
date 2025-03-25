@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
-import com.example.functioninglogin.MyAdapter;
 import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
