@@ -7,13 +7,15 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 
 import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,27 +58,43 @@ public class Store_Data_Realtime extends AppCompatActivity {
         adapter = new MyAdapter(Store_Data_Realtime.this, dataList);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Android Tutorials");
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : "NULL";
+
+        Log.d("FIREBASE_DEBUG", "User ID: " + userId);
+
+        if (userId.equals("NULL")) {
+            Toast.makeText(this, "Error: User not authenticated", Toast.LENGTH_LONG).show();
+            dialog.dismiss(); // Dismiss the progress dialog
+            return; // Exit function
+        }
+
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Android Tutorials")
+                .child(userId); // Fetch only this user's data
+
         eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();
-                for (DataSnapshot itemSnapshot: snapshot.getChildren()){
-                    DataHelperClass dataClass = itemSnapshot.getValue(DataHelperClass.class);
-
-                    assert dataClass != null;
-                    dataClass.setKey(itemSnapshot.getKey());
-
-                    dataList.add(dataClass);
+                if (!snapshot.exists()) {
+                    Log.d("FIREBASE_DEBUG", "No data found for user.");
+                    Toast.makeText(Store_Data_Realtime.this, "No data found", Toast.LENGTH_LONG).show();
+                } else {
+                    for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                        DataHelperClass dataClass = itemSnapshot.getValue(DataHelperClass.class);
+                        assert dataClass != null;
+                        dataClass.setKey(itemSnapshot.getKey());
+                        dataList.add(dataClass);
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-                dialog.dismiss();
+                dialog.dismiss(); // Ensure dialog is dismissed
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                dialog.dismiss();
+
             }
         });
 
