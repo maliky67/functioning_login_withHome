@@ -29,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class UpdateActivity extends AppCompatActivity {
 
@@ -56,15 +58,12 @@ public class UpdateActivity extends AppCompatActivity {
         // Activity Result Launcher for Image Picker
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                            uri = result.getData().getData();
-                            updateImage.setImageURI(uri);
-                        } else {
-                            Toast.makeText(UpdateActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
-                        }
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        uri = result.getData().getData();
+                        updateImage.setImageURI(uri);
+                    } else {
+                        Toast.makeText(UpdateActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -81,7 +80,11 @@ public class UpdateActivity extends AppCompatActivity {
         }
 
         // Database Reference
-        databaseReference = FirebaseDatabase.getInstance().getReference("Android Tutorials").child(key);
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Android Tutorials")
+                .child(uid)
+                .child(key);
 
         // Image Click Listener
         updateImage.setOnClickListener(new View.OnClickListener() {
@@ -94,14 +97,11 @@ public class UpdateActivity extends AppCompatActivity {
         });
 
         // Update Button Click Listener
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (uri != null) {
-                    saveData(); // Upload new image and update database
-                } else {
-                    updateData(oldImageURL); // Update only text fields
-                }
+        updateButton.setOnClickListener(view -> {
+            if (uri != null) {
+                saveData(); // Upload new image and update database
+            } else {
+                updateData(oldImageURL); // Update only text fields
             }
         });
     }
