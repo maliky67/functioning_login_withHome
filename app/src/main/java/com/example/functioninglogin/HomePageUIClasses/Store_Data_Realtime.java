@@ -9,30 +9,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
 
 import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Store_Data_Realtime extends AppCompatActivity {
+
     FloatingActionButton fab;
-    DatabaseReference databaseReference;
-    ValueEventListener eventListener;
     RecyclerView recyclerView;
+    SearchView searchView;
+
     List<DataHelperClass> dataList;
     MyAdapter adapter;
-    SearchView searchView;
+
+    DatabaseReference databaseReference;
+    ValueEventListener eventListener;
+
+    Map<String, DataHelperClass> previousDataMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,65 +42,53 @@ public class Store_Data_Realtime extends AppCompatActivity {
         searchView = findViewById(R.id.search);
         searchView.clearFocus();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(Store_Data_Realtime.this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(Store_Data_Realtime.this);
-        builder.setCancelable(false);
-        builder.setView(R.layout.progress_layout);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         dataList = new ArrayList<>();
-
-        adapter = new MyAdapter(Store_Data_Realtime.this, dataList);
+        adapter = new MyAdapter(this, dataList);
         recyclerView.setAdapter(adapter);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : "NULL";
+        AlertDialog dialog = showProgressDialog();
 
-        Log.d("FIREBASE_DEBUG", "User ID: " + userId);
-
-        if (userId.equals("NULL")) {
-            Toast.makeText(this, "Error: User not authenticated", Toast.LENGTH_LONG).show();
-            dialog.dismiss(); // Dismiss the progress dialog
-            return; // Exit function
-        }
-
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Android Tutorials")
-                .child(userId); // Fetch only this user's data
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Unique User ID").child(userId);
 
         eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();
-                if (!snapshot.exists()) {
-                    Log.d("FIREBASE_DEBUG", "No data found for user.");
-                    Toast.makeText(Store_Data_Realtime.this, "No data found", Toast.LENGTH_LONG).show();
-                } else {
-                    for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
-                        DataHelperClass dataClass = itemSnapshot.getValue(DataHelperClass.class);
-                        assert dataClass != null;
-                        dataClass.setKey(itemSnapshot.getKey());
-                        dataList.add(dataClass);
+
+                for (DataSnapshot listSnap : snapshot.getChildren()) {
+                    DataHelperClass data = listSnap.getValue(DataHelperClass.class);
+                    if (data != null) {
+                        data.setKey(listSnap.getKey());
+
+                        DataHelperClass oldData = previousDataMap.get(data.getKey());
+                        if (oldData == null || !oldData.equals(data)) {
+                            previousDataMap.put(data.getKey(), data); // track for change detection
+                        }
+
+                        dataList.add(data);
                     }
-                    adapter.notifyDataSetChanged();
                 }
-                dialog.dismiss(); // Ensure dialog is dismissed
+
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Store_Data_Realtime.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
 
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(this, Upload_Data.class);
+            startActivity(intent);
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+            @Override public boolean onQueryTextSubmit(String query) { return false; }
 
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -110,23 +96,27 @@ public class Store_Data_Realtime extends AppCompatActivity {
                 return true;
             }
         });
-
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(Store_Data_Realtime.this, Upload_Data.class);
-            startActivity(intent);
-        });
-
     }
-    public void searchList(String text) {
+
+    private void searchList(String text) {
         if (text.isEmpty()) {
             adapter.searchDataList(new ArrayList<>(dataList));
         } else {
-            ArrayList<DataHelperClass> filteredList = new ArrayList<>();
-            for (DataHelperClass data : dataList) {
-                if (data.getDataTitle().toLowerCase().contains(text.toLowerCase())) {
-                    filteredList.add(data);
+            ArrayList<DataHelperClass> filtered = new ArrayList<>();
+            for (DataHelperClass d : dataList) {
+                if (d.getDataTitle().toLowerCase().contains(text.toLowerCase())) {
+                    filtered.add(d);
                 }
             }
-            adapter.searchDataList(filteredList);
+            adapter.searchDataList(filtered);
         }
-    }}
+    }
+
+    private AlertDialog showProgressDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false).setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+}

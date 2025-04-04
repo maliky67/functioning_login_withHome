@@ -41,4 +41,7 @@
     <string name="already_a_user_login">Already a User? Login.</string>
     <string name="not_yet_registered_sign_up">Not yet registered? Sign Up.</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="enter_preferences">Enter Preferences</string>
+    <string name="gift_idea">Gift Idea</string>
+    <string name="enter_member_name">Enter Member Name</string>
 </resources>

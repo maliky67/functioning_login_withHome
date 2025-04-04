@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".HomePageUIClasses.UpdateActivity">
 
     <androidx.cardview.widget.CardView
@@ -15,15 +14,16 @@
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         app:cardCornerRadius="30dp"
+        android:layout_gravity="center"
         app:cardElevation="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_gravity="center_horizontal"
             android:padding="20dp"
-            android:background="@drawable/white_background">
+            android:background="@drawable/white_background"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="match_parent"
@@ -34,58 +34,80 @@
                 android:textColor="@color/lavender"/>
 
             <ImageView
+                android:id="@+id/updateImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:src="@drawable/baseline_account_box_24"
-                android:id="@+id/updateImage"
                 android:layout_marginTop="10dp"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/baseline_account_box_24" />
 
             <EditText
+                android:id="@+id/updateTitle"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:id="@+id/updateTitle"
-                android:background="@drawable/borderblue"
                 android:layout_marginTop="20dp"
-                android:padding="16dp"
-                android:hint="@string/enter_topic_names"
+                android:background="@drawable/borderblue"
+                android:hint="@string/enter_member_name"
                 android:gravity="start|center_vertical"
-                android:textColor="@color/lavender"/>
+                android:padding="16dp"
+                android:textColor="@color/lavender" />
 
             <EditText
+                android:id="@+id/updateDesc"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:id="@+id/updateDesc"
-                android:background="@drawable/borderblue"
                 android:layout_marginTop="20dp"
-                android:padding="16dp"
-                android:hint="@string/enter_descriptions"
+                android:background="@drawable/borderblue"
+                android:hint="@string/enter_preferences"
                 android:gravity="start|center_vertical"
-                android:textColor="@color/lavender"/>
+                android:padding="16dp"
+                android:textColor="@color/lavender" />
 
-            <EditText
+            <!-- 🔹 Gift Idea + Price side by side -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:id="@+id/updateLang"
-                android:background="@drawable/borderblue"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:padding="16dp"
-                android:hint="@string/enter_languages"
-                android:gravity="start|center_vertical"
-                android:textColor="@color/lavender"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2">
+
+                <EditText
+                    android:id="@+id/updateLang"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/borderblue"
+                    android:hint="@string/gift_idea"
+                    android:gravity="start|center_vertical"
+                    android:padding="16dp"
+                    android:textColor="@color/lavender" />
+
+                <EditText
+                    android:id="@+id/updatePrice"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/borderblue"
+                    android:hint="$Price"
+                    android:gravity="start|center_vertical"
+                    android:padding="16dp"
+                    android:textColor="@color/lavender" />
+            </LinearLayout>
 
             <Button
+                android:id="@+id/updateButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="@string/update"
-                android:id="@+id/updateButton"
-                android:textSize="18sp"
-                android:background="@drawable/rounded_blue"
                 android:layout_marginTop="20dp"
-                app:cornerRadius = "20dp"/>
+                android:background="@drawable/rounded_blue"
+                android:text="@string/update"
+                android:textSize="18sp"
+                app:cornerRadius="20dp" />
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 </ScrollView>

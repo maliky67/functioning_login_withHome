@@ -30,7 +30,7 @@ import java.util.Objects;
 public class Upload_Data extends AppCompatActivity {
 
     private ImageView imageViewUpload;
-    private EditText editTextTopic, editTextDesc, editTextLang;
+    private EditText editTextTopic, editTextDesc;
     private Button buttonSave;
 
     private Uri selectedImageUri;
@@ -45,43 +45,19 @@ public class Upload_Data extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_data);
 
-        initializeUI();
-        initializeFirebase();
-        setupImagePicker();
-
-        imageViewUpload.setOnClickListener(view -> openImagePicker());
-        buttonSave.setOnClickListener(view -> {
-            if (selectedImageUri != null) {
-                uploadImageToFirebase();
-            } else {
-                Toast.makeText(Upload_Data.this, "Select an image first", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void initializeUI() {
+        // 🔧 Initialize Views
         imageViewUpload = findViewById(R.id.uploadImage);
         editTextTopic = findViewById(R.id.uploadTopic);
         editTextDesc = findViewById(R.id.uploadDesc);
-        editTextLang = findViewById(R.id.uploadLang);
         buttonSave = findViewById(R.id.saveButton);
-    }
 
-    private void initializeFirebase() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : "NULL";
+        // 🔗 Firebase DB path
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Unique User ID")
+                .child(userId);
 
-        if (userId.equals("NULL")) {
-            Log.d("FIREBASE_DEBUG", "User ID not retrieved");
-            return;
-        }
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Android Tutorials").child(userId);
-    }
-
-
-    private void setupImagePicker() {
+        // 🖼️ Setup image picker
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -89,65 +65,79 @@ public class Upload_Data extends AppCompatActivity {
                         selectedImageUri = result.getData().getData();
                         imageViewUpload.setImageURI(selectedImageUri);
                     } else {
-                        Toast.makeText(Upload_Data.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
+
+        imageViewUpload.setOnClickListener(v -> openImagePicker());
+
+        buttonSave.setOnClickListener(v -> {
+            if (selectedImageUri != null) {
+                uploadImageToFirebase();
+            } else {
+                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void openImagePicker() {
-        Intent photoPicker = new Intent(Intent.ACTION_PICK);
-        photoPicker.setType("image/*");
-        imagePickerLauncher.launch(photoPicker);
+        Intent pickImage = new Intent(Intent.ACTION_PICK);
+        pickImage.setType("image/*");
+        imagePickerLauncher.launch(pickImage);
     }
 
     private void uploadImageToFirebase() {
-        StorageReference storageReference = FirebaseStorage.getInstance()
+        AlertDialog dialog = showProgressDialog();
+
+        StorageReference storageRef = FirebaseStorage.getInstance()
                 .getReference("Android Images")
                 .child(Objects.requireNonNull(selectedImageUri.getLastPathSegment()));
 
-        AlertDialog progressDialog = showProgressDialog();
-
-        storageReference.putFile(selectedImageUri)
+        storageRef.putFile(selectedImageUri)
                 .addOnSuccessListener(taskSnapshot -> {
                     Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                     uriTask.addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             imageURL = task.getResult().toString();
-                            saveDataToDatabase();
+                            saveDataToDatabase(dialog);
+                        } else {
+                            dialog.dismiss();
+                            Toast.makeText(this, "Failed to get image URL", Toast.LENGTH_SHORT).show();
                         }
-                        progressDialog.dismiss();
                     });
                 })
                 .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(Upload_Data.this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void saveDataToDatabase() {
+    private void saveDataToDatabase(AlertDialog dialog) {
         String title = editTextTopic.getText().toString().trim();
         String desc = editTextDesc.getText().toString().trim();
-        String lang = editTextLang.getText().toString().trim();
 
-        if (title.isEmpty() || desc.isEmpty() || lang.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (title.isEmpty() || desc.isEmpty()) {
+            dialog.dismiss();
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        DataHelperClass dataClass = new DataHelperClass(title, desc, lang, imageURL);
+        DataHelperClass data = new DataHelperClass(title, desc, imageURL);
+        data.setKey(title);
 
-        databaseReference.child(currentDate).setValue(dataClass)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(Upload_Data.this, "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+        databaseReference.child(title).setValue(data)
+                .addOnSuccessListener(unused -> {
+                    databaseReference.child(title).child("timestamp").setValue(currentDate);
+                    dialog.dismiss();
+                    Toast.makeText(this, "Upload Successful!", Toast.LENGTH_SHORT).show();
+                    finish();
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(Upload_Data.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    dialog.dismiss();
+                    Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private AlertDialog showProgressDialog() {

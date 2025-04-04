@@ -7,41 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".HomePageUIClasses.Store_Data_Realtime">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/borderblue"
-        android:focusable="false"
-        app:closeIcon="@drawable/baseline_account_box_24"
-        app:iconifiedByDefault="false"
-        app:queryHint="Search..."
-        app:searchHintIcon="@null"
-        app:searchIcon="@drawable/baseline_account_box_24" />
+    <include
+        layout="@layout/list_header"
+        android:id="@+id/listHeaderView"
+        android:gravity="center_vertical"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/ListrecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search"
+        android:layout_below="@id/listHeaderView"
         android:layout_marginTop="10dp"
-        android:background="@color/light_blue"
+        android:background="#A7D0F6"
         android:contentDescription="@string/main_scroller"
         android:scrollbars="vertical" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/memberdeletefab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="40dp"
+        android:backgroundTint="@color/red"
+        android:contentDescription="Deleting Member Button"
+        app:tint = "@color/white"
+        android:src="@drawable/add_new" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/memberfab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="40dp"
         android:backgroundTint="@color/BorderBlue"
-        android:contentDescription="@string/creating_lists_button"
+        android:contentDescription="Creating Member Button"
         app:tint = "@color/white"
         android:src="@drawable/add_new" />
 
