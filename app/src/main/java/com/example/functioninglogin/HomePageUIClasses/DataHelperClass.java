@@ -5,7 +5,6 @@ public class DataHelperClass {
 
     private String dataTitle;
     private String dataDesc;
-    private String dataLang;
     private String dataImage;
     private String key;
 
@@ -25,18 +24,15 @@ public class DataHelperClass {
         return dataDesc;
     }
 
-    public String getDataLang() {
-        return dataLang;
-    }
+
 
     public String getDataImage() {
         return dataImage;
     }
 
-    public DataHelperClass(String dataTitle, String dataDesc, String dataLang, String dataImage) {
+    public DataHelperClass(String dataTitle, String dataDesc, String dataImage) {
         this.dataTitle = dataTitle;
         this.dataDesc = dataDesc;
-        this.dataLang = dataLang;
         this.dataImage = dataImage;
     }
     public DataHelperClass(){

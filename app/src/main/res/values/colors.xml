@@ -17,5 +17,9 @@
     <color name="grey">#ff424242</color>
     <color name="lavender">#8692f7</color>
     <color name="blue">#459DE4</color>
+    <color name="light_blue">#A7D0F6</color>
+    <color name="light_grey">#E0E0E0</color>
+    <color name="dark_grey">#616161</color>
+
 
 </resources>

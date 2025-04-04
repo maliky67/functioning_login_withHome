@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.functioninglogin.ListViewPage;
 import com.example.functioninglogin.R;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 class MyViewHolder extends RecyclerView.ViewHolder{
 
     ImageView recImage;
-    TextView recTitle, recDesc, recPriority;
+    TextView recTitle, recDesc;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -30,9 +31,8 @@ class MyViewHolder extends RecyclerView.ViewHolder{
         recImage = itemView.findViewById(R.id.recImage);
         recCard = itemView.findViewById(R.id.recCard);
         recDesc = itemView.findViewById(R.id.recDesc);
-        recPriority = itemView.findViewById(R.id.recPriority);
         recTitle = itemView.findViewById(R.id.recTitle);
-        if (recTitle == null || recDesc == null || recPriority == null) {
+        if (recTitle == null || recDesc == null) {
             throw new RuntimeException("View IDs are incorrect. Check recycler_item.xml.");
         }
     }
@@ -88,13 +88,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, DetailActivity.class);
+                Intent intent = new Intent(context, ListViewPage.class);
                 intent.putExtra("Image", dataList.get(holder.getAdapterPosition()).getDataImage());
                 intent.putExtra("Description", dataList.get(holder.getAdapterPosition()).getDataDesc());
                 intent.putExtra("Title", dataList.get(holder.getAdapterPosition()).getDataTitle());
                 intent.putExtra("Key",dataList.get(holder.getAdapterPosition()).getKey());
-                intent.putExtra("Language", dataList.get(holder.getAdapterPosition()).getDataLang());
-                intent.putExtra("Key", dataList.get(holder.getAdapterPosition()).getKey());
                 context.startActivity(intent);
             }
         });

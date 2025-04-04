@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".HomePageUIClasses.Upload_Data">
+    tools:context=".Member_Data_Upload">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -20,26 +20,22 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="564dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@drawable/white_background"
             android:orientation="vertical"
             android:padding="20dp">
 
-
-
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/create_list"
+                android:text="Create Member"
                 android:textAlignment="center"
                 android:textColor="@color/lavender"
                 android:textSize="30sp" />
 
             <ImageView
-                android:id="@+id/uploadImage"
+                android:id="@+id/memberImageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
@@ -47,30 +43,63 @@
                 android:src="@drawable/baseline_account_box_24" />
 
             <EditText
-                android:id="@+id/uploadTopic"
+                android:id="@+id/memberNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
                 android:gravity="start|center_vertical"
-                android:hint="Enter List Name"
+                android:hint="@string/enter_member_name"
                 android:padding="16dp"
                 android:textColor="@color/lavender" />
 
             <EditText
-                android:id="@+id/uploadDesc"
+                android:id="@+id/memberRoleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
                 android:gravity="start|center_vertical"
-                android:hint="@string/enter_description"
+                android:hint="@string/enter_preferences"
                 android:padding="16dp"
                 android:textColor="@color/lavender" />
 
+            <!-- SIDE-BY-SIDE FIELDS: Gift Idea & Price -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:weightSum="2">
+
+                <EditText
+                    android:id="@+id/uploadDescss"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/borderblue"
+                    android:gravity="start|center_vertical"
+                    android:hint="Gift Idea"
+                    android:padding="16dp"
+                    android:textColor="@color/lavender"
+                    android:layout_marginEnd="8dp" />
+
+                <EditText
+                    android:id="@+id/uploadDescss2"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/borderblue"
+                    android:gravity="start|center_vertical"
+                    android:hint="$Price"
+                    android:padding="16dp"
+                    android:textColor="@color/lavender"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
 
             <Button
-                android:id="@+id/saveButton"
+                android:id="@+id/saveMemberButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
@@ -78,9 +107,6 @@
                 android:text="@string/save"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-
 </ScrollView>

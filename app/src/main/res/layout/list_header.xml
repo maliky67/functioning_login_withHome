@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/headerImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/baseline_account_box_24"
+            android:scaleType="centerCrop"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/headerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List Title"
+            android:textColor="@color/BorderBlue"
+            android:textSize="20sp"
+            android:layout_toEndOf="@id/headerImage"
+            android:layout_marginStart="16dp"
+            android:layout_alignTop="@id/headerImage" />
+
+        <TextView
+            android:id="@+id/headerDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List Description"
+            android:textColor="@color/lavender"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:layout_below="@id/headerTitle"
+            android:layout_alignStart="@id/headerTitle" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

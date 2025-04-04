@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/memberCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/memberImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_account_box_24"
+            android:layout_alignParentStart="true" />
+
+        <!-- Member Name -->
+        <TextView
+            android:id="@+id/memberName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Member Name"
+            android:textColor="@color/BorderBlue"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/memberImage"
+            android:layout_marginStart="20dp" />
+
+        <!-- Role with gift icon -->
+        <TextView
+            android:id="@+id/memberRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/memberName"
+            android:layout_toEndOf="@id/memberImage"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="12dp"
+            android:text="Role or Description"
+            android:drawableStart="@drawable/baseline_card_giftcard_24"
+            android:drawablePadding="4dp"
+            android:maxLines="1"
+            android:textColor="@color/lavender"
+            android:textSize="14sp" />
+
+        <!-- Price TextView aligned to the right -->
+        <TextView
+            android:id="@+id/memberPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$30"
+            android:textSize="16sp"
+            android:textColor="@color/lavender"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

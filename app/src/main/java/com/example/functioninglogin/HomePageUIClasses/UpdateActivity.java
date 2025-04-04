@@ -1,46 +1,37 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
+import com.example.functioninglogin.MemberDataClass;
 import com.example.functioninglogin.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.*;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.google.firebase.auth.FirebaseAuth;
-
 
 public class UpdateActivity extends AppCompatActivity {
 
     ImageView updateImage;
     Button updateButton;
-    EditText updateDesc, updateTitle, updateLang;
-    String title, desc, lang;
-    String imageUrl;
-    String key, oldImageURL;
-    Uri uri = null; // Default null to check if new image is picked
+    EditText updateTitle, updateDesc, updateGiftIdea, updatePrice;
+
+    String type, key, listKey, imageUrl, oldImageURL;
+    Uri uri = null;
+
     DatabaseReference databaseReference;
     StorageReference storageReference;
 
@@ -49,129 +40,140 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        updateButton = findViewById(R.id.updateButton);
-        updateDesc = findViewById(R.id.updateDesc);
+        // View bindings
         updateImage = findViewById(R.id.updateImage);
-        updateLang = findViewById(R.id.updateLang);
+        updateButton = findViewById(R.id.updateButton);
         updateTitle = findViewById(R.id.updateTitle);
+        updateDesc = findViewById(R.id.updateDesc);
+        updateGiftIdea = findViewById(R.id.updateLang);
+        updatePrice = findViewById(R.id.updatePrice);
 
-        // Activity Result Launcher for Image Picker
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+        // Intent data
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            type = bundle.getString("type", "member");
+            key = bundle.getString("Key");
+            listKey = bundle.getString("listKey");
+            oldImageURL = bundle.getString("Image");
+        }
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        if ("member".equals(type)) {
+            databaseReference = FirebaseDatabase.getInstance()
+                    .getReference("Unique User ID")
+                    .child(uid)
+                    .child(listKey)
+                    .child("members")
+                    .child(key);
+
+            // 🔄 Real-time Firebase listener
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        Toast.makeText(UpdateActivity.this, "Member not found", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+
+                    String name = snapshot.child("name").getValue(String.class);
+                    String role = snapshot.child("role").getValue(String.class);
+                    String giftIdea = snapshot.child("giftIdea").getValue(String.class);
+                    String price = snapshot.child("price").getValue(String.class);
+                    imageUrl = snapshot.child("imageUrl").getValue(String.class);
+
+                    updateTitle.setText(name != null ? name : "");
+                    updateDesc.setText(role != null ? role : "");
+                    updateGiftIdea.setText(giftIdea != null ? giftIdea : "");
+                    updatePrice.setText(price != null ? price : "");
+
+                    if (!isFinishing() && !isDestroyed()) {
+                        Glide.with(UpdateActivity.this).load(imageUrl).into(updateImage);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(UpdateActivity.this, "Failed to load member", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // Image picker
+        ActivityResultLauncher<Intent> imagePicker = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         uri = result.getData().getData();
                         updateImage.setImageURI(uri);
                     } else {
-                        Toast.makeText(UpdateActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
 
-        // Get Data from Intent
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            Glide.with(UpdateActivity.this).load(bundle.getString("Image")).into(updateImage);
-            updateTitle.setText(bundle.getString("Title"));
-            updateDesc.setText(bundle.getString("Description"));
-            updateLang.setText(bundle.getString("Language"));
-            key = bundle.getString("Key");
-            oldImageURL = bundle.getString("Image");
-        }
-
-        // Database Reference
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        databaseReference = FirebaseDatabase.getInstance()
-                .getReference("Android Tutorials")
-                .child(uid)
-                .child(key);
-
-        // Image Click Listener
-        updateImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent photoPicker = new Intent(Intent.ACTION_PICK);
-                photoPicker.setType("image/*");
-                activityResultLauncher.launch(photoPicker);
-            }
+        updateImage.setOnClickListener(v -> {
+            Intent pickImage = new Intent(Intent.ACTION_PICK);
+            pickImage.setType("image/*");
+            imagePicker.launch(pickImage);
         });
 
-        // Update Button Click Listener
-        updateButton.setOnClickListener(view -> {
+        updateButton.setOnClickListener(v -> {
             if (uri != null) {
-                saveData(); // Upload new image and update database
+                uploadNewImage();
             } else {
-                updateData(oldImageURL); // Update only text fields
+                updateData(imageUrl);
             }
         });
     }
 
-    // Save new image & update data
-    public void saveData() {
-        storageReference = FirebaseStorage.getInstance().getReference().child("Android Images").child(uri.getLastPathSegment());
+    private void uploadNewImage() {
+        storageReference = FirebaseStorage.getInstance()
+                .getReference("Android Images")
+                .child(uri.getLastPathSegment());
 
-        // Show Progress Dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateActivity.this);
-        builder.setCancelable(false);
-        builder.setView(R.layout.progress_layout);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false).setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                uriTask.addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            imageUrl = task.getResult().toString();
-                            updateData(imageUrl);
-                            dialog.dismiss();
-                        } else {
-                            dialog.dismiss();
-                            Toast.makeText(UpdateActivity.this, "Failed to get Image URL", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        storageReference.putFile(uri).addOnSuccessListener(taskSnapshot -> {
+            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                 dialog.dismiss();
-                Toast.makeText(UpdateActivity.this, "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+                updateData(uri.toString());
+            });
+        }).addOnFailureListener(e -> {
+            dialog.dismiss();
+            Toast.makeText(this, "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
-    // Update data in Firebase Realtime Database
-    public void updateData(String newImageUrl) {
-        title = updateTitle.getText().toString().trim();
-        desc = updateDesc.getText().toString().trim();
-        lang = updateLang.getText().toString();
+    private void updateData(String newImageUrl) {
+        String name = updateTitle.getText().toString().trim();
+        String role = updateDesc.getText().toString().trim();
+        String gift = updateGiftIdea.getText().toString().trim();
+        String price = updatePrice.getText().toString().trim();
 
-        DataHelperClass dataClass = new DataHelperClass(title, desc, lang, newImageUrl);
+        if (name.isEmpty() || role.isEmpty() || gift.isEmpty() || price.isEmpty()) {
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        databaseReference.setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    // Delete Old Image Only If New Image Was Uploaded
-                    if (uri != null) {
-                        StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageURL);
-                        reference.delete();
-                    }
-                    Toast.makeText(UpdateActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(UpdateActivity.this, "Update Failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(UpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        MemberDataClass updated = new MemberDataClass(name, role, newImageUrl, gift, price);
+
+        databaseReference.setValue(updated).addOnSuccessListener(unused -> {
+            deleteOldImage();
+            Toast.makeText(this, "Member updated", Toast.LENGTH_SHORT).show();
+            finish(); // Go back to DetailActivity
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void deleteOldImage() {
+        if (uri != null && oldImageURL != null && !oldImageURL.isEmpty()) {
+            FirebaseStorage.getInstance().getReferenceFromUrl(oldImageURL).delete();
+        }
     }
 }

@@ -1,84 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="center"
+    android:paddingBottom="80dp"
     tools:context=".HomePageUIClasses.DetailActivity">
 
     <TextView
+        android:id="@+id/detailTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/detailTitle"
-        android:text="Title"
-        android:layout_marginTop="14dp"
-        android:textSize="24sp"
         android:layout_gravity="center"
+        android:layout_marginTop="14dp"
         android:layout_marginBottom="12dp"
-        android:textColor="@color/lavender"/>
+        android:text="Member Name"
+        android:textColor="@color/lavender"
+        android:textSize="24sp" />
 
     <ImageView
+        android:id="@+id/detailImage"
         android:layout_width="400dp"
         android:layout_height="200dp"
-        android:id="@+id/detailImage"
+        android:layout_gravity="center"
         android:padding="8dp"
-        android:layout_gravity="center"
-        android:src="@drawable/baseline_account_box_24"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_account_box_24" />
 
+    <!-- Preferences -->
     <TextView
+        android:id="@+id/detailPreferences"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@drawable/borderblue"
         android:padding="20dp"
-        android:text="Language"
-        android:layout_gravity="center"
-        android:id="@+id/detailLang"
-        android:textSize="18sp"
-        android:textColor="@color/lavender"/>
+        android:text="Preferences"
+        android:textColor="@color/lavender"
+        android:textSize="18sp" />
 
+    <!-- Gift Idea -->
     <TextView
+        android:id="@+id/detailGiftIdea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@drawable/borderblue"
         android:padding="20dp"
-        android:text="Description"
-        android:layout_gravity="center"
-        android:id="@+id/detailDesc"
-        android:textSize="18sp"
-        android:textColor="@color/lavender"/>
+        android:text="Gift Idea"
+        android:textColor="@color/lavender"
+        android:textSize="18sp" />
 
+    <!-- Price -->
+    <TextView
+        android:id="@+id/detailPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/borderblue"
+        android:padding="20dp"
+        android:text="Price $"
+        android:textColor="@color/lavender"
+        android:textSize="18sp" />
+
+    <!-- FABs -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="191dp">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="40dp"
+            android:src="@drawable/add_new"
+            app:backgroundTint="@color/green" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/editButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add_new"
-                app:backgroundTint="@color/green" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"
-                android:src="@drawable/add_new"
-                app:backgroundTint="@color/red" />
-
-        </androidx.cardview.widget.CardView>
-
+            android:layout_margin="40dp"
+            android:src="@drawable/add_new"
+            app:backgroundTint="@color/red" />
     </RelativeLayout>
 
 </LinearLayout>
