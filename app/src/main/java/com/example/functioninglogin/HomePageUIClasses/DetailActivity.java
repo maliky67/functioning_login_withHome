@@ -2,8 +2,6 @@ package com.example.functioninglogin.HomePageUIClasses;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,7 +114,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void finishToProperScreen() {
-        Intent back = new Intent(this, com.example.functioninglogin.ListViewPage.class);
+        Intent back = new Intent(this, ListViewPage.class);
         back.putExtra("Key", listKey);
         startActivity(back);
         finish();

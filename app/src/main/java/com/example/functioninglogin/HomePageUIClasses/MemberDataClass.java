@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.HomePageUIClasses;
 
 public class MemberDataClass {
     private String name;

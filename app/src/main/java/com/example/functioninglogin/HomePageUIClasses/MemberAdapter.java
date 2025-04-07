@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.HomePageUIClasses;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.functioninglogin.HomePageUIClasses.DetailActivity;
+import com.example.functioninglogin.R;
 
 import java.util.List;
 

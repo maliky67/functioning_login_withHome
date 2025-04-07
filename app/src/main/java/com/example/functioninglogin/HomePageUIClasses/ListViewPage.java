@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.HomePageUIClasses;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.functioninglogin.HomePageUIClasses.Store_Data_Realtime;
+import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;

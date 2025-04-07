@@ -13,10 +13,10 @@
         android:theme="@style/Theme.FunctioningLogin"
         tools:targetApi="31">
         <activity
-            android:name=".Member_Data_Upload"
+            android:name=".HomePageUIClasses.Member_Data_Upload"
             android:exported="false" />
         <activity
-            android:name=".ListViewPage"
+            android:name=".HomePageUIClasses.ListViewPage"
             android:exported="false" />
         <activity
             android:name=".BudgetPage"

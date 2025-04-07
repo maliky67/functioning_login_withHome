@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.functioninglogin.ListViewPage;
 import com.example.functioninglogin.R;
 
 import java.util.ArrayList;
