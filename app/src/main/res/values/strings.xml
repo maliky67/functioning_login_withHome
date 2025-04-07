@@ -43,5 +43,12 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="enter_preferences">Enter Preferences</string>
     <string name="gift_idea">Gift Idea</string>
+
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
     <string name="enter_member_name">Enter Member Name</string>
+    <string name="library">Library</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="shorts">Shorts</string>
+    <string name="home">Home</string>
 </resources>

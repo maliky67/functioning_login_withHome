@@ -1,6 +1,5 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
-
 public class DataHelperClass {
 
     private String dataTitle;
@@ -8,12 +7,12 @@ public class DataHelperClass {
     private String dataImage;
     private String key;
 
-    public String getKey() {
-        return key;
-    }
+    public DataHelperClass() {}
 
-    public void setKey(String key) {
-        this.key = key;
+    public DataHelperClass(String dataTitle, String dataDesc, String dataImage) {
+        this.dataTitle = dataTitle;
+        this.dataDesc = dataDesc;
+        this.dataImage = dataImage;
     }
 
     public String getDataTitle() {
@@ -24,18 +23,27 @@ public class DataHelperClass {
         return dataDesc;
     }
 
-
-
     public String getDataImage() {
         return dataImage;
     }
 
-    public DataHelperClass(String dataTitle, String dataDesc, String dataImage) {
+    public void setDataTitle(String dataTitle) {
         this.dataTitle = dataTitle;
+    }
+
+    public void setDataDesc(String dataDesc) {
         this.dataDesc = dataDesc;
+    }
+
+    public void setDataImage(String dataImage) {
         this.dataImage = dataImage;
     }
-    public DataHelperClass(){
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

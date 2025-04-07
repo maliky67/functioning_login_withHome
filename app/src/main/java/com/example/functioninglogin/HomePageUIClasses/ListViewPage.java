@@ -121,7 +121,7 @@ public class ListViewPage extends AppCompatActivity {
         listRef.removeValue()
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "List deleted successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, Store_Data_Realtime.class));
+                    startActivity(new Intent(this, HomeFragment.class));
                     finish();
                 })
                 .addOnFailureListener(e -> {

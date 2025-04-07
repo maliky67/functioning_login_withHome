@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.functioninglogin.R;
-import com.example.functioninglogin.HomePageUIClasses.Store_Data_Realtime;
+import com.example.functioninglogin.HomePageUIClasses.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                                     FirebaseUser user = auth.getCurrentUser();
                                     String userId = user.getUid();
 
-                                    Intent intent = new Intent(LoginActivity.this, Store_Data_Realtime.class);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     intent.putExtra("userId", userId);
                                     startActivity(intent);
                                     finish();

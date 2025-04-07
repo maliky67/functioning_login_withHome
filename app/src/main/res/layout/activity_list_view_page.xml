@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePageUIClasses.Store_Data_Realtime">
+    tools:context=".HomePageUIClasses.HomeFragment">
 
     <include
         layout="@layout/list_header"

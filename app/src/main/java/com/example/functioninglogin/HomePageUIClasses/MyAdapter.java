@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-class MyViewHolder extends RecyclerView.ViewHolder{
+class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage;
     TextView recTitle, recDesc;
@@ -26,14 +26,10 @@ class MyViewHolder extends RecyclerView.ViewHolder{
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
-
         recImage = itemView.findViewById(R.id.recImage);
-        recCard = itemView.findViewById(R.id.recCard);
-        recDesc = itemView.findViewById(R.id.recDesc);
         recTitle = itemView.findViewById(R.id.recTitle);
-        if (recTitle == null || recDesc == null) {
-            throw new RuntimeException("View IDs are incorrect. Check recycler_item.xml.");
-        }
+        recDesc = itemView.findViewById(R.id.recDesc);
+        recCard = itemView.findViewById(R.id.recCard);
     }
 }
 
@@ -50,61 +46,42 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recycler_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         DataHelperClass data = dataList.get(position);
 
-        if (data == null) {
-            return; // Skip binding if data is null
+        holder.recTitle.setText(data.getDataTitle() != null ? data.getDataTitle() : "No Title");
+        holder.recDesc.setText(data.getDataDesc() != null ? data.getDataDesc() : "No Description");
+
+        // ✅ Load image using fallback-compatible URL getter
+        String imageUrl = data.getDataImage();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context).load(imageUrl).into(holder.recImage);
+        } else {
+            holder.recImage.setImageResource(R.drawable.hatv1);
         }
 
-        if (data.getDataTitle() != null) {
-            holder.recTitle.setText(data.getDataTitle());
-        } else {
-            holder.recTitle.setText("No Title");
-        }
-
-        if (data.getDataDesc() != null) {
-            holder.recDesc.setText(data.getDataDesc());
-        } else {
-            holder.recDesc.setText("No Description");
-        }
-
-        // Load image with Glide
-        if (data.getDataImage() != null) {
-            Glide.with(context).load(data.getDataImage()).into(holder.recImage);
-        } else {
-            holder.recImage.setImageResource(R.drawable.hatv1); // Use a default image
-        }
-        Glide.with(context).load(dataList.get(position).getDataImage()).into(holder.recImage);
-        holder.recTitle.setText(dataList.get(position).getDataTitle());
-        holder.recDesc.setText(dataList.get(position).getDataDesc());
-        holder.recCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ListViewPage.class);
-                intent.putExtra("Image", dataList.get(holder.getAdapterPosition()).getDataImage());
-                intent.putExtra("Description", dataList.get(holder.getAdapterPosition()).getDataDesc());
-                intent.putExtra("Title", dataList.get(holder.getAdapterPosition()).getDataTitle());
-                intent.putExtra("Key",dataList.get(holder.getAdapterPosition()).getKey());
-                context.startActivity(intent);
-            }
+        holder.recCard.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ListViewPage.class);
+            intent.putExtra("Image", imageUrl != null ? imageUrl : "");
+            intent.putExtra("Description", data.getDataDesc());
+            intent.putExtra("Title", data.getDataTitle());
+            intent.putExtra("Key", data.getKey());
+            context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return dataList != null ? dataList.size() : 0;
     }
 
-    public void searchDataList(ArrayList<DataHelperClass> searchList){
-        dataList = searchList;
+    public void searchDataList(ArrayList<DataHelperClass> searchList) {
+        this.dataList = searchList;
         notifyDataSetChanged();
     }
 }
-

@@ -124,6 +124,8 @@ public class Upload_Data extends AppCompatActivity {
         }
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
+        // ✅ Use imageURL directly (it's a String now)
         DataHelperClass data = new DataHelperClass(title, desc, imageURL);
         data.setKey(title);
 
@@ -139,6 +141,7 @@ public class Upload_Data extends AppCompatActivity {
                     Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private AlertDialog showProgressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
