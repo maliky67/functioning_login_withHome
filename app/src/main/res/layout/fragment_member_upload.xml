@@ -5,36 +5,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePageUIClasses.UpdateActivity">
+    android:orientation="vertical"
+    tools:context=".HomePageUIClasses.MemberDataUploadFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         app:cardCornerRadius="30dp"
-        android:layout_gravity="center"
-        app:cardElevation="20dp">
+        app:cardElevation="20dp"
+        android:layout_gravity="center_vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="20dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/white_background"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/update_data"
-                android:textSize="30sp"
+                android:text="Create Member"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"/>
+                android:textColor="@color/lavender"
+                android:textSize="30sp" />
 
             <ImageView
-                android:id="@+id/updateImage"
+                android:id="@+id/memberImageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
@@ -42,72 +43,70 @@
                 android:src="@drawable/baseline_account_box_24" />
 
             <EditText
-                android:id="@+id/updateTitle"
+                android:id="@+id/memberNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
-                android:hint="@string/enter_member_name"
                 android:gravity="start|center_vertical"
+                android:hint="@string/enter_member_name"
                 android:padding="16dp"
                 android:textColor="@color/lavender" />
 
             <EditText
-                android:id="@+id/updateDesc"
+                android:id="@+id/memberRoleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
-                android:hint="@string/enter_preferences"
                 android:gravity="start|center_vertical"
+                android:hint="@string/enter_preferences"
                 android:padding="16dp"
                 android:textColor="@color/lavender" />
 
-            <!-- 🔹 Gift Idea + Price side by side -->
+            <!-- SIDE-BY-SIDE FIELDS: Gift Idea & Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:weightSum="2">
 
                 <EditText
-                    android:id="@+id/updateLang"
+                    android:id="@+id/uploadDescss"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
                     android:background="@drawable/borderblue"
-                    android:hint="@string/gift_idea"
                     android:gravity="start|center_vertical"
+                    android:hint="Gift Idea"
                     android:padding="16dp"
-                    android:textColor="@color/lavender" />
+                    android:textColor="@color/lavender"
+                    android:layout_marginEnd="8dp" />
 
                 <EditText
-                    android:id="@+id/updatePrice"
+                    android:id="@+id/uploadDescss2"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
                     android:background="@drawable/borderblue"
-                    android:hint="$Price"
                     android:gravity="start|center_vertical"
+                    android:hint="$Price"
                     android:padding="16dp"
-                    android:textColor="@color/lavender" />
+                    android:textColor="@color/lavender"
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
 
             <Button
-                android:id="@+id/updateButton"
+                android:id="@+id/saveMemberButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rounded_blue"
-                android:text="@string/update"
+                android:text="@string/save"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 </ScrollView>

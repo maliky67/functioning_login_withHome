@@ -1,7 +1,6 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +36,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     private final Context context;
     private List<DataHelperClass> dataList;
+    private final OnItemClickListener listener;
 
-    public MyAdapter(Context context, List<DataHelperClass> dataList) {
+    public interface OnItemClickListener {
+        void onItemClick(DataHelperClass item);
+    }
+
+    public MyAdapter(Context context, List<DataHelperClass> dataList, OnItemClickListener listener) {
         this.context = context;
         this.dataList = dataList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -57,7 +62,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.recTitle.setText(data.getDataTitle() != null ? data.getDataTitle() : "No Title");
         holder.recDesc.setText(data.getDataDesc() != null ? data.getDataDesc() : "No Description");
 
-        // ✅ Load image using fallback-compatible URL getter
         String imageUrl = data.getDataImage();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context).load(imageUrl).into(holder.recImage);
@@ -65,14 +69,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             holder.recImage.setImageResource(R.drawable.hatv1);
         }
 
-        holder.recCard.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ListViewPage.class);
-            intent.putExtra("Image", imageUrl != null ? imageUrl : "");
-            intent.putExtra("Description", data.getDataDesc());
-            intent.putExtra("Title", data.getDataTitle());
-            intent.putExtra("Key", data.getKey());
-            context.startActivity(intent);
-        });
+        holder.recCard.setOnClickListener(v -> listener.onItemClick(data));
     }
 
     @Override

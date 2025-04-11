@@ -1,7 +1,6 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,100 +32,115 @@ public class HomeFragment extends Fragment {
     private List<DataHelperClass> dataList;
     private MyAdapter adapter;
     private DatabaseReference databaseReference;
-    private ValueEventListener eventListener;
     private AlertDialog dialog;
-    private boolean isDialogShown = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false); // ← Use your FrameLayout layout here
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         fab = view.findViewById(R.id.fab);
-        searchView = view.findViewById(R.id.search); // ✅ Correctly scoped
+        searchView = view.findViewById(R.id.search);
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
-        adapter = new MyAdapter(requireContext(), dataList);
+
+        adapter = new MyAdapter(requireContext(), dataList, item -> {
+            ListViewFragment fragment = ListViewFragment.newInstance(
+                    item.getKey(),
+                    item.getDataTitle(),
+                    item.getDataDesc(),
+                    item.getDataImage()
+            );
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerView.setAdapter(adapter);
 
-        // ✅ Show dialog once
-        if (!isDialogShown) {
-            dialog = new AlertDialog.Builder(requireContext())
-                    .setView(R.layout.progress_layout)
-                    .setCancelable(false)
-                    .create();
-            dialog.show();
-            isDialogShown = true;
-        }
-
-        // 🔗 Firebase Setup
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Unique User ID").child(userId);
+        databaseReference = FirebaseDatabase.getInstance()
+                .getReference("Unique User ID")
+                .child(userId);
 
-        eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                dataList.clear();
+        // FAB ➕ opens UploadListFragment
+        fab.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_fragment_container, new UploadListFragment())
+                .addToBackStack(null)
+                .commit()
+        );
 
-                Log.d("FIREBASE_DATA", "Fetched: " + snapshot.getChildrenCount());
-
-                for (DataSnapshot listSnap : snapshot.getChildren()) {
-                    Object rawData = listSnap.getValue();
-                    DataHelperClass data = null;
-                    if (rawData instanceof Map) {
-                        Map<String, Object> map = (Map<String, Object>) rawData;
-                        String title = (String) map.get("dataTitle");
-                        String desc = (String) map.get("dataDesc");
-
-                        // Handle both String and nested "dataImage"
-                        Object imgObj = map.get("dataImage");
-                        String imageUrl = null;
-                        if (imgObj instanceof String) {
-                            imageUrl = (String) imgObj;
-                        } else if (imgObj instanceof Map) {
-                            imageUrl = (String) ((Map<?, ?>) imgObj).get("url");
-                        }
-
-                        data = new DataHelperClass(title, desc, imageUrl);
-                        data.setKey(listSnap.getKey());
-                        dataList.add(data);
-                    }
-                }
-                adapter.notifyDataSetChanged();
-
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                    isDialogShown = false;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), "Failed to load data ❌", Toast.LENGTH_SHORT).show();
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                    isDialogShown = false;
-                }
+        // Fragment result listener for refresh
+        getParentFragmentManager().setFragmentResultListener("refreshHome", this, (requestKey, bundle) -> {
+            boolean refresh = bundle.getBoolean("refreshNeeded", false);
+            if (refresh) {
+                fetchDataFromFirebase();
             }
         });
 
-        // ➕ Add new data
-        fab.setOnClickListener(v -> startActivity(new Intent(requireContext(), Upload_Data.class)));
-
-        // 🔍 Search filtering
+        // Search bar filter
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) { return false; }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
+            @Override public boolean onQueryTextChange(String newText) {
                 searchList(newText);
                 return true;
             }
         });
 
+        // Initial fetch
+        fetchDataFromFirebase();
+
         return view;
+    }
+
+    private void fetchDataFromFirebase() {
+        if (dialog == null) {
+            dialog = new AlertDialog.Builder(requireContext())
+                    .setView(R.layout.progress_layout)
+                    .setCancelable(false)
+                    .create();
+        }
+
+        dialog.show();
+        dataList.clear();
+
+        databaseReference.get().addOnSuccessListener(snapshot -> {
+            Log.d("FIREBASE_DATA", "Fetched: " + snapshot.getChildrenCount());
+
+            for (DataSnapshot listSnap : snapshot.getChildren()) {
+                Object rawData = listSnap.getValue();
+                if (rawData instanceof Map) {
+                    Map<String, Object> map = (Map<String, Object>) rawData;
+                    String title = (String) map.get("dataTitle");
+                    String desc = (String) map.get("dataDesc");
+
+                    Object imgObj = map.get("dataImage");
+                    String imageUrl = null;
+                    if (imgObj instanceof String) {
+                        imageUrl = (String) imgObj;
+                    } else if (imgObj instanceof Map) {
+                        imageUrl = (String) ((Map<?, ?>) imgObj).get("url");
+                    }
+
+                    DataHelperClass data = new DataHelperClass(title, desc, imageUrl);
+                    data.setKey(listSnap.getKey());
+                    dataList.add(data);
+                }
+            }
+
+            adapter.notifyDataSetChanged();
+            dialog.dismiss();
+        }).addOnFailureListener(error -> {
+            dialog.dismiss();
+            Toast.makeText(requireContext(), "Failed to fetch data ❌", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void searchList(String text) {
@@ -142,14 +156,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (databaseReference != null && eventListener != null) {
-            databaseReference.removeEventListener(eventListener);
-        }
-
-        // 🔄 Clean up dialog
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-        isDialogShown = false;
     }
 }

@@ -2,7 +2,6 @@ package com.example.functioninglogin.HomePageUIClasses;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -52,16 +52,18 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         }
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra("type", "member");
-            intent.putExtra("Title", member.getName());
-            intent.putExtra("Description", member.getRole());
-            intent.putExtra("GiftIdea", member.getGiftIdea());
-            intent.putExtra("Price", member.getPrice());
-            intent.putExtra("Image", member.getImageUrl());
-            intent.putExtra("Key", member.getKey());
-            intent.putExtra("listKey", listKey);
-            context.startActivity(intent);
+            DetailFragment fragment = DetailFragment.newInstance(
+                    member.getKey(),
+                    listKey,
+                    "member",
+                    member.getImageUrl()
+            );
+
+            ((AppCompatActivity) context).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 

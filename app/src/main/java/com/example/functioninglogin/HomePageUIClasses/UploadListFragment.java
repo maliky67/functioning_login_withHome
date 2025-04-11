@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,7 +15,9 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.R;
 import com.google.android.gms.tasks.Task;
@@ -27,7 +31,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class Upload_Data extends AppCompatActivity {
+public class UploadListFragment extends Fragment {
 
     private ImageView imageViewUpload;
     private EditText editTextTopic, editTextDesc;
@@ -40,24 +44,24 @@ public class Upload_Data extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
+    public UploadListFragment() {}
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_data);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_upload_list, container, false);
 
-        // 🔧 Initialize Views
-        imageViewUpload = findViewById(R.id.uploadImage);
-        editTextTopic = findViewById(R.id.uploadTopic);
-        editTextDesc = findViewById(R.id.uploadDesc);
-        buttonSave = findViewById(R.id.saveButton);
+        imageViewUpload = view.findViewById(R.id.uploadImage);
+        editTextTopic = view.findViewById(R.id.uploadTopic);
+        editTextDesc = view.findViewById(R.id.uploadDesc);
+        buttonSave = view.findViewById(R.id.saveButton);
 
-        // 🔗 Firebase DB path
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId);
 
-        // 🖼️ Setup image picker
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -65,7 +69,7 @@ public class Upload_Data extends AppCompatActivity {
                         selectedImageUri = result.getData().getData();
                         imageViewUpload.setImageURI(selectedImageUri);
                     } else {
-                        Toast.makeText(this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -76,9 +80,11 @@ public class Upload_Data extends AppCompatActivity {
             if (selectedImageUri != null) {
                 uploadImageToFirebase();
             } else {
-                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Please select an image", Toast.LENGTH_SHORT).show();
             }
         });
+
+        return view;
     }
 
     private void openImagePicker() {
@@ -103,13 +109,13 @@ public class Upload_Data extends AppCompatActivity {
                             saveDataToDatabase(dialog);
                         } else {
                             dialog.dismiss();
-                            Toast.makeText(this, "Failed to get image URL", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Failed to get image URL", Toast.LENGTH_SHORT).show();
                         }
                     });
                 })
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
-                    Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -119,13 +125,11 @@ public class Upload_Data extends AppCompatActivity {
 
         if (title.isEmpty() || desc.isEmpty()) {
             dialog.dismiss();
-            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-
-        // ✅ Use imageURL directly (it's a String now)
         DataHelperClass data = new DataHelperClass(title, desc, imageURL);
         data.setKey(title);
 
@@ -133,18 +137,25 @@ public class Upload_Data extends AppCompatActivity {
                 .addOnSuccessListener(unused -> {
                     databaseReference.child(title).child("timestamp").setValue(currentDate);
                     dialog.dismiss();
-                    Toast.makeText(this, "Upload Successful!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(requireContext(), "Upload Successful!", Toast.LENGTH_SHORT).show();
+
+                    Bundle result = new Bundle();
+                    result.putBoolean("refreshNeeded", true);
+
+                    requireActivity().getSupportFragmentManager().setFragmentResult("refreshHome", result);
+                    requireActivity().getSupportFragmentManager().popBackStack();
+
+                    // Go back to previous fragment (like HomeFragment)
+                    requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
-                    Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-
     private AlertDialog showProgressDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
