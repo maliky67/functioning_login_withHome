@@ -21,6 +21,8 @@ credentialsPlayServicesAuth = "1.3.0"
 googleid = "1.1.1"
 firebaseStorage = "21.0.1"
 compiler = "4.16.0"
+swiperefresh = "1.1.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +51,7 @@ androidx-credentials-play-services-auth = { group = "androidx.credentials", name
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefresh" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

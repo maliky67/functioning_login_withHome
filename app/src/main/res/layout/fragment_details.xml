@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:paddingBottom="80dp"
-    tools:context=".HomePageUIClasses.DetailActivity">
+    tools:context=".HomePageUIClasses.DetailFragment">
 
     <TextView
         android:id="@+id/detailTitle"

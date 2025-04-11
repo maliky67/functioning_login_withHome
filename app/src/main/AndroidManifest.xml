@@ -17,21 +17,6 @@
             android:name=".HomePageUIClasses.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".HomePageUIClasses.Member_Data_Upload"
-            android:exported="false" />
-        <activity
-            android:name=".HomePageUIClasses.ListViewPage"
-            android:exported="false" />
-        <activity
-            android:name=".HomePageUIClasses.UpdateActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomePageUIClasses.DetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomePageUIClasses.Upload_Data"
-            android:exported="false" />
-        <activity
             android:name=".LoginUIClasses.SignupActivity"
             android:exported="true" />
         <activity

@@ -4,28 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- SearchView -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:background="@drawable/borderblue"
-        android:queryHint="Search..."
-        app:iconifiedByDefault="false"
-        app:searchHintIcon="@null"
-        app:searchIcon="@drawable/baseline_account_box_24"
-        app:closeIcon="@drawable/baseline_account_box_24" />
+        android:layout_height="match_parent">
 
-    <!-- RecyclerView below SearchView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:background="@color/light_blue" />
+        <!-- Wrap search and recycler inside a vertical layout -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <!-- FAB at bottom right -->
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/borderblue"
+                android:queryHint="Search..."
+                app:iconifiedByDefault="false"
+                app:searchHintIcon="@null"
+                app:searchIcon="@drawable/baseline_account_box_24"
+                app:closeIcon="@drawable/baseline_account_box_24" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/light_blue" />
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- FAB always on top -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
