@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.HomePageUIClasses.MainActivity;
+import com.example.functioninglogin.TestingForgotPassword;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText loginEmail, loginPassword;
     Button loginButton;
-    TextView signupRedirectText;
+    TextView signupRedirectText, forgotpasswordRedirectText;
     FirebaseAuth auth;
 
     @Override
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         loginEmail = findViewById(R.id.login_username);
         loginPassword = findViewById(R.id.login_password);
         signupRedirectText = findViewById(R.id.loginRedirectText);
+        forgotpasswordRedirectText = findViewById(R.id.forgot_passwordRedirectText);
         loginButton = findViewById(R.id.login_button);
 
         auth = FirebaseAuth.getInstance(); // Initialize Firebase Auth
@@ -75,5 +77,14 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             }
         });
+
+        forgotpasswordRedirectText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, TestingForgotPassword.class));
+            }
+        });
     }
 }
+
+

@@ -19,6 +19,7 @@
         <activity
             android:name=".LoginUIClasses.SignupActivity"
             android:exported="true" />
+
         <activity
             android:name=".LoginUIClasses.LoginActivity"
             android:exported="true" >
