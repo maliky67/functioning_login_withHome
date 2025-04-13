@@ -62,11 +62,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             else if (id == R.id.library) selectedFragment = new LibraryFragment();
 
             if (selectedFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.home_fragment_container, selectedFragment)
-                        .commit();
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
+
+                if (!(currentFragment != null && currentFragment.getClass().equals(selectedFragment.getClass()))) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.home_fragment_container, selectedFragment)
+                            .commit();
+                }
+
                 return true;
             }
+
             return false;
         });
 
@@ -82,10 +88,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
         if (id == R.id.home) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.home_fragment_container, new HomeFragment())
-                    .commit();
-            bottomNavigationView.setSelectedItemId(R.id.home); // Optional: sync bottom nav
+            Fragment current = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
+            if (!(current instanceof HomeFragment)) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.home_fragment_container, new HomeFragment())
+                        .commit();
+            }
+
+            bottomNavigationView.setSelectedItemId(R.id.home);
             return true;
 
         } else if (id == R.id.settings || id == R.id.about || id == R.id.share) {

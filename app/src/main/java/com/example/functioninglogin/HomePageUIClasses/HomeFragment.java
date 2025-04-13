@@ -3,9 +3,7 @@ package com.example.functioninglogin.HomePageUIClasses;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +32,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference databaseReference;
     private AlertDialog dialog;
 
+    private boolean shouldRefreshOnResume = false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +42,6 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         fab = view.findViewById(R.id.fab);
         searchView = view.findViewById(R.id.search);
-
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
 
@@ -76,15 +75,16 @@ public class HomeFragment extends Fragment {
                 .commit()
         );
 
-        // Fragment result listener for refresh
+        // ✅ Refresh flag set by result
         getParentFragmentManager().setFragmentResultListener("refreshHome", this, (requestKey, bundle) -> {
             boolean refresh = bundle.getBoolean("refreshNeeded", false);
+            Log.d("FRAGMENT_RESULT", "Triggered with refresh: " + refresh);
             if (refresh) {
-                fetchDataFromFirebase();
+                shouldRefreshOnResume = true;
             }
         });
 
-        // Search bar filter
+        // Search bar filtering
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) { return false; }
 
@@ -94,13 +94,30 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Initial fetch
+        // Initial load
         fetchDataFromFirebase();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldRefreshOnResume || dataList.isEmpty()) {
+            Log.d("HOME_FRAGMENT", "onResume: Fetching due to flag or empty list");
+            shouldRefreshOnResume = false;
+            fetchDataFromFirebase();
+        } else {
+            Log.d("HOME_FRAGMENT", "onResume: Skipping fetch (already populated)");
+        }
+    }
+
+    private boolean isFetching = false;
+
     private void fetchDataFromFirebase() {
+        if (isFetching) return; // 🚫 prevent duplicate calls
+        isFetching = true;
+
         if (dialog == null) {
             dialog = new AlertDialog.Builder(requireContext())
                     .setView(R.layout.progress_layout)
@@ -129,19 +146,25 @@ public class HomeFragment extends Fragment {
                         imageUrl = (String) ((Map<?, ?>) imgObj).get("url");
                     }
 
-                    DataHelperClass data = new DataHelperClass(title, desc, imageUrl);
-                    data.setKey(listSnap.getKey());
-                    dataList.add(data);
+                    if (title != null && desc != null) {
+                        DataHelperClass data = new DataHelperClass(title, desc, imageUrl);
+                        data.setKey(listSnap.getKey());
+                        dataList.add(data);
+                    }
                 }
             }
 
-            adapter.notifyDataSetChanged();
+            adapter.updateData(dataList); // ✅ best practice to reset base list
+            Log.d("DATA_LIST_SIZE", "After fetch: " + dataList.size());
             dialog.dismiss();
+            isFetching = false;
         }).addOnFailureListener(error -> {
             dialog.dismiss();
+            isFetching = false;
             Toast.makeText(requireContext(), "Failed to fetch data ❌", Toast.LENGTH_SHORT).show();
         });
     }
+
 
     private void searchList(String text) {
         ArrayList<DataHelperClass> filtered = new ArrayList<>();

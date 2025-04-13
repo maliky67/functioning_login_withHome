@@ -130,12 +130,15 @@ public class UploadListFragment extends Fragment {
         }
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        DataHelperClass data = new DataHelperClass(title, desc, imageURL);
-        data.setKey(title);
+        String uniqueKey = databaseReference.push().getKey();
 
-        databaseReference.child(title).setValue(data)
+        DataHelperClass data = new DataHelperClass(title, desc, imageURL);
+        data.setKey(uniqueKey);
+
+        databaseReference.child(uniqueKey).setValue(data)
                 .addOnSuccessListener(unused -> {
-                    databaseReference.child(title).child("timestamp").setValue(currentDate);
+                    databaseReference.child(uniqueKey).child("timestamp").setValue(currentDate); // ✅ FIXED
+
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Upload Successful!", Toast.LENGTH_SHORT).show();
 
@@ -144,15 +147,13 @@ public class UploadListFragment extends Fragment {
 
                     requireActivity().getSupportFragmentManager().setFragmentResult("refreshHome", result);
                     requireActivity().getSupportFragmentManager().popBackStack();
-
-                    // Go back to previous fragment (like HomeFragment)
-                    requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private AlertDialog showProgressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

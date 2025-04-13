@@ -29,6 +29,7 @@ public class ListViewFragment extends Fragment {
     private List<MemberDataClass> memberList;
     private MemberAdapter memberAdapter;
     private DatabaseReference memberRef;
+    private ValueEventListener memberListener;
     private String listKey;
 
     private TextView headerTitle, headerDesc;
@@ -59,12 +60,19 @@ public class ListViewFragment extends Fragment {
         fab = view.findViewById(R.id.memberfab);
         deleteFab = view.findViewById(R.id.memberdeletefab);
 
+        // Get data from bundle
         Bundle bundle = getArguments();
         if (bundle != null) {
-            listKey = bundle.getString("Key");
+            listKey = bundle.getString("Key", "");
             headerTitle.setText(bundle.getString("Title", "List Title"));
             headerDesc.setText(bundle.getString("Description", "Description"));
-            Glide.with(requireContext()).load(bundle.getString("Image")).into(headerImage);
+
+            String imageUrl = bundle.getString("Image");
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(requireContext()).load(imageUrl).into(headerImage);
+            } else {
+                headerImage.setImageResource(R.drawable.baseline_ac_unit_24); // Default fallback image
+            }
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -79,7 +87,8 @@ public class ListViewFragment extends Fragment {
                 .child(listKey)
                 .child("members");
 
-        memberRef.addValueEventListener(new ValueEventListener() {
+        // Firebase listener
+        memberListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 memberList.clear();
@@ -95,10 +104,12 @@ public class ListViewFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireContext(), "Failed to load members.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Failed to load members: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+        memberRef.addValueEventListener(memberListener);
 
+        // Add member FAB
         fab.setOnClickListener(v -> {
             MemberDataUploadFragment fragment = MemberDataUploadFragment.newInstance(listKey);
             requireActivity().getSupportFragmentManager()
@@ -108,6 +119,7 @@ public class ListViewFragment extends Fragment {
                     .commit();
         });
 
+        // Delete list FAB
         deleteFab.setOnClickListener(v -> {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Delete Entire List?")
@@ -135,5 +147,13 @@ public class ListViewFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Failed to delete list: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (memberRef != null && memberListener != null) {
+            memberRef.removeEventListener(memberListener);
+        }
     }
 }

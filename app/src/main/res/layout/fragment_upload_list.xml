@@ -75,7 +75,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rounded_blue"
-                android:text="@string/save"
+                android:text="@string/create_list"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
 

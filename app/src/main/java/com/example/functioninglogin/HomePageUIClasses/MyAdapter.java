@@ -36,6 +36,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     private final Context context;
     private List<DataHelperClass> dataList;
+    private List<DataHelperClass> fullDataList; // 🔄 Maintains the full unfiltered data
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -44,8 +45,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     public MyAdapter(Context context, List<DataHelperClass> dataList, OnItemClickListener listener) {
         this.context = context;
-        this.dataList = dataList;
         this.listener = listener;
+        this.fullDataList = new ArrayList<>(dataList);
+        this.dataList = new ArrayList<>(dataList);
     }
 
     @NonNull
@@ -77,8 +79,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         return dataList != null ? dataList.size() : 0;
     }
 
+    // 🔍 Search logic (non-destructive)
     public void searchDataList(ArrayList<DataHelperClass> searchList) {
-        this.dataList = searchList;
+        dataList = new ArrayList<>(searchList);
+        notifyDataSetChanged();
+    }
+
+    // 🔁 Called after Firebase fetch to update everything
+    public void updateData(List<DataHelperClass> newData) {
+        fullDataList.clear();
+        fullDataList.addAll(newData);
+        dataList = new ArrayList<>(newData); // refresh visible list too
+        notifyDataSetChanged();
+    }
+
+    // ✅ Optional: Restore full list (e.g. when search is cleared)
+    public void resetFilter() {
+        dataList = new ArrayList<>(fullDataList);
         notifyDataSetChanged();
     }
 }
