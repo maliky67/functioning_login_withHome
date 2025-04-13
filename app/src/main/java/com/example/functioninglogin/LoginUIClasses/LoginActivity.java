@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.HomePageUIClasses.MainActivity;
-import com.example.functioninglogin.TestingForgotPassword;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnCompleteListener;

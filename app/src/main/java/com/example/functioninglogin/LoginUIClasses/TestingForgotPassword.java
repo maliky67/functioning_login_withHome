@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.LoginUIClasses;
 
 import android.os.Bundle;
 import android.view.View;

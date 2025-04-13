@@ -20,9 +20,11 @@
             android:name=".HomePageUIClasses.MainActivity"
             android:exported="false" />
         <activity
+            android:name=".LoginUIClasses.TestingForgotPassword"
+            android:exported="false" />
+        <activity
             android:name=".LoginUIClasses.SignupActivity"
             android:exported="true" />
-
         <activity
             android:name=".LoginUIClasses.LoginActivity"
             android:exported="true">
