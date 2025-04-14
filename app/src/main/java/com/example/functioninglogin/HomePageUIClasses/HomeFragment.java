@@ -20,19 +20,19 @@ import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private SearchView searchView;
-    private List<DataHelperClass> dataList;
+    private List<GiftList> dataList;
     private MyAdapter adapter;
     private DatabaseReference databaseReference;
     private AlertDialog dialog;
 
     private boolean shouldRefreshOnResume = false;
+    private boolean isFetching = false;
 
     @Nullable
     @Override
@@ -47,10 +47,10 @@ public class HomeFragment extends Fragment {
 
         adapter = new MyAdapter(requireContext(), dataList, item -> {
             ListViewFragment fragment = ListViewFragment.newInstance(
-                    item.getKey(),
-                    item.getDataTitle(),
-                    item.getDataDesc(),
-                    item.getDataImage()
+                    item.getListId(),           // ✅ Firebase key
+                    item.getListTitle(),
+                    item.getListDesc(),
+                    item.getListImage()
             );
 
             requireActivity().getSupportFragmentManager()
@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment {
                 .getReference("Unique User ID")
                 .child(userId);
 
-        // FAB ➕ opens UploadListFragment
         fab.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.home_fragment_container, new UploadListFragment())
@@ -75,7 +74,6 @@ public class HomeFragment extends Fragment {
                 .commit()
         );
 
-        // ✅ Refresh flag set by result
         getParentFragmentManager().setFragmentResultListener("refreshHome", this, (requestKey, bundle) -> {
             boolean refresh = bundle.getBoolean("refreshNeeded", false);
             Log.d("FRAGMENT_RESULT", "Triggered with refresh: " + refresh);
@@ -84,7 +82,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Search bar filtering
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) { return false; }
 
@@ -94,7 +91,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Initial load
         fetchDataFromFirebase();
 
         return view;
@@ -112,10 +108,8 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private boolean isFetching = false;
-
     private void fetchDataFromFirebase() {
-        if (isFetching) return; // 🚫 prevent duplicate calls
+        if (isFetching) return;
         isFetching = true;
 
         if (dialog == null) {
@@ -128,33 +122,18 @@ public class HomeFragment extends Fragment {
         dialog.show();
         dataList.clear();
 
-        databaseReference.get().addOnSuccessListener(snapshot -> {
+        databaseReference.child("lists").get().addOnSuccessListener(snapshot -> {
             Log.d("FIREBASE_DATA", "Fetched: " + snapshot.getChildrenCount());
 
             for (DataSnapshot listSnap : snapshot.getChildren()) {
-                Object rawData = listSnap.getValue();
-                if (rawData instanceof Map) {
-                    Map<String, Object> map = (Map<String, Object>) rawData;
-                    String title = (String) map.get("dataTitle");
-                    String desc = (String) map.get("dataDesc");
-
-                    Object imgObj = map.get("dataImage");
-                    String imageUrl = null;
-                    if (imgObj instanceof String) {
-                        imageUrl = (String) imgObj;
-                    } else if (imgObj instanceof Map) {
-                        imageUrl = (String) ((Map<?, ?>) imgObj).get("url");
-                    }
-
-                    if (title != null && desc != null) {
-                        DataHelperClass data = new DataHelperClass(title, desc, imageUrl);
-                        data.setKey(listSnap.getKey());
-                        dataList.add(data);
-                    }
+                GiftList list = listSnap.getValue(GiftList.class);
+                if (list != null) {
+                    list.setListId(listSnap.getKey()); // ✅ Store Firebase key
+                    dataList.add(list);
                 }
             }
 
-            adapter.updateData(dataList); // ✅ best practice to reset base list
+            adapter.updateData(dataList);
             Log.d("DATA_LIST_SIZE", "After fetch: " + dataList.size());
             dialog.dismiss();
             isFetching = false;
@@ -165,11 +144,10 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
     private void searchList(String text) {
-        ArrayList<DataHelperClass> filtered = new ArrayList<>();
-        for (DataHelperClass d : dataList) {
-            if (d.getDataTitle().toLowerCase().contains(text.toLowerCase())) {
+        ArrayList<GiftList> filtered = new ArrayList<>();
+        for (GiftList d : dataList) {
+            if (d.getListTitle().toLowerCase().contains(text.toLowerCase())) {
                 filtered.add(d);
             }
         }

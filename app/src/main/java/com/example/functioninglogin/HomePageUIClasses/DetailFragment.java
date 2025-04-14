@@ -76,8 +76,9 @@ public class DetailFragment extends Fragment {
     private void loadGiftData() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
-                .getReference("Unique User ID")
+                .getReference("Unique User ID") // ✅ Updated path
                 .child(userId)
+                .child("lists")
                 .child(listKey)
                 .child("members")
                 .child(memberKey)
@@ -118,13 +119,14 @@ public class DetailFragment extends Fragment {
 
     private void saveAllGiftItems() {
         if (adapter != null) {
-            adapter.updateAllGiftItemsFromUI(); // 👈 Ensures EditTexts are synced with GiftItem list
+            adapter.updateAllGiftItemsFromUI(); // ✅ Sync UI data
         }
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference baseRef = FirebaseDatabase.getInstance()
-                .getReference("Unique User ID")
+                .getReference("Unique User ID") // ✅ Updated path
                 .child(userId)
+                .child("lists")
                 .child(listKey)
                 .child("members")
                 .child(memberKey)

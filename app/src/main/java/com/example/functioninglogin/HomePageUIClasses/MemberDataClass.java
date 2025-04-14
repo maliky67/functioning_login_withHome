@@ -7,9 +7,7 @@ public class MemberDataClass {
     private String name;
     private String role;
     private String imageUrl;
-    private String giftIdea;
-    private String price;
-    private String key;
+    private String key; // Firebase member ID
     private Map<String, GiftItem> gifts = new HashMap<>();
 
     public MemberDataClass() {}
@@ -18,6 +16,7 @@ public class MemberDataClass {
         this.name = name;
         this.role = role;
         this.imageUrl = imageUrl;
+        this.gifts = new HashMap<>();
     }
 
     public String getName() { return name; }
@@ -29,21 +28,14 @@ public class MemberDataClass {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public String getGiftIdea() { return giftIdea; }
-    public void setGiftIdea(String giftIdea) { this.giftIdea = giftIdea; }
-
-    public String getPrice() { return price; }
-    public void setPrice(String price) { this.price = price; }
-
     public String getKey() { return key; }
     public void setKey(String key) { this.key = key; }
 
-    // ✅ Correct map-based gift field
     public Map<String, GiftItem> getGifts() {
         return gifts;
     }
 
     public void setGifts(Map<String, GiftItem> gifts) {
-        this.gifts = gifts;
+        this.gifts = (gifts != null) ? gifts : new HashMap<>();
     }
 }

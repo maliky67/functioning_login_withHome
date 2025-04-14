@@ -129,22 +129,29 @@ public class UploadListFragment extends Fragment {
             return;
         }
 
-        String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        String uniqueKey = databaseReference.push().getKey();
+        // Generate unique list ID
+        String listId = databaseReference.child("lists").push().getKey();
 
-        DataHelperClass data = new DataHelperClass(title, desc, imageURL);
-        data.setKey(uniqueKey);
+        // Create GiftList object
+        GiftList giftList = new GiftList(
+                title,
+                desc,
+                imageURL,
+                System.currentTimeMillis()
+        );
 
-        databaseReference.child(uniqueKey).setValue(data)
+        // Save GiftList object under /users/userId/lists/listId
+        databaseReference
+                .child("lists")
+                .child(listId)
+                .setValue(giftList)
                 .addOnSuccessListener(unused -> {
-                    databaseReference.child(uniqueKey).child("timestamp").setValue(currentDate); // ✅ FIXED
-
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Upload Successful!", Toast.LENGTH_SHORT).show();
 
+                    // Notify home to refresh list
                     Bundle result = new Bundle();
                     result.putBoolean("refreshNeeded", true);
-
                     requireActivity().getSupportFragmentManager().setFragmentResult("refreshHome", result);
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
@@ -153,6 +160,7 @@ public class UploadListFragment extends Fragment {
                     Toast.makeText(requireContext(), "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 
     private AlertDialog showProgressDialog() {

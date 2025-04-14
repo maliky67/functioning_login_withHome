@@ -1,16 +1,12 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -66,8 +62,9 @@ public class MemberDataUploadFragment extends Fragment {
         }
 
         memberRef = FirebaseDatabase.getInstance()
-                .getReference("Unique User ID")
+                .getReference("Unique User ID") // ✅ NEW STRUCTURE
                 .child(userId)
+                .child("lists")
                 .child(listKey)
                 .child("members");
 
@@ -97,7 +94,7 @@ public class MemberDataUploadFragment extends Fragment {
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         selectedImageUri = result.getData().getData();
                         memberImageView.setImageURI(selectedImageUri);
                     } else {
@@ -141,7 +138,6 @@ public class MemberDataUploadFragment extends Fragment {
             return;
         }
 
-        // ✔️ Don't use name as key — safer to use push()
         String key = memberRef.push().getKey();
         MemberDataClass member = new MemberDataClass(name, role, imageUrl);
         member.setKey(key);

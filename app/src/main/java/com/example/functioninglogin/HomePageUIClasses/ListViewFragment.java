@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,7 +63,7 @@ public class ListViewFragment extends Fragment {
         fab = view.findViewById(R.id.memberfab);
         deleteFab = view.findViewById(R.id.memberdeletefab);
 
-        // Bundle extras
+        // Load bundle arguments
         if (getArguments() != null) {
             listKey = getArguments().getString("Key", "");
             headerTitle.setText(getArguments().getString("Title", "List Title"));
@@ -80,15 +81,42 @@ public class ListViewFragment extends Fragment {
         memberList = new ArrayList<>();
         memberAdapter = new MemberAdapter(requireContext(), memberList, listKey);
         recyclerView.setAdapter(memberAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                MemberDataClass memberToDelete = memberList.get(position);
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Delete Member?")
+                        .setMessage("Are you sure you want to delete \"" + memberToDelete.getName() + "\" and all their gifts?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            deleteMemberFromFirebase(memberToDelete.getKey());
+                            memberList.remove(position);
+                            memberAdapter.notifyItemRemoved(position);
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            memberAdapter.notifyItemChanged(position); // Rebind if cancelled
+                        })
+                        .show();
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         memberRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
+                .child("lists")
                 .child(listKey)
-                .child("members");
+                .child("members"); // ✅ NEW PATH
 
-        // 🔥 FETCH MEMBERS + GIFTS
+        // 👥 Fetch members + gifts
         memberListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -150,7 +178,8 @@ public class ListViewFragment extends Fragment {
         DatabaseReference listRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
-                .child(listKey);
+                .child("lists")
+                .child(listKey); // ✅ NEW DELETE PATH
 
         listRef.removeValue()
                 .addOnSuccessListener(unused -> {
@@ -160,6 +189,22 @@ public class ListViewFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Failed to delete list: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+    private void deleteMemberFromFirebase(String memberKey) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference memberNode = FirebaseDatabase.getInstance()
+                .getReference("Unique User ID")
+                .child(userId)
+                .child("lists")
+                .child(listKey)
+                .child("members")
+                .child(memberKey);
+
+        memberNode.removeValue().addOnSuccessListener(unused -> {
+            Toast.makeText(requireContext(), "Member deleted successfully", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(requireContext(), "Error deleting member: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

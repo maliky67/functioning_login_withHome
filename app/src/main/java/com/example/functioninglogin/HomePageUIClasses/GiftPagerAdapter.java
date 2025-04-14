@@ -102,12 +102,14 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
                 FirebaseDatabase.getInstance()
                         .getReference("Unique User ID")
                         .child(userId)
+                        .child("lists") // <-- Add this
                         .child(listKey)
                         .child("members")
                         .child(memberKey)
                         .child("gifts")
                         .child(gift.getKey())
                         .removeValue();
+
             }
 
             giftList.remove(position);

@@ -23,7 +23,7 @@ public class UpdateFragment extends Fragment {
 
     private ImageView updateImage;
     private Button updateButton;
-    private EditText updateTitle, updateDesc, updateGiftIdea, updatePrice;
+    private EditText updateTitle, updateDesc;
 
     private String type, key, listKey, imageUrl, oldImageURL;
     private Uri uri = null;
@@ -53,8 +53,6 @@ public class UpdateFragment extends Fragment {
         updateButton = view.findViewById(R.id.updateButton);
         updateTitle = view.findViewById(R.id.updateTitle);
         updateDesc = view.findViewById(R.id.updateDesc);
-        updateGiftIdea = view.findViewById(R.id.updateLang);
-        updatePrice = view.findViewById(R.id.updatePrice);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -68,8 +66,9 @@ public class UpdateFragment extends Fragment {
 
         if ("member".equals(type)) {
             databaseReference = FirebaseDatabase.getInstance()
-                    .getReference("Unique User ID")
+                    .getReference("Unique User ID") // ✅ Corrected path
                     .child(uid)
+                    .child("lists")
                     .child(listKey)
                     .child("members")
                     .child(key);
@@ -102,14 +101,10 @@ public class UpdateFragment extends Fragment {
 
                 String name = snapshot.child("name").getValue(String.class);
                 String role = snapshot.child("role").getValue(String.class);
-                String giftIdea = snapshot.child("giftIdea").getValue(String.class);
-                String price = snapshot.child("price").getValue(String.class);
                 imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
                 updateTitle.setText(name != null ? name : "");
                 updateDesc.setText(role != null ? role : "");
-                updateGiftIdea.setText(giftIdea != null ? giftIdea : "");
-                updatePrice.setText(price != null ? price : "");
 
                 if (imageUrl != null && !imageUrl.isEmpty()) {
                     Glide.with(requireContext()).load(imageUrl).into(updateImage);
@@ -170,19 +165,14 @@ public class UpdateFragment extends Fragment {
     private void updateData(String newImageUrl) {
         String name = updateTitle.getText().toString().trim();
         String role = updateDesc.getText().toString().trim();
-        String gift = updateGiftIdea.getText().toString().trim();
-        String price = updatePrice.getText().toString().trim();
 
         if (name.isEmpty() || role.isEmpty()) {
-            Toast.makeText(requireContext(), "Name and preferences are required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Name and role are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Gift and price can be optional now
         MemberDataClass updated = new MemberDataClass(name, role, newImageUrl);
-        updated.setGiftIdea(gift);
-        updated.setPrice(price);
-        updated.setKey(key); // maintain ID for consistency
+        updated.setKey(key);
 
         databaseReference.setValue(updated).addOnSuccessListener(unused -> {
             deleteOldImage();

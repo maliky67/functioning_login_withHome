@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+// 🔧 ViewHolder updated if needed
 class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage;
@@ -35,15 +36,15 @@ class MyViewHolder extends RecyclerView.ViewHolder {
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     private final Context context;
-    private List<DataHelperClass> dataList;
-    private List<DataHelperClass> fullDataList; // 🔄 Maintains the full unfiltered data
+    private List<GiftList> dataList;
+    private List<GiftList> fullDataList;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(DataHelperClass item);
+        void onItemClick(GiftList item);
     }
 
-    public MyAdapter(Context context, List<DataHelperClass> dataList, OnItemClickListener listener) {
+    public MyAdapter(Context context, List<GiftList> dataList, OnItemClickListener listener) {
         this.context = context;
         this.listener = listener;
         this.fullDataList = new ArrayList<>(dataList);
@@ -59,12 +60,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        DataHelperClass data = dataList.get(position);
+        GiftList data = dataList.get(position);
 
-        holder.recTitle.setText(data.getDataTitle() != null ? data.getDataTitle() : "No Title");
-        holder.recDesc.setText(data.getDataDesc() != null ? data.getDataDesc() : "No Description");
+        holder.recTitle.setText(data.getListTitle() != null ? data.getListTitle() : "No Title");
+        holder.recDesc.setText(data.getListDesc() != null ? data.getListDesc() : "No Description");
 
-        String imageUrl = data.getDataImage();
+        String imageUrl = data.getListImage();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context).load(imageUrl).into(holder.recImage);
         } else {
@@ -79,21 +80,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         return dataList != null ? dataList.size() : 0;
     }
 
-    // 🔍 Search logic (non-destructive)
-    public void searchDataList(ArrayList<DataHelperClass> searchList) {
+    public void searchDataList(ArrayList<GiftList> searchList) {
         dataList = new ArrayList<>(searchList);
         notifyDataSetChanged();
     }
 
-    // 🔁 Called after Firebase fetch to update everything
-    public void updateData(List<DataHelperClass> newData) {
+    public void updateData(List<GiftList> newData) {
         fullDataList.clear();
         fullDataList.addAll(newData);
-        dataList = new ArrayList<>(newData); // refresh visible list too
+        dataList = new ArrayList<>(newData);
         notifyDataSetChanged();
     }
 
-    // ✅ Optional: Restore full list (e.g. when search is cleared)
     public void resetFilter() {
         dataList = new ArrayList<>(fullDataList);
         notifyDataSetChanged();
