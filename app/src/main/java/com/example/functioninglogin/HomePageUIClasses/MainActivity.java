@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.functioninglogin.LibraryFragment;
 import com.example.functioninglogin.LoginUIClasses.LoginActivity;
 import com.example.functioninglogin.R;
-import com.example.functioninglogin.ShortsFragment;
+import com.example.functioninglogin.BudgetFragment;
 import com.example.functioninglogin.SubscriptionsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -56,10 +56,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Fragment selectedFragment = null;
 
             int id = item.getItemId();
-            if (id == R.id.home) selectedFragment = new HomeFragment();
-            else if (id == R.id.shorts) selectedFragment = new ShortsFragment();
-            else if (id == R.id.subscriptions) selectedFragment = new SubscriptionsFragment();
-            else if (id == R.id.library) selectedFragment = new LibraryFragment();
+            if (id == R.id.home) {
+                selectedFragment = new HomeFragment();
+            } else if (id == R.id.Budget) {
+                // ✅ Create BudgetFragment and attach listKey
+                BudgetFragment budgetFragment = new BudgetFragment();
+                Bundle args = new Bundle();
+                args.putString("listKey", "-ONpmJ4VSnsF6StbrGW1"); // 👈 Replace with your actual listKey
+                budgetFragment.setArguments(args);
+                selectedFragment = budgetFragment;
+            } else if (id == R.id.subscriptions) {
+                selectedFragment = new SubscriptionsFragment();
+            } else if (id == R.id.library) {
+                selectedFragment = new LibraryFragment();
+            }
 
             if (selectedFragment != null) {
                 Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);

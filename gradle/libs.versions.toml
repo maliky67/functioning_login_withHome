@@ -22,6 +22,7 @@ googleid = "1.1.1"
 firebaseStorage = "21.0.1"
 compiler = "4.16.0"
 swiperefresh = "1.1.0"
+mpandroidchart = "3.1.0"
 
 
 [libraries]
@@ -52,6 +53,7 @@ googleid = { group = "com.google.android.libraries.identity.googleid", name = "g
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefresh" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
