@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="1dp">
+
+        <!-- Status -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textColor="@color/christmas_blue"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/statusGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioIdea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idea"
+                android:buttonTint="@color/pink"
+                android:textColor="@color/pink" />
+
+            <RadioButton
+                android:id="@+id/radioBought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bought"
+                android:buttonTint="@color/green"
+                android:textColor="@color/green"
+                android:layout_marginStart="5dp" />
+
+            <RadioButton
+                android:id="@+id/radioArrived"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arrived"
+                android:buttonTint="@color/blue"
+                android:textColor="@color/blue"
+                android:layout_marginStart="5dp" />
+
+            <RadioButton
+                android:id="@+id/radioWrapped"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wrapped"
+                android:buttonTint="@color/red"
+                android:textColor="@color/red"
+                android:layout_marginStart="5dp" />
+        </RadioGroup>
+
+        <!-- Gift Name + Add FAB -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/giftNameEdit"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:hint="Gift Idea"
+                android:background="@drawable/borderblue"
+                android:textColor="@color/christmas_blue"
+                android:padding="16dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addGiftFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/green"
+                android:contentDescription="Add Gift"
+                android:src="@drawable/add_new"
+                android:tint="@android:color/white"
+                app:fabSize="mini" />
+        </LinearLayout>
+
+        <!-- Gift Price -->
+        <EditText
+            android:id="@+id/giftPriceEdit"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:hint="Price $"
+            android:background="@drawable/borderblue"
+            android:textColor="@color/christmas_blue"
+            android:padding="16dp" />
+
+        <!-- Website -->
+        <EditText
+            android:id="@+id/giftWebsiteEdit"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:hint="Website URL"
+            android:background="@drawable/borderblue"
+            android:textColor="@color/christmas_blue"
+            android:padding="16dp" />
+
+        <!-- Notes -->
+        <EditText
+            android:id="@+id/giftNotesEdit"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:hint="Notes"
+            android:background="@drawable/borderblue"
+            android:textColor="@color/christmas_blue"
+            android:padding="16dp" />
+
+        <!-- Delete Button -->
+        <Button
+            android:id="@+id/deleteGiftFab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Delete Gift Idea"
+            android:backgroundTint="@color/red"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</ScrollView>

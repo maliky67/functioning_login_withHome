@@ -30,7 +30,7 @@ import java.util.Objects;
 public class MemberDataUploadFragment extends Fragment {
 
     private ImageView memberImageView;
-    private EditText memberNameEditText, memberRoleEditText, memberGiftIdeaEditText, memberPriceEditText;
+    private EditText memberNameEditText, memberRoleEditText;
     private Button saveMemberButton;
 
     private Uri selectedImageUri;
@@ -79,7 +79,7 @@ public class MemberDataUploadFragment extends Fragment {
             if (selectedImageUri != null) {
                 uploadMemberImage();
             } else {
-                saveMemberData(""); // No image provided
+                saveMemberData(""); // Fallback with no image
             }
         });
 
@@ -90,8 +90,6 @@ public class MemberDataUploadFragment extends Fragment {
         memberImageView = view.findViewById(R.id.memberImageView);
         memberNameEditText = view.findViewById(R.id.memberNameEditText);
         memberRoleEditText = view.findViewById(R.id.memberRoleEditText);
-        memberGiftIdeaEditText = view.findViewById(R.id.uploadDescss);
-        memberPriceEditText = view.findViewById(R.id.uploadDescss2);
         saveMemberButton = view.findViewById(R.id.saveMemberButton);
     }
 
@@ -137,17 +135,18 @@ public class MemberDataUploadFragment extends Fragment {
     private void saveMemberData(String imageUrl) {
         String name = memberNameEditText.getText().toString().trim();
         String role = memberRoleEditText.getText().toString().trim();
-        String giftIdea = memberGiftIdeaEditText.getText().toString().trim();
-        String price = memberPriceEditText.getText().toString().trim();
 
-        if (name.isEmpty() || role.isEmpty() || giftIdea.isEmpty() || price.isEmpty()) {
+        if (name.isEmpty() || role.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        MemberDataClass member = new MemberDataClass(name, role, imageUrl, giftIdea, price);
+        // ✔️ Don't use name as key — safer to use push()
+        String key = memberRef.push().getKey();
+        MemberDataClass member = new MemberDataClass(name, role, imageUrl);
+        member.setKey(key);
 
-        memberRef.child(name).setValue(member).addOnSuccessListener(unused -> {
+        memberRef.child(key).setValue(member).addOnSuccessListener(unused -> {
             Toast.makeText(requireContext(), "Member added!", Toast.LENGTH_SHORT).show();
             requireActivity().getSupportFragmentManager().popBackStack();
         }).addOnFailureListener(e -> {

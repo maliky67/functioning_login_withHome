@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +49,6 @@ public class UpdateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update, container, false);
 
-        // Bind views
         updateImage = view.findViewById(R.id.updateImage);
         updateButton = view.findViewById(R.id.updateButton);
         updateTitle = view.findViewById(R.id.updateTitle);
@@ -73,41 +74,11 @@ public class UpdateFragment extends Fragment {
                     .child("members")
                     .child(key);
 
-            // Prepopulate existing data
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        Toast.makeText(requireContext(), "Member not found", Toast.LENGTH_SHORT).show();
-                        requireActivity().getSupportFragmentManager().popBackStack();
-                        return;
-                    }
-
-                    String name = snapshot.child("name").getValue(String.class);
-                    String role = snapshot.child("role").getValue(String.class);
-                    String giftIdea = snapshot.child("giftIdea").getValue(String.class);
-                    String price = snapshot.child("price").getValue(String.class);
-                    imageUrl = snapshot.child("imageUrl").getValue(String.class);
-
-                    updateTitle.setText(name != null ? name : "");
-                    updateDesc.setText(role != null ? role : "");
-                    updateGiftIdea.setText(giftIdea != null ? giftIdea : "");
-                    updatePrice.setText(price != null ? price : "");
-
-                    Glide.with(requireContext()).load(imageUrl).into(updateImage);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(requireContext(), "Failed to load member", Toast.LENGTH_SHORT).show();
-                }
-            });
+            loadExistingData();
         }
 
-        // Image picker
         setupImagePicker();
         updateImage.setOnClickListener(v -> openImagePicker());
-
         updateButton.setOnClickListener(v -> {
             if (uri != null) {
                 uploadNewImage();
@@ -119,6 +90,41 @@ public class UpdateFragment extends Fragment {
         return view;
     }
 
+    private void loadExistingData() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "Member not found", Toast.LENGTH_SHORT).show();
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    return;
+                }
+
+                String name = snapshot.child("name").getValue(String.class);
+                String role = snapshot.child("role").getValue(String.class);
+                String giftIdea = snapshot.child("giftIdea").getValue(String.class);
+                String price = snapshot.child("price").getValue(String.class);
+                imageUrl = snapshot.child("imageUrl").getValue(String.class);
+
+                updateTitle.setText(name != null ? name : "");
+                updateDesc.setText(role != null ? role : "");
+                updateGiftIdea.setText(giftIdea != null ? giftIdea : "");
+                updatePrice.setText(price != null ? price : "");
+
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    Glide.with(requireContext()).load(imageUrl).into(updateImage);
+                } else {
+                    updateImage.setImageResource(R.drawable.baseline_account_box_24);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Failed to load member: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setupImagePicker() {
         imagePicker = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -127,21 +133,21 @@ public class UpdateFragment extends Fragment {
                         uri = result.getData().getData();
                         updateImage.setImageURI(uri);
                     } else {
-                        Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
     }
 
     private void openImagePicker() {
-        Intent pickImage = new Intent(Intent.ACTION_PICK);
-        pickImage.setType("image/*");
-        imagePicker.launch(pickImage);
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        imagePicker.launch(intent);
     }
 
     private void uploadNewImage() {
         storageReference = FirebaseStorage.getInstance()
-                .getReference("Android Images")
+                .getReference("Member Images")
                 .child(uri.getLastPathSegment());
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
@@ -157,7 +163,7 @@ public class UpdateFragment extends Fragment {
                 })
         ).addOnFailureListener(e -> {
             dialog.dismiss();
-            Toast.makeText(requireContext(), "Image Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -167,12 +173,16 @@ public class UpdateFragment extends Fragment {
         String gift = updateGiftIdea.getText().toString().trim();
         String price = updatePrice.getText().toString().trim();
 
-        if (name.isEmpty() || role.isEmpty() || gift.isEmpty() || price.isEmpty()) {
-            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || role.isEmpty()) {
+            Toast.makeText(requireContext(), "Name and preferences are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        MemberDataClass updated = new MemberDataClass(name, role, newImageUrl, gift, price);
+        // Gift and price can be optional now
+        MemberDataClass updated = new MemberDataClass(name, role, newImageUrl);
+        updated.setGiftIdea(gift);
+        updated.setPrice(price);
+        updated.setKey(key); // maintain ID for consistency
 
         databaseReference.setValue(updated).addOnSuccessListener(unused -> {
             deleteOldImage();

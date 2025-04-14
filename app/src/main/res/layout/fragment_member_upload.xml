@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_blue"
     android:orientation="vertical"
     tools:context=".HomePageUIClasses.MemberDataUploadFragment">
 
@@ -71,32 +72,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:weightSum="2">
-
-                <EditText
-                    android:id="@+id/uploadDescss"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/borderblue"
-                    android:gravity="start|center_vertical"
-                    android:hint="Gift Idea"
-                    android:padding="16dp"
-                    android:textColor="@color/lavender"
-                    android:layout_marginEnd="8dp" />
-
-                <EditText
-                    android:id="@+id/uploadDescss2"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/borderblue"
-                    android:gravity="start|center_vertical"
-                    android:hint="$Price"
-                    android:padding="16dp"
-                    android:textColor="@color/lavender"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
+                android:weightSum="2"/>
 
             <Button
                 android:id="@+id/saveMemberButton"

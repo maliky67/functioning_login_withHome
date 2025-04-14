@@ -1,9 +1,9 @@
+<!-- res/drawable/borderblue.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
+    <solid android:color="@android:color/transparent"/>
     <stroke
         android:width="2dp"
         android:color="@color/BorderBlue"/>
-
-    <corners android:radius="300dp"/>
+    <corners android:radius="12dp"/>
 </shape>

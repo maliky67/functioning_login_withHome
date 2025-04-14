@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.functioninglogin.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
@@ -42,8 +44,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         MemberDataClass member = members.get(position);
 
         updateTextAnimated(holder.name, member.getName());
-        updateTextAnimated(holder.role, member.getRole());
-        updateTextAnimated(holder.price, "$" + member.getPrice());
+        updateTextAnimated(holder.role, " " + member.getRole());
 
         if (member.getImageUrl() != null && !member.getImageUrl().isEmpty()) {
             Glide.with(context).load(member.getImageUrl()).into(holder.image);
@@ -51,11 +52,39 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             holder.image.setImageResource(R.drawable.baseline_ac_unit_24);
         }
 
+        // Clear previous gift views
+        holder.giftListContainer.removeAllViews();
+
+        Map<String, GiftItem> gifts = member.getGifts();
+        double total = 0;
+
+        if (gifts != null && !gifts.isEmpty()) {
+            for (GiftItem gift : gifts.values()) {
+                // 🧮 Add up price
+                try {
+                    total += Double.parseDouble(gift.getPrice());
+                } catch (NumberFormatException ignored) {}
+
+                // 🎁 Add gift idea view
+                TextView giftView = new TextView(context);
+                giftView.setText("🎁 " + gift.getName());
+                giftView.setTextColor(context.getResources().getColor(R.color.blue));
+                giftView.setTextSize(14);
+                giftView.setPadding(0, 4, 0, 0);
+                holder.giftListContainer.addView(giftView);
+            }
+
+            updateTextAnimated(holder.price, "$" + String.format("%.2f", total));
+        } else {
+            holder.price.setText("");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             DetailFragment fragment = DetailFragment.newInstance(
-                    member.getKey(),
                     listKey,
-                    "member",
+                    member.getKey(),
+                    member.getName(),
+                    member.getRole(),
                     member.getImageUrl()
             );
 
@@ -84,6 +113,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     static class MemberViewHolder extends RecyclerView.ViewHolder {
         TextView name, role, price;
         ImageView image;
+        LinearLayout giftListContainer;
 
         public MemberViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -91,6 +121,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             role = itemView.findViewById(R.id.memberRole);
             price = itemView.findViewById(R.id.memberPrice);
             image = itemView.findViewById(R.id.memberImage);
+            giftListContainer = itemView.findViewById(R.id.giftListContainer); // 👈 Add this to XML
         }
     }
 }

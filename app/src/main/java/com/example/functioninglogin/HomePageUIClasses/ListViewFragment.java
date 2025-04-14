@@ -20,7 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListViewFragment extends Fragment {
 
@@ -60,18 +62,17 @@ public class ListViewFragment extends Fragment {
         fab = view.findViewById(R.id.memberfab);
         deleteFab = view.findViewById(R.id.memberdeletefab);
 
-        // Get data from bundle
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            listKey = bundle.getString("Key", "");
-            headerTitle.setText(bundle.getString("Title", "List Title"));
-            headerDesc.setText(bundle.getString("Description", "Description"));
+        // Bundle extras
+        if (getArguments() != null) {
+            listKey = getArguments().getString("Key", "");
+            headerTitle.setText(getArguments().getString("Title", "List Title"));
+            headerDesc.setText(getArguments().getString("Description", "Description"));
 
-            String imageUrl = bundle.getString("Image");
+            String imageUrl = getArguments().getString("Image");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(requireContext()).load(imageUrl).into(headerImage);
             } else {
-                headerImage.setImageResource(R.drawable.baseline_ac_unit_24); // Default fallback image
+                headerImage.setImageResource(R.drawable.baseline_ac_unit_24);
             }
         }
 
@@ -87,7 +88,7 @@ public class ListViewFragment extends Fragment {
                 .child(listKey)
                 .child("members");
 
-        // Firebase listener
+        // 🔥 FETCH MEMBERS + GIFTS
         memberListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -96,6 +97,19 @@ public class ListViewFragment extends Fragment {
                     MemberDataClass member = memberSnap.getValue(MemberDataClass.class);
                     if (member != null) {
                         member.setKey(memberSnap.getKey());
+
+                        DataSnapshot giftsSnap = memberSnap.child("gifts");
+                        if (giftsSnap.exists()) {
+                            Map<String, GiftItem> giftMap = new HashMap<>();
+                            for (DataSnapshot giftSnap : giftsSnap.getChildren()) {
+                                GiftItem gift = giftSnap.getValue(GiftItem.class);
+                                if (gift != null) {
+                                    giftMap.put(giftSnap.getKey(), gift);
+                                }
+                            }
+                            member.setGifts(giftMap);
+                        }
+
                         memberList.add(member);
                     }
                 }
@@ -107,9 +121,9 @@ public class ListViewFragment extends Fragment {
                 Toast.makeText(requireContext(), "Failed to load members: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
+
         memberRef.addValueEventListener(memberListener);
 
-        // Add member FAB
         fab.setOnClickListener(v -> {
             MemberDataUploadFragment fragment = MemberDataUploadFragment.newInstance(listKey);
             requireActivity().getSupportFragmentManager()
@@ -119,7 +133,6 @@ public class ListViewFragment extends Fragment {
                     .commit();
         });
 
-        // Delete list FAB
         deleteFab.setOnClickListener(v -> {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Delete Entire List?")
