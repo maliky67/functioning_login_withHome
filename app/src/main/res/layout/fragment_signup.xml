@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginUIClasses.SignupActivity"
+    tools:context=".LoginUIClasses.SignupFragment"
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/christmas_blue">
@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         app:cardCornerRadius="30dp"
+        android:layout_gravity="center_vertical"
         app:cardElevation="20dp">
 
         <LinearLayout
@@ -109,4 +110,4 @@
                 android:textColor="@color/BorderBlue"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+</FrameLayout>

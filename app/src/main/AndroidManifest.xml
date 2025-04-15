@@ -12,21 +12,12 @@
         android:roundIcon="@drawable/hatv1"
         android:supportsRtl="true"
         android:theme="@style/Theme.FunctioningLogin"
-        tools:targetApi="31">
-        <activity
-            android:name=".TestingForgotPassword"
-            android:exported="true" />
+        tools:targetApi="33">
         <activity
             android:name=".HomePageUIClasses.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginUIClasses.TestingForgotPassword"
-            android:exported="false" />
-        <activity
-            android:name=".LoginUIClasses.SignupActivity"
-            android:exported="true" />
-        <activity
-            android:name=".LoginUIClasses.LoginActivity"
+            android:name=".LoginUIClasses.AuthActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

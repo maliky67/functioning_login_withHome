@@ -14,7 +14,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.LibraryFragment;
-import com.example.functioninglogin.LoginUIClasses.LoginActivity;
+import com.example.functioninglogin.LoginUIClasses.AuthActivity;
+import com.example.functioninglogin.LoginUIClasses.LoginFragment;
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.BudgetFragment;
 import com.example.functioninglogin.SubscriptionsFragment;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, AuthActivity.class));
             finish();
             return true;
         }
