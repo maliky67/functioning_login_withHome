@@ -52,4 +52,6 @@
     <string name="shorts">Shorts</string>
     <string name="home">Home</string>
     <string name="santa_s_helpers">Santa\'s Helpers</string>
+    <string name="role_or_description">Role or Description</string>
+    <string name="member_name">Member Name</string>
 </resources>
