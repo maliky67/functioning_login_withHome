@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.BudgetPageUIClasses;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,9 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.functioninglogin.BudgetPageUIClasses.BudgetAdapter;
-import com.example.functioninglogin.BudgetPageUIClasses.BudgetData;
 import com.example.functioninglogin.HomePageUIClasses.GiftItem;
+import com.example.functioninglogin.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -60,15 +59,15 @@ public class BudgetFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_budget, container, false);
+        View view = inflater.inflate(com.example.functioninglogin.R.layout.fragment_budget, container, false);
 
-        budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
-        chartToggleButton = view.findViewById(R.id.chartToggleButton);
-        categoryTabs = view.findViewById(R.id.categoryTabs);
-        titleTextView = view.findViewById(R.id.budgetTitleTextView);
-        subtitleTextView = view.findViewById(R.id.budgetSubtitleTextView);
-        barChart = view.findViewById(R.id.budgetBarChart);
-        pieChart = view.findViewById(R.id.budgetPieChart);
+        budgetRecyclerView = view.findViewById(com.example.functioninglogin.R.id.budgetRecyclerView);
+        chartToggleButton = view.findViewById(com.example.functioninglogin.R.id.chartToggleButton);
+        categoryTabs = view.findViewById(com.example.functioninglogin.R.id.categoryTabs);
+        titleTextView = view.findViewById(com.example.functioninglogin.R.id.budgetTitleTextView);
+        subtitleTextView = view.findViewById(com.example.functioninglogin.R.id.budgetSubtitleTextView);
+        barChart = view.findViewById(com.example.functioninglogin.R.id.budgetBarChart);
+        pieChart = view.findViewById(com.example.functioninglogin.R.id.budgetPieChart);
 
         budgetRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new BudgetAdapter(new ArrayList<>());
@@ -157,8 +156,8 @@ public class BudgetFragment extends Fragment {
                 int selectedId = categoryTabs.getCheckedRadioButtonId();
                 String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "idea";
 
-                if (selectedId == R.id.tabIdeas && !status.equals("idea")) matchesFilter = false;
-                if (selectedId == R.id.tabPurchased && !status.equals("bought")) matchesFilter = false;
+                if (selectedId == com.example.functioninglogin.R.id.tabIdeas && !status.equals("idea")) matchesFilter = false;
+                if (selectedId == com.example.functioninglogin.R.id.tabPurchased && !status.equals("bought")) matchesFilter = false;
                 if (selectedId == R.id.tabGifts) {
                     total = gifts.size();
                     break;

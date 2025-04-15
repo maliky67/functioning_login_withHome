@@ -15,9 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.LibraryFragment;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
-import com.example.functioninglogin.LoginUIClasses.LoginFragment;
 import com.example.functioninglogin.R;
-import com.example.functioninglogin.BudgetFragment;
+import com.example.functioninglogin.BudgetPageUIClasses.BudgetFragment;
 import com.example.functioninglogin.SubscriptionsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
