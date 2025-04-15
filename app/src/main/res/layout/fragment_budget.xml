@@ -17,16 +17,6 @@
         android:layout_gravity="center"
         android:layout_marginBottom="4dp" />
 
-    <!-- Subtitle -->
-    <TextView
-        android:id="@+id/budgetSubtitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="List Description"
-        android:textColor="#666666"
-        android:textSize="14sp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp" />
 
     <!-- Toggle Tabs -->
     <RadioGroup

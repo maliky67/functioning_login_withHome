@@ -40,7 +40,7 @@ public class BudgetFragment extends Fragment {
     private RecyclerView budgetRecyclerView;
     private ImageButton chartToggleButton;
     private RadioGroup categoryTabs;
-    private TextView titleTextView, subtitleTextView;
+    private TextView titleTextView;
     private BarChart barChart;
     private PieChart pieChart;
 
@@ -65,7 +65,6 @@ public class BudgetFragment extends Fragment {
         chartToggleButton = view.findViewById(com.example.functioninglogin.R.id.chartToggleButton);
         categoryTabs = view.findViewById(com.example.functioninglogin.R.id.categoryTabs);
         titleTextView = view.findViewById(com.example.functioninglogin.R.id.budgetTitleTextView);
-        subtitleTextView = view.findViewById(com.example.functioninglogin.R.id.budgetSubtitleTextView);
         barChart = view.findViewById(com.example.functioninglogin.R.id.budgetBarChart);
         pieChart = view.findViewById(com.example.functioninglogin.R.id.budgetPieChart);
 

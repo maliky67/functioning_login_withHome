@@ -3,6 +3,7 @@ package com.example.functioninglogin.BudgetPageUIClasses;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,8 +36,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
         String name = data.getMemberName() != null ? data.getMemberName() : "No Name";
         double total = data.getTotalPrice();
 
-        holder.memberName.setText(name);
-        holder.totalAmount.setText(String.format("Total: $%.2f", total));
+        holder.nameTextView.setText(name);
+        holder.totalTextView.setText(String.format("Total: $%.2f", total));
+        holder.memberImageView.setImageResource(R.drawable.baseline_ac_unit_24);
     }
 
     @Override
@@ -49,13 +51,16 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
         notifyDataSetChanged();
     }
 
-    static class BudgetViewHolder extends RecyclerView.ViewHolder {
-        TextView memberName, totalAmount;
+    public class BudgetViewHolder extends RecyclerView.ViewHolder {
+        ImageView memberImageView;
+        TextView nameTextView, totalTextView;
 
         public BudgetViewHolder(@NonNull View itemView) {
             super(itemView);
-            memberName = itemView.findViewById(R.id.budgetCardName);
-            totalAmount = itemView.findViewById(R.id.budgetCardTotal);
+            memberImageView = itemView.findViewById(R.id.memberImage); // <- Make sure this ID matches layout
+            nameTextView = itemView.findViewById(R.id.budgetCardName);
+            totalTextView = itemView.findViewById(R.id.budgetCardTotal);
         }
     }
+
 }
