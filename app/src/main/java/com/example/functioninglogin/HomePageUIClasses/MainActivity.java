@@ -13,7 +13,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.functioninglogin.LibraryFragment;
+import com.example.functioninglogin.ShoppingListFragment;
+import com.example.functioninglogin.ShoppingListItem;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.BudgetPageUIClasses.BudgetFragment;
@@ -65,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 args.putString("listKey", "-ONpmJ4VSnsF6StbrGW1"); // 👈 Replace with your actual listKey
                 budgetFragment.setArguments(args);
                 selectedFragment = budgetFragment;
-            } else if (id == R.id.subscriptions) {
+            } else if (id == R.id.Discounts) {
                 selectedFragment = new SubscriptionsFragment();
-            } else if (id == R.id.library) {
-                selectedFragment = new LibraryFragment();
+            } else if (id == R.id.Generator) {
+                selectedFragment = new ShoppingListFragment();
             }
 
             if (selectedFragment != null) {
