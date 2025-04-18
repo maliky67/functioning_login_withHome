@@ -25,7 +25,7 @@ import java.util.List;
 public class ShoppingListFragment extends Fragment {
 
     private RecyclerView shoppingRecyclerView;
-    private com.example.functioninglogin.BudgetPageUIClasses.ShoppingListAdapter adapter;
+    private com.example.functioninglogin.ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
 
     public ShoppingListFragment() {
@@ -41,7 +41,7 @@ public class ShoppingListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
         shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new com.example.functioninglogin.BudgetPageUIClasses.ShoppingListAdapter(shoppingList);
+        adapter = new com.example.functioninglogin.ShoppingListAdapter(shoppingList);
         shoppingRecyclerView.setAdapter(adapter);
 
         fetchShoppingList();

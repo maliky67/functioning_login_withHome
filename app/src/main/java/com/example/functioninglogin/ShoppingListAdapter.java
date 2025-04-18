@@ -1,4 +1,4 @@
-package com.example.functioninglogin.BudgetPageUIClasses;
+package com.example.functioninglogin;
 
 import android.graphics.Paint;
 import android.view.LayoutInflater;
