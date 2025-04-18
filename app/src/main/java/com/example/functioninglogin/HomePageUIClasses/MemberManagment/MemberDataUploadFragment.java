@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -1,4 +1,6 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
+
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 
 import java.util.HashMap;
 import java.util.Map;

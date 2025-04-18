@@ -1,6 +1,6 @@
 package com.example.functioninglogin.BudgetPageUIClasses;
 
-import com.example.functioninglogin.HomePageUIClasses.GiftItem;
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 
 import java.util.List;
 

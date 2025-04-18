@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
 
 public class MemberDetailsClass {
     private String giftIdea;

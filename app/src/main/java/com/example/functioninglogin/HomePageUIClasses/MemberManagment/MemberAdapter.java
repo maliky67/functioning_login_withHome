@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 import com.example.functioninglogin.R;
 
 import java.util.List;

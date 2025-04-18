@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.functioninglogin.HomePageUIClasses.GiftItem;
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 import com.example.functioninglogin.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;

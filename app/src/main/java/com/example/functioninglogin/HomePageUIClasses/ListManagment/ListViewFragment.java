@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.ListManagment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberAdapter;
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataClass;
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataUploadFragment;
 import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;

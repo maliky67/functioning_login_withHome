@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.GiftManagment;
 
 import android.view.LayoutInflater;
 import android.view.View;

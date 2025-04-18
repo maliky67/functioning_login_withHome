@@ -13,6 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftList;
+import com.example.functioninglogin.HomePageUIClasses.ListManagment.ListViewFragment;
+import com.example.functioninglogin.HomePageUIClasses.ListManagment.MyAdapter;
+import com.example.functioninglogin.HomePageUIClasses.ListManagment.UploadListFragment;
 import com.example.functioninglogin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
