@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.GeneratorPageUIClasses;
 
 import android.graphics.Paint;
 import android.view.LayoutInflater;
@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.R;
-import com.example.functioninglogin.ShoppingListItem;
 
 import java.util.List;
 

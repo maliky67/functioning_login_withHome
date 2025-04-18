@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.GeneratorPageUIClasses;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.HomePageUIClasses.GiftItem;
-import com.example.functioninglogin.ShoppingListItem;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
@@ -25,7 +24,7 @@ import java.util.List;
 public class ShoppingListFragment extends Fragment {
 
     private RecyclerView shoppingRecyclerView;
-    private com.example.functioninglogin.ShoppingListAdapter adapter;
+    private ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
 
     public ShoppingListFragment() {
@@ -41,7 +40,7 @@ public class ShoppingListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
         shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new com.example.functioninglogin.ShoppingListAdapter(shoppingList);
+        adapter = new ShoppingListAdapter(shoppingList);
         shoppingRecyclerView.setAdapter(adapter);
 
         fetchShoppingList();

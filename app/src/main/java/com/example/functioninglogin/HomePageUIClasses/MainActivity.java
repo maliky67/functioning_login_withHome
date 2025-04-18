@@ -13,12 +13,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.functioninglogin.ShoppingListFragment;
-import com.example.functioninglogin.ShoppingListItem;
+import com.example.functioninglogin.GeneratorPageUIClasses.ShoppingListFragment;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.BudgetPageUIClasses.BudgetFragment;
-import com.example.functioninglogin.SubscriptionsFragment;
+import com.example.functioninglogin.GeneratorPageUIClasses.SubscriptionsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;

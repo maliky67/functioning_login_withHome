@@ -1,4 +1,4 @@
-package com.example.functioninglogin;
+package com.example.functioninglogin.GeneratorPageUIClasses;
 
 public class ShoppingListItem {
     private String memberName;
