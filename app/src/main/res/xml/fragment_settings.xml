@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Account Settings" />
+
+
+    <EditTextPreference
+        android:key="email"
+        android:title="Email"
+        android:summary="Change your email"
+        android:inputType="textEmailAddress" />
+
+    <Preference
+        android:key="change_password"
+        android:title="Change Password"
+        android:summary="Update your account password" />
+
+    <PreferenceCategory android:title="Appearance" />
+
+    <SwitchPreferenceCompat
+        android:key="dark_mode"
+        android:title="Dark Mode"
+        android:summary="Toggle app theme" />
+
+    <PreferenceCategory
+        android:title="Other Settings" />
+
+    <ListPreference
+        android:key="language"
+        android:title="Language"
+        android:summary="Choose app language"
+        android:entries="@array/language_names"
+        android:entryValues="@array/language_codes"
+        android:defaultValue="en" />
+
+    <Preference
+        android:key="logout"
+        android:title="Logout"
+        android:summary="Sign out of your account" />
+
+</PreferenceScreen>

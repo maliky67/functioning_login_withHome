@@ -1,0 +1,13 @@
+<resources>
+    <string-array name="language_names">
+        <item>English</item>
+        <item>French</item>
+        <item>Spanish</item>
+    </string-array>
+
+    <string-array name="language_codes">
+        <item>en</item>
+        <item>fr</item>
+        <item>es</item>
+    </string-array>
+</resources>
