@@ -63,5 +63,29 @@
     <string name="toggle_chart_view">Alternar Vista de Gráfica</string>
     <string name="christmas_shopping_list">🎄 Lista de Compras Navideñas</string>
     <string name="todo">Tareas</string>
+    <string name="enter_list_name">Ingresa el nombre de la lista</string>
+    <string name="create_member">Crear miembro</string>
+    <string name="status">Estado</string>
+    <string name="idea">Idea</string>
+    <string name="bought">Comprado</string>
+    <string name="arrived">Llegado</string>
+    <string name="wrapped">Envuelto</string>
+    <string name="price">Precio $</string>
+    <string name="website_url">URL del sitio web</string>
+    <string name="notes">Notas</string>
+    <string name="delete_gift_idea">Eliminar idea de regalo</string>
+    <string name="settings">Configuración</string>
+    <string name="share">Compartir</string>
+    <string name="about_us">Sobre nosotros</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="select_a_list_to_share">Selecciona una lista para compartir</string>
+    <string name="list_preview">Vista previa de la lista</string>
+    <string name="share_list">Compartir lista</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="language">Idioma</string>
+    <string name="account_settings">Configuración de la cuenta</string>
+    <string name="appearance">Apariencia</string>
+    <string name="other_settings">Otras configuraciones</string>
 
 </resources>

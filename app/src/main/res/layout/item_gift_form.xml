@@ -8,7 +8,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:padding="1dp">
 
@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status"
+            android:text="@string/status"
             android:textColor="@color/christmas_blue"
             android:textSize="16sp" />
 
@@ -30,7 +30,7 @@
                 android:id="@+id/radioIdea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Idea"
+                android:text="@string/idea"
                 android:buttonTint="@color/pink"
                 android:textColor="@color/pink" />
 
@@ -38,7 +38,7 @@
                 android:id="@+id/radioBought"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bought"
+                android:text="@string/bought"
                 android:buttonTint="@color/green"
                 android:textColor="@color/green"
                 android:layout_marginStart="5dp" />
@@ -47,7 +47,7 @@
                 android:id="@+id/radioArrived"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Arrived"
+                android:text="@string/arrived"
                 android:buttonTint="@color/blue"
                 android:textColor="@color/blue"
                 android:layout_marginStart="5dp" />
@@ -56,7 +56,7 @@
                 android:id="@+id/radioWrapped"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wrapped"
+                android:text="@string/wrapped"
                 android:buttonTint="@color/red"
                 android:textColor="@color/red"
                 android:layout_marginStart="5dp" />
@@ -75,7 +75,7 @@
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:hint="Gift Idea"
+                android:hint="@string/gift_idea"
                 android:background="@drawable/borderblue"
                 android:textColor="@color/christmas_blue"
                 android:padding="16dp" />
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="12dp"
-            android:hint="Price $"
+            android:hint="@string/price"
             android:background="@drawable/borderblue"
             android:textColor="@color/christmas_blue"
             android:padding="16dp" />
@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="12dp"
-            android:hint="Website URL"
+            android:hint="@string/website_url"
             android:background="@drawable/borderblue"
             android:textColor="@color/christmas_blue"
             android:padding="16dp" />
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="12dp"
-            android:hint="Notes"
+            android:hint="@string/notes"
             android:background="@drawable/borderblue"
             android:textColor="@color/christmas_blue"
             android:padding="16dp" />
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
-            android:text="Delete Gift Idea"
+            android:text="@string/delete_gift_idea"
             android:backgroundTint="@color/red"
             android:textColor="@android:color/white" />
     </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_marginBottom="12dp"
     app:cardElevation="8dp"
     app:cardCornerRadius="16dp"
-    layout_height=""
+    layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -40,7 +40,7 @@
 
         <CheckBox
             android:id="@+id/itemCheck"
-            android:text="Purchased"
+            android:text="@string/purchased"
             android:checked="false"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>

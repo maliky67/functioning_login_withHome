@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="Select a List to Share"
+            android:text="@string/select_a_list_to_share"
             android:textSize="18sp"
             android:layout_marginBottom="12dp"
             android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/preview_text"
-            android:text="List Preview"
+            android:text="@string/list_preview"
             android:layout_marginTop="20dp"
             android:textColor="#444"
             android:textSize="16sp"
@@ -32,7 +32,7 @@
         <Button
             android:id="@+id/share_button"
             android:layout_marginTop="32dp"
-            android:text="Share List"
+            android:text="@string/share_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

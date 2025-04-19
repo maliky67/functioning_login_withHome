@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
+                android:contentDescription="TODO"
                 android:scaleType="fitXY"
                 android:src="@drawable/baseline_account_box_24" />
 
@@ -53,7 +54,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/borderblue"
                 android:gravity="start|center_vertical"
-                android:hint="Enter List Name"
+                android:hint="@string/enter_list_name"
                 android:padding="16dp"
                 android:textColor="@color/lavender" />
 

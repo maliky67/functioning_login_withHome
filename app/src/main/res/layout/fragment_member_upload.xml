@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create Member"
+                android:text="@string/create_member"
                 android:textAlignment="center"
                 android:textColor="@color/lavender"
                 android:textSize="30sp" />
