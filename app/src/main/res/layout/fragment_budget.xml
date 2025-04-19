@@ -10,7 +10,7 @@
         android:id="@+id/budgetTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Budget Overview"
+        android:text="@string/budget_overview"
         android:textColor="#2D2FDF"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
             android:id="@+id/tabIdeas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ideas"
+            android:text="@string/ideas"
             android:checked="true"
             android:buttonTint="#2D2FDF"
             android:textColor="#000000"/>
@@ -40,7 +40,7 @@
             android:id="@+id/tabPurchased"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Purchased"
+            android:text="@string/purchased"
             android:buttonTint="#2D2FDF"
             android:textColor="#000000"
             android:layout_marginStart="16dp"/>
@@ -49,7 +49,7 @@
             android:id="@+id/tabGifts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number of Gifts"
+            android:text="@string/number_of_gifts"
             android:buttonTint="#2D2FDF"
             android:textColor="#000000"
             android:layout_marginStart="16dp"/>
@@ -58,13 +58,13 @@
     <!-- Chart Toggle Button -->
     <ImageButton
         android:id="@+id/chartToggleButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/baseline_ac_unit_24"
+        android:layout_width="56dp"
+        android:layout_height="47dp"
         android:layout_gravity="end"
+        android:layout_marginBottom="8dp"
         android:background="?android:selectableItemBackgroundBorderless"
-        android:contentDescription="Toggle Chart View"
-        android:layout_marginBottom="8dp" />
+        android:contentDescription="@string/toggle_chart_view"
+        android:src="@drawable/baseline_ac_unit_24" />
 
     <!-- Chart Area -->
     <com.github.mikephil.charting.charts.BarChart

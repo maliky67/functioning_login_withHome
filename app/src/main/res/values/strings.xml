@@ -54,4 +54,14 @@
     <string name="santa_s_helpers">Santa\'s Helpers</string>
     <string name="role_or_description">Role or Description</string>
     <string name="member_name">Member Name</string>
+    <string name="budget">Budget</string>
+    <string name="discounts">Discounts</string>
+    <string name="generator">Generator</string>
+    <string name="budget_overview">Budget Overview</string>
+    <string name="ideas">Ideas</string>
+    <string name="purchased">Purchased</string>
+    <string name="number_of_gifts">Number of Gifts</string>
+    <string name="toggle_chart_view">Toggle Chart View</string>
+    <string name="christmas_shopping_list">🎄 Christmas Shopping List</string>
+    <string name="todo">TODO</string>
 </resources>

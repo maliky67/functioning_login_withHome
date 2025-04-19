@@ -4,20 +4,20 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/baseline_ac_unit_24"
-        android:title="Home" />
+        android:title="@string/home" />
 
     <item
         android:id="@+id/Budget"
         android:icon="@drawable/baseline_attach_money_24"
-        android:title="Budget" />
+        android:title="@string/budget" />
 
     <item
         android:id="@+id/Discounts"
         android:icon="@drawable/sharp_discount_24"
-        android:title="Discounts" />
+        android:title="@string/discounts" />
 
     <item
         android:id="@+id/Generator"
         android:icon="@drawable/baseline_list_units_24"
-        android:title="Generator" />
+        android:title="@string/generator" />
 </menu>

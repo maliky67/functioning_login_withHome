@@ -39,6 +39,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setupEmailPreference();
         setupChangePasswordPreference();
         setupDarkModePreference();
+        setupLanguagePreference();
         setupLogoutPreference();
     }
 
