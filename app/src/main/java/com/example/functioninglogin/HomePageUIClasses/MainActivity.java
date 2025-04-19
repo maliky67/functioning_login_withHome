@@ -18,6 +18,7 @@ import com.example.functioninglogin.GeneratorPageUIClasses.ShoppingListFragment;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
 import com.example.functioninglogin.NavDrawerUIClasses.LocaleHelper;
 import com.example.functioninglogin.NavDrawerUIClasses.SettingsFragment;
+import com.example.functioninglogin.NavDrawerUIClasses.ShareFragment;
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.BudgetPageUIClasses.BudgetFragment;
 import com.example.functioninglogin.DiscountPageUIClasses.DiscountsFragment;
@@ -119,8 +120,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .commit();
             }
             return true;
-
-        } else if (id == R.id.about || id == R.id.share) {
+        }
+        else if (id == R.id.share) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_fragment_container, new ShareFragment())
+                    .commit();
+            return true;
+        }
+        else if (id == R.id.about) {
             Toast.makeText(this, "Coming Soon! 🚧", Toast.LENGTH_SHORT).show();
             return true;
 

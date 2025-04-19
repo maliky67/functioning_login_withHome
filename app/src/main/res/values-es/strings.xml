@@ -7,7 +7,6 @@
     <string name="dad_s_list">Lista de Papá</string>
     <string name="_2_purchased_49_99_budget_remaining_150_01">2 Comprado: $49.99, Presupuesto Restante: $150.01</string>
     <string name="remaining_0">Restante: $0</string>
-
     <string name="create_list">Crear Lista</string>
     <string name="_0_purchased_0_00_budget_remaining_0_00">0 Comprado: $0.00, Presupuesto Restante: $0.00</string>
     <string name="list_name">Nombre de la Lista</string>
@@ -44,7 +43,6 @@
     <string name="edit_profile">Editar Perfil</string>
     <string name="enter_preferences">Ingresa tus preferencias</string>
     <string name="gift_idea">Idea de Regalo</string>
-
     <string name="navigation_drawer_open">Abrir menú</string>
     <string name="navigation_drawer_close">Cerrar menú</string>
     <string name="enter_member_name">Ingresa el nombre del miembro</string>
@@ -55,4 +53,15 @@
     <string name="santa_s_helpers">Ayudantes de Santa</string>
     <string name="role_or_description">Rol o Descripción</string>
     <string name="member_name">Nombre del Miembro</string>
+    <string name="budget">Presupuesto</string>
+    <string name="discounts">Descuentos</string>
+    <string name="generator">Generador</string>
+    <string name="budget_overview">Resumen del Presupuesto</string>
+    <string name="ideas">Ideas</string>
+    <string name="purchased">Comprado</string>
+    <string name="number_of_gifts">Número de Regalos</string>
+    <string name="toggle_chart_view">Alternar Vista de Gráfica</string>
+    <string name="christmas_shopping_list">🎄 Lista de Compras Navideñas</string>
+    <string name="todo">Tareas</string>
+
 </resources>
