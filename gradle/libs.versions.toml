@@ -23,6 +23,10 @@ firebaseStorage = "21.0.1"
 compiler = "4.16.0"
 swiperefresh = "1.1.0"
 mpandroidchart = "3.1.0"
+retrofit = "2.9.0"
+gson = "2.10.1"
+okhttp = "5.0.0-alpha.11"
+preference = "1.2.1"
 
 
 [libraries]
@@ -54,6 +58,13 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefresh" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+gson-core = { module = "com.google.code.gson:gson", version.ref = "gson" }
+okhttp-core = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

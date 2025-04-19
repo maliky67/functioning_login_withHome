@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="cursive"
-        android:text="@string/christmas_shopping_helper"
+        android:text="Santa's Helper"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="48sp"

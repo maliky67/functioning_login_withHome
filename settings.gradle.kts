@@ -19,6 +19,7 @@ dependencyResolutionManagement {
         maven(url = "https://jitpack.io") // ✅ required for GitHub dependencies
 
     }
+
 }
 
 rootProject.name = "Functioning Login"

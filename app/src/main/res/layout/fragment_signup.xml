@@ -46,8 +46,6 @@
                 android:padding="8dp"
                 android:drawableStart="@drawable/baseline_account_box_24"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
                 android:hint="@string/name"/>
 
 
@@ -63,17 +61,7 @@
                 android:textColor="@color/black"
                 android:hint="@string/email"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/signup_username"
-                android:background="@drawable/borderblue"
-                android:layout_marginTop="40dp"
-                android:padding="8dp"
-                android:drawableStart="@drawable/baseline_account_box_24"
-                android:drawablePadding="8dp"
-                android:textColor="@color/black"
-                android:hint="@string/username"/>
+
 
             <EditText
                 android:layout_width="match_parent"

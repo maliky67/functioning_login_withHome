@@ -1,5 +1,6 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,9 +16,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.GeneratorPageUIClasses.ShoppingListFragment;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
+import com.example.functioninglogin.NavDrawerUIClasses.LocaleHelper;
+import com.example.functioninglogin.NavDrawerUIClasses.SettingsFragment;
 import com.example.functioninglogin.R;
 import com.example.functioninglogin.BudgetPageUIClasses.BudgetFragment;
-import com.example.functioninglogin.GeneratorPageUIClasses.SubscriptionsFragment;
+import com.example.functioninglogin.DiscountPageUIClasses.DiscountsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 budgetFragment.setArguments(args);
                 selectedFragment = budgetFragment;
             } else if (id == R.id.Discounts) {
-                selectedFragment = new SubscriptionsFragment();
+                selectedFragment = new DiscountsFragment();
             } else if (id == R.id.Generator) {
                 selectedFragment = new ShoppingListFragment();
             }
@@ -97,18 +100,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         int id = item.getItemId();
+
+        Fragment current = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
+
         if (id == R.id.home) {
-            Fragment current = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
             if (!(current instanceof HomeFragment)) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.home_fragment_container, new HomeFragment())
                         .commit();
             }
-
             bottomNavigationView.setSelectedItemId(R.id.home);
             return true;
 
-        } else if (id == R.id.settings || id == R.id.about || id == R.id.share) {
+        } else if (id == R.id.settings) {
+            if (!(current instanceof SettingsFragment)) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.home_fragment_container, new SettingsFragment())
+                        .commit();
+            }
+            return true;
+
+        } else if (id == R.id.about || id == R.id.share) {
             Toast.makeText(this, "Coming Soon! 🚧", Toast.LENGTH_SHORT).show();
             return true;
 
@@ -122,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -129,5 +142,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.setLocale(base));
     }
 }

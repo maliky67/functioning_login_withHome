@@ -1,4 +1,4 @@
-package com.example.functioninglogin.BudgetPageUIClasses;
+package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
 
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 

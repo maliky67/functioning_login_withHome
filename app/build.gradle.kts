@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.storage)
+    implementation(libs.androidx.preference)
     annotationProcessor(libs.compiler)
     implementation (libs.glide)
     testImplementation(libs.junit)
@@ -71,5 +72,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.mpandroidchart)
-
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.gson.core)
+    implementation(libs.okhttp.logging)
 }

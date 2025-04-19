@@ -17,7 +17,7 @@
     <string name="desc">desc</string>
     <string name="priority">priority</string>
     <string name="title">Title</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="availability">Availability</string>
