@@ -47,16 +47,16 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
         if (status != null) {
             switch (status.toLowerCase()) {
                 case "bought":
-                    holder.giftStatus.setImageResource(R.drawable.baseline_card_giftcard_24);
+                    holder.giftStatus.setImageResource(R.drawable.baseline_attach_money_24);
                     break;
                 case "arrived":
-                    holder.giftStatus.setImageResource(R.drawable.baseline_lightbulb_24);
+                    holder.giftStatus.setImageResource(R.drawable.baseline_check_24);
                     break;
                 case "wrapped":
-                    holder.giftStatus.setImageResource(R.drawable.baseline_ac_unit_24);
+                    holder.giftStatus.setImageResource(R.drawable.baseline_card_giftcard_24);
                     break;
                 default:
-                    holder.giftStatus.setImageResource(R.drawable.baseline_ac_unit_24);
+                    holder.giftStatus.setImageResource(R.drawable.baseline_lightbulb_24);
             }
         }
 

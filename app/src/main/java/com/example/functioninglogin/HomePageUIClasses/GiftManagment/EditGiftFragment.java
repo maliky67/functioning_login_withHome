@@ -1,6 +1,8 @@
 package com.example.functioninglogin.HomePageUIClasses.GiftManagment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -37,14 +39,14 @@ public class EditGiftFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_gift_fragment, container, false);
 
-        // 🧠 Retrieve arguments
+        // 🔐 Get arguments safely
         if (getArguments() != null) {
             listKey = getArguments().getString("listKey");
             memberKey = getArguments().getString("memberKey");
             giftKey = getArguments().getString("giftKey");
         }
 
-        // ⚙️ View Binding
+        // 🔧 UI binding
         nameEdit = view.findViewById(R.id.editgiftNameEdit);
         priceEdit = view.findViewById(R.id.editgiftPriceEdit);
         websiteEdit = view.findViewById(R.id.editgiftWebsiteEdit);
@@ -54,7 +56,10 @@ public class EditGiftFragment extends Fragment {
 
         loadGiftData();
 
-        editGiftButton.setOnClickListener(v -> saveGiftData());
+        editGiftButton.setOnClickListener(v -> {
+            editGiftButton.setEnabled(false); // Prevent double-tap
+            saveGiftData();
+        });
 
         return view;
     }
@@ -138,15 +143,21 @@ public class EditGiftFragment extends Fragment {
         updatedGift.put("status", status);
 
         giftRef.updateChildren(updatedGift)
-                .addOnSuccessListener(unused -> Toast.makeText(requireContext(), "🎁 Gift updated", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(requireContext(), "❌ Failed to update gift", Toast.LENGTH_SHORT).show());
-        // 🚀 Navigate back to MemberViewFragment
-        MemberViewFragment fragment = MemberViewFragment.newInstance(listKey, memberKey);
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(requireContext(), "🎁 Gift updated", Toast.LENGTH_SHORT).show();
 
+                    // Optional: small delay so UI update is smooth
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        MemberViewFragment fragment = MemberViewFragment.newInstance(listKey, memberKey);
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.home_fragment_container, fragment)
+                                .commitAllowingStateLoss(); // safer for fragment transition
+                    }, 300);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "❌ Failed to update", Toast.LENGTH_SHORT).show();
+                    editGiftButton.setEnabled(true); // Re-enable if failed
+                });
+    }
 }
