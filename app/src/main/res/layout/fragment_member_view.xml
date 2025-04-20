@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#A7D0F6">
+
+    <!-- 🟦 HEADER layout (like member card) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/memberHeaderCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/memberImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/baseline_account_box_24"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:id="@+id/memberName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Member Name"
+                android:textColor="@color/BorderBlue"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/memberImage"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/memberRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Role or Description"
+                android:textColor="@color/lavender"
+                android:textSize="14sp"
+                android:layout_below="@id/memberName"
+                android:layout_alignStart="@id/memberName" />
+
+            <TextView
+                android:id="@+id/memberTotalSpent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0"
+                android:textColor="@color/BorderBlue"
+                android:textSize="16sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Recycler for gifts -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/giftRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/memberHeaderCard"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>

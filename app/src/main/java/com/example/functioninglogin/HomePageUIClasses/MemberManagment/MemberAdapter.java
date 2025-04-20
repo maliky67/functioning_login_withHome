@@ -53,7 +53,6 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             holder.image.setImageResource(R.drawable.baseline_ac_unit_24);
         }
 
-        // Clear previous gift views
         holder.giftListContainer.removeAllViews();
 
         Map<String, GiftItem> gifts = member.getGifts();
@@ -61,12 +60,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
         if (gifts != null && !gifts.isEmpty()) {
             for (GiftItem gift : gifts.values()) {
-                // 🧮 Add up price
                 try {
                     total += Double.parseDouble(gift.getPrice());
                 } catch (NumberFormatException ignored) {}
 
-                // 🎁 Add gift idea view
                 TextView giftView = new TextView(context);
                 giftView.setText("🎁 " + gift.getName());
                 giftView.setTextColor(context.getResources().getColor(R.color.blue));
@@ -81,12 +78,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         }
 
         holder.itemView.setOnClickListener(v -> {
-            DetailFragment fragment = DetailFragment.newInstance(
+            MemberViewFragment fragment = MemberViewFragment.newInstance(
                     listKey,
-                    member.getKey(),
-                    member.getName(),
-                    member.getRole(),
-                    member.getImageUrl()
+                    member.getKey()
             );
 
             ((AppCompatActivity) context).getSupportFragmentManager()
@@ -120,9 +114,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             super(itemView);
             name = itemView.findViewById(R.id.memberName);
             role = itemView.findViewById(R.id.memberRole);
-            price = itemView.findViewById(R.id.memberPrice);
+            price = itemView.findViewById(R.id.memberTotalSpent);
             image = itemView.findViewById(R.id.memberImage);
-            giftListContainer = itemView.findViewById(R.id.giftListContainer); // 👈 Add this to XML
+            giftListContainer = itemView.findViewById(R.id.giftListContainer);
         }
     }
 }

@@ -60,7 +60,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="90dp"
             android:layout_below="@id/memberRole"
             android:layout_marginTop="4dp">
             <!-- Gift items will be added here dynamically -->
@@ -80,21 +79,6 @@
                 android:textSize="14sp"
                 app:drawableStartCompat="@drawable/baseline_card_giftcard_24" />
 
-            <TextView
-                android:id="@+id/giftIdea2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/giftIdea"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="-4dp"
-                android:layout_marginBottom="12dp"
-                android:layout_toEndOf="@id/memberImage"
-                android:drawablePadding="4dp"
-                android:maxLines="1"
-                android:text="Gift Idea"
-                android:textColor="@color/BorderBlue"
-                android:textSize="14sp"
-                app:drawableStartCompat="@drawable/baseline_card_giftcard_24" />
 
 
         </LinearLayout>
@@ -102,7 +86,7 @@
         <!-- Price TextView aligned to the right -->
 
         <TextView
-            android:id="@+id/memberPrice"
+            android:id="@+id/memberTotalSpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$30"
