@@ -3,4 +3,6 @@
     <external-files-path
         name="documents"
         path="Documents/pdfs/" />
+    <cache-path name="cache" path="." />
+
 </paths>

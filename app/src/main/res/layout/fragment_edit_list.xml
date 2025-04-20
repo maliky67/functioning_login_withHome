@@ -33,13 +33,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/create_list"
+                android:text="Edit List"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"
+                android:textColor="@color/christmas_blue"
                 android:textSize="30sp" />
 
             <ImageView
-                android:id="@+id/uploadImage"
+                android:id="@+id/editImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
@@ -48,7 +48,7 @@
                 android:src="@drawable/baseline_account_box_24" />
 
             <EditText
-                android:id="@+id/uploadTopic"
+                android:id="@+id/editListName"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
@@ -59,7 +59,7 @@
                 android:textColor="@color/lavender" />
 
             <EditText
-                android:id="@+id/uploadDesc"
+                android:id="@+id/editTotalBudget"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
@@ -71,12 +71,12 @@
 
 
             <Button
-                android:id="@+id/saveButton"
+                android:id="@+id/EditButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rounded_blue"
-                android:text="@string/create_list"
+                android:text="Edit List"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
 

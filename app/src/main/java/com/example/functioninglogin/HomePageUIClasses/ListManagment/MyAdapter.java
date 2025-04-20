@@ -8,21 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftList;
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataClass;
 import com.example.functioninglogin.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-// 🔧 ViewHolder updated if needed
 class MyViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage;
-    TextView recTitle, recDesc;
+    TextView recTitle, recDesc, totalSpent, totalBudget;
     CardView recCard;
 
     public MyViewHolder(@NonNull View itemView) {
@@ -30,6 +32,8 @@ class MyViewHolder extends RecyclerView.ViewHolder {
         recImage = itemView.findViewById(R.id.recImage);
         recTitle = itemView.findViewById(R.id.recTitle);
         recDesc = itemView.findViewById(R.id.recDesc);
+        totalSpent = itemView.findViewById(R.id.totalSpent);
+        totalBudget = itemView.findViewById(R.id.totalBudget);
         recCard = itemView.findViewById(R.id.recCard);
     }
 }
@@ -61,19 +65,46 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        GiftList data = dataList.get(position);
+        GiftList list = dataList.get(position);
 
-        holder.recTitle.setText(data.getListTitle() != null ? data.getListTitle() : "No Title");
-        holder.recDesc.setText(data.getListDesc() != null ? data.getListDesc() : "No Description");
+        holder.recTitle.setText(list.getListTitle() != null ? list.getListTitle() : "No Title");
 
-        String imageUrl = data.getListImage();
+        // 👥 Members
+        holder.recDesc.setText(list.getFormattedMemberPreview());
+
+        // 💰 Budget
+        holder.totalBudget.setText("Total Budget: $" + list.getTotalBudget());
+
+        // 💸 Total Spent
+        double spent = calculateTotalSpent(list);
+        holder.totalSpent.setText("Total Spent: $" + spent);
+
+        // 🖼 Image
+        String imageUrl = list.getListImage();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context).load(imageUrl).into(holder.recImage);
         } else {
             holder.recImage.setImageResource(R.drawable.hatv1);
         }
 
-        holder.recCard.setOnClickListener(v -> listener.onItemClick(data));
+        holder.recCard.setOnClickListener(v -> listener.onItemClick(list));
+    }
+
+    private double calculateTotalSpent(GiftList list) {
+        double total = 0.0;
+        HashMap<String, MemberDataClass> members = list.getMembers();
+        if (members != null) {
+            for (MemberDataClass member : members.values()) {
+                if (member.getGifts() != null) {
+                    for (GiftItem gift : member.getGifts().values()) {
+                        try {
+                            total += Double.parseDouble(gift.getPrice());
+                        } catch (Exception ignored) {}
+                    }
+                }
+            }
+        }
+        return total;
     }
 
     @Override

@@ -3,6 +3,11 @@ package com.example.functioninglogin.HomePageUIClasses.ListManagment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +22,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftList;
@@ -28,6 +35,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public class UploadListFragment extends Fragment {
@@ -79,12 +89,57 @@ public class UploadListFragment extends Fragment {
             if (selectedImageUri != null) {
                 uploadImageToFirebase();
             } else {
-                Toast.makeText(requireContext(), "Please select an image", Toast.LENGTH_SHORT).show();
+                // No image selected — use local drawable
+                selectedImageUri = getDrawableUri(R.drawable.baseline_ac_unit_24); // reuse the same upload logic
+                uploadImageToFirebase();
             }
         });
 
+
+
         return view;
     }
+
+    private Uri getDrawableUri(int drawableId) {
+        try {
+            Drawable drawable = AppCompatResources.getDrawable(requireContext(), drawableId);
+            if (drawable == null) {
+                Toast.makeText(requireContext(), "Drawable not found", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            Bitmap bitmap;
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            } else {
+                // Convert vector drawable to bitmap
+                int width = drawable.getIntrinsicWidth() > 0 ? drawable.getIntrinsicWidth() : 200;
+                int height = drawable.getIntrinsicHeight() > 0 ? drawable.getIntrinsicHeight() : 200;
+                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                drawable.draw(canvas);
+            }
+
+            File file = new File(requireContext().getCacheDir(), "default_image.png");
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+            return FileProvider.getUriForFile(
+                    requireContext(),
+                    requireContext().getPackageName() + ".provider",
+                    file
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Failed to use default image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+
 
     private void openImagePicker() {
         Intent pickImage = new Intent(Intent.ACTION_PICK);
@@ -120,21 +175,30 @@ public class UploadListFragment extends Fragment {
 
     private void saveDataToDatabase(AlertDialog dialog) {
         String title = editTextTopic.getText().toString().trim();
-        String desc = editTextDesc.getText().toString().trim();
+        String budgetText = editTextDesc.getText().toString().trim(); // rename this var if you want
 
-        if (title.isEmpty() || desc.isEmpty()) {
+        if (title.isEmpty()) {
             dialog.dismiss();
-            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Please enter a list name", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        double budgetValue = 0;
+        if (!budgetText.isEmpty()) {
+            try {
+                budgetValue = Double.parseDouble(budgetText);
+            } catch (NumberFormatException e) {
+                dialog.dismiss();
+                Toast.makeText(requireContext(), "Budget must be a number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
         // Generate unique list ID
         String listId = databaseReference.child("lists").push().getKey();
 
         // Create GiftList object
         GiftList giftList = new GiftList(
                 title,
-                desc,
+                budgetValue,
                 imageURL,
                 System.currentTimeMillis()
         );

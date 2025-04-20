@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,25 +12,29 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftList;
 import com.example.functioninglogin.HomePageUIClasses.ListManagment.ListViewFragment;
 import com.example.functioninglogin.HomePageUIClasses.ListManagment.MyAdapter;
 import com.example.functioninglogin.HomePageUIClasses.ListManagment.UploadListFragment;
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataClass;
 import com.example.functioninglogin.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private FloatingActionButton fab;
+    private MaterialButton addListButton;
     private SearchView searchView;
+    private TextView emptyTextView;
     private List<GiftList> dataList;
     private MyAdapter adapter;
     private DatabaseReference databaseReference;
@@ -44,16 +49,18 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
-        fab = view.findViewById(R.id.fab);
+        addListButton = view.findViewById(R.id.addListButton);
         searchView = view.findViewById(R.id.search);
+        emptyTextView = view.findViewById(R.id.emptyTextView);
+
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
 
         adapter = new MyAdapter(requireContext(), dataList, item -> {
             ListViewFragment fragment = ListViewFragment.newInstance(
-                    item.getListId(),           // ✅ Firebase key
+                    item.getListId(),
                     item.getListTitle(),
-                    item.getListDesc(),
+                    String.valueOf(item.getTotalBudget()),
                     item.getListImage()
             );
 
@@ -71,12 +78,13 @@ public class HomeFragment extends Fragment {
                 .getReference("Unique User ID")
                 .child(userId);
 
-        fab.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.home_fragment_container, new UploadListFragment())
-                .addToBackStack(null)
-                .commit()
-        );
+        addListButton.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_fragment_container, new UploadListFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         getParentFragmentManager().setFragmentResultListener("refreshHome", this, (requestKey, bundle) -> {
             boolean refresh = bundle.getBoolean("refreshNeeded", false);
@@ -95,6 +103,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        setupSwipeToDelete();
         fetchDataFromFirebase();
 
         return view;
@@ -113,9 +122,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDataFromFirebase() {
-        if (isFetching) return;
-        isFetching = true;
-
         if (dialog == null) {
             dialog = new AlertDialog.Builder(requireContext())
                     .setView(R.layout.progress_layout)
@@ -124,27 +130,44 @@ public class HomeFragment extends Fragment {
         }
 
         dialog.show();
-        dataList.clear();
 
-        databaseReference.child("lists").get().addOnSuccessListener(snapshot -> {
-            Log.d("FIREBASE_DATA", "Fetched: " + snapshot.getChildrenCount());
+        databaseReference.child("lists").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dataList.clear();
+                for (DataSnapshot listSnap : snapshot.getChildren()) {
+                    GiftList list = listSnap.getValue(GiftList.class);
+                    if (list != null) {
+                        list.setListId(listSnap.getKey());
 
-            for (DataSnapshot listSnap : snapshot.getChildren()) {
-                GiftList list = listSnap.getValue(GiftList.class);
-                if (list != null) {
-                    list.setListId(listSnap.getKey()); // ✅ Store Firebase key
-                    dataList.add(list);
+                        // 🔁 Load member data
+                        if (listSnap.hasChild("members")) {
+                            HashMap<String, MemberDataClass> members = new HashMap<>();
+                            for (DataSnapshot mSnap : listSnap.child("members").getChildren()) {
+                                MemberDataClass member = mSnap.getValue(MemberDataClass.class);
+                                if (member != null) {
+                                    members.put(mSnap.getKey(), member);
+                                }
+                            }
+                            list.setMembers(members);
+                        }
+
+                        dataList.add(list);
+                    }
                 }
+
+                adapter.updateData(dataList);
+                emptyTextView.setVisibility(dataList.isEmpty() ? View.VISIBLE : View.GONE);
+                dialog.dismiss();
+                isFetching = false;
             }
 
-            adapter.updateData(dataList);
-            Log.d("DATA_LIST_SIZE", "After fetch: " + dataList.size());
-            dialog.dismiss();
-            isFetching = false;
-        }).addOnFailureListener(error -> {
-            dialog.dismiss();
-            isFetching = false;
-            Toast.makeText(requireContext(), "Failed to fetch data ❌", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(requireContext(), "Live update error ❌", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                isFetching = false;
+            }
         });
     }
 
@@ -156,6 +179,57 @@ public class HomeFragment extends Fragment {
             }
         }
         adapter.searchDataList(filtered);
+    }
+
+    private void setupSwipeToDelete() {
+        ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                GiftList toDelete = dataList.get(position);
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Delete List?")
+                        .setMessage("Are you sure you want to delete the list \"" + toDelete.getListTitle() + "\" and all its members?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            String listId = toDelete.getListId();
+                            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            DatabaseReference listRef = FirebaseDatabase.getInstance()
+                                    .getReference("Unique User ID")
+                                    .child(userId)
+                                    .child("lists")
+                                    .child(listId);
+
+                            listRef.removeValue()
+                                    .addOnSuccessListener(unused -> {
+                                        if (position >= 0 && position < dataList.size()) {
+                                            dataList.remove(position);
+                                            adapter.notifyItemRemoved(position);
+                                        } else {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                        Toast.makeText(requireContext(), "List deleted 🎄", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(requireContext(), "Failed to delete ❌", Toast.LENGTH_SHORT).show();
+                                        adapter.notifyItemChanged(position);
+                                    });
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            adapter.notifyItemChanged(position); // put it back
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+
+        };
+
+        new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override

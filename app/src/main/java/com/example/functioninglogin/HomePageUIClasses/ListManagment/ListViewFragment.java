@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,10 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ListViewFragment extends Fragment {
 
@@ -39,17 +38,16 @@ public class ListViewFragment extends Fragment {
     private ValueEventListener memberListener;
     private String listKey;
 
-    private TextView headerTitle, headerDesc;
+    private TextView headerTitle, headerDesc, headerTotalSpent, headerTotalBudget;
     private ImageView headerImage;
+    private CardView headerCard;
 
-    public ListViewFragment() {}
-
-    public static ListViewFragment newInstance(String key, String title, String desc, String imageUrl) {
+    public static ListViewFragment newInstance(String key, String title, String budget, String imageUrl) {
         ListViewFragment fragment = new ListViewFragment();
         Bundle args = new Bundle();
         args.putString("Key", key);
         args.putString("Title", title);
-        args.putString("Description", desc);
+        args.putString("Budget", budget);
         args.putString("Image", imageUrl);
         fragment.setArguments(args);
         return fragment;
@@ -60,91 +58,84 @@ public class ListViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
 
+        headerCard = view.findViewById(R.id.headerCard);
         headerTitle = view.findViewById(R.id.headerTitle);
         headerDesc = view.findViewById(R.id.headerDesc);
         headerImage = view.findViewById(R.id.headerImage);
+        headerTotalSpent = view.findViewById(R.id.headerTotalSpent);
+        headerTotalBudget = view.findViewById(R.id.headerTotalBudget);
         recyclerView = view.findViewById(R.id.ListrecyclerView);
         fab = view.findViewById(R.id.memberfab);
         deleteFab = view.findViewById(R.id.memberdeletefab);
 
-        // Load bundle arguments
+        memberList = new ArrayList<>();
+        memberAdapter = new MemberAdapter(requireContext(), memberList, listKey);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(memberAdapter);
+
         if (getArguments() != null) {
             listKey = getArguments().getString("Key", "");
-            headerTitle.setText(getArguments().getString("Title", "List Title"));
-            headerDesc.setText(getArguments().getString("Description", "Description"));
-
+            headerTitle.setText(getArguments().getString("Title", "List Name"));
+            headerTotalBudget.setText("Total Budget: $" + getArguments().getString("Budget", "0"));
             String imageUrl = getArguments().getString("Image");
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(requireContext()).load(imageUrl).into(headerImage);
             } else {
-                headerImage.setImageResource(R.drawable.baseline_ac_unit_24);
+                headerImage.setImageResource(R.drawable.baseline_account_box_24);
             }
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        memberList = new ArrayList<>();
-        memberAdapter = new MemberAdapter(requireContext(), memberList, listKey);
-        recyclerView.setAdapter(memberAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                MemberDataClass memberToDelete = memberList.get(position);
-
-                new AlertDialog.Builder(requireContext())
-                        .setTitle("Delete Member?")
-                        .setMessage("Are you sure you want to delete \"" + memberToDelete.getName() + "\" and all their gifts?")
-                        .setPositiveButton("Delete", (dialog, which) -> {
-                            deleteMemberFromFirebase(memberToDelete.getKey());
-                            memberList.remove(position);
-                            memberAdapter.notifyItemRemoved(position);
-                        })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
-                            memberAdapter.notifyItemChanged(position); // Rebind if cancelled
-                        })
-                        .show();
-            }
+        headerCard.setOnClickListener(v -> {
+            EditListFragment fragment = EditListFragment.newInstance(
+                    listKey,
+                    headerTitle.getText().toString(),
+                    headerTotalBudget.getText().toString().replace("Total Budget: $", ""),
+                    getArguments().getString("Image", "")
+            );
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
-        itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        AtomicReference<String> userId = new AtomicReference<>(FirebaseAuth.getInstance().getCurrentUser().getUid());
         memberRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
-                .child(userId)
+                .child(userId.get())
                 .child("lists")
                 .child(listKey)
-                .child("members"); // ✅ NEW PATH
+                .child("members");
 
-        // 👥 Fetch members + gifts
         memberListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 memberList.clear();
-                for (DataSnapshot memberSnap : snapshot.getChildren()) {
-                    MemberDataClass member = memberSnap.getValue(MemberDataClass.class);
+                double totalSpent = 0;
+                int count = 0;
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    MemberDataClass member = snap.getValue(MemberDataClass.class);
                     if (member != null) {
-                        member.setKey(memberSnap.getKey());
-
-                        DataSnapshot giftsSnap = memberSnap.child("gifts");
-                        if (giftsSnap.exists()) {
-                            Map<String, GiftItem> giftMap = new HashMap<>();
-                            for (DataSnapshot giftSnap : giftsSnap.getChildren()) {
-                                GiftItem gift = giftSnap.getValue(GiftItem.class);
-                                if (gift != null) {
-                                    giftMap.put(giftSnap.getKey(), gift);
-                                }
+                        member.setKey(snap.getKey());
+                        Map<String, GiftItem> giftMap = new HashMap<>();
+                        for (DataSnapshot giftSnap : snap.child("gifts").getChildren()) {
+                            GiftItem gift = giftSnap.getValue(GiftItem.class);
+                            if (gift != null) {
+                                giftMap.put(giftSnap.getKey(), gift);
+                                try {
+                                    totalSpent += Double.parseDouble(gift.getPrice());
+                                } catch (Exception ignored) {}
                             }
-                            member.setGifts(giftMap);
                         }
-
+                        member.setGifts(giftMap);
                         memberList.add(member);
+                        count++;
                     }
                 }
+
+                headerDesc.setText(count == 0 ? "No Members Yet" : (count == 1 ? "1 member" : count + " members"));
+                headerTotalSpent.setText("Total Spent: $" + String.format("%.2f", totalSpent));
+
                 memberAdapter.notifyDataSetChanged();
             }
 
@@ -174,41 +165,97 @@ public class ListViewFragment extends Fragment {
                     .show();
         });
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                MemberDataClass toDelete = memberList.get(position);
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Delete Member?")
+                        .setMessage("Delete \"" + toDelete.getName() + "\" and all their gifts?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            deleteMemberFromFirebase(toDelete.getKey());
+                            memberList.remove(position);
+                            memberAdapter.notifyItemRemoved(position);
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            memberAdapter.notifyItemChanged(position);
+                        })
+                        .show();
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        getParentFragmentManager().setFragmentResultListener("refreshList", this, (requestKey, bundle) -> {
+            if (bundle.getBoolean("refreshListHeader", false)) {
+                // 🔁 Refresh header data
+                userId.set(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                DatabaseReference listMetaRef = FirebaseDatabase.getInstance()
+                        .getReference("Unique User ID")
+                        .child(userId.get())
+                        .child("lists")
+                        .child(listKey);
+
+                listMetaRef.get().addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        String updatedTitle = snapshot.child("listTitle").getValue(String.class);
+                        String updatedImage = snapshot.child("listImage").getValue(String.class);
+                        Double updatedBudget = snapshot.child("totalBudget").getValue(Double.class);
+
+                        headerTitle.setText(updatedTitle != null ? updatedTitle : "List Name");
+                        headerTotalBudget.setText("Total Budget: $" + (updatedBudget != null ? updatedBudget : 0));
+
+                        if (updatedImage != null && !updatedImage.isEmpty()) {
+                            Glide.with(requireContext()).load(updatedImage).into(headerImage);
+                        } else {
+                            headerImage.setImageResource(R.drawable.baseline_account_box_24);
+                        }
+                    }
+                });
+            }
+        });
+
         return view;
     }
 
     private void deleteEntireList() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference listRef = FirebaseDatabase.getInstance()
+        FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
                 .child("lists")
-                .child(listKey); // ✅ NEW DELETE PATH
-
-        listRef.removeValue()
+                .child(listKey)
+                .removeValue()
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(requireContext(), "List deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "List deleted", Toast.LENGTH_SHORT).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to delete list: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
     private void deleteMemberFromFirebase(String memberKey) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference memberNode = FirebaseDatabase.getInstance()
+        FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
                 .child("lists")
                 .child(listKey)
                 .child("members")
-                .child(memberKey);
-
-        memberNode.removeValue().addOnSuccessListener(unused -> {
-            Toast.makeText(requireContext(), "Member deleted successfully", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(requireContext(), "Error deleting member: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+                .child(memberKey)
+                .removeValue()
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(requireContext(), "Member deleted", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Error deleting member", Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override

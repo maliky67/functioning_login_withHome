@@ -7,20 +7,85 @@
     android:layout_height="match_parent"
     tools:context=".HomePageUIClasses.HomeFragment">
 
-    <include
-        layout="@layout/list_header"
-        android:id="@+id/listHeaderView"
-        android:gravity="center_vertical"/>
+    <!-- 🔁 REPLACING the <include> with actual header layout -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/headerCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/headerImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/baseline_account_box_24"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/headerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="List Name"
+                android:textColor="@color/BorderBlue"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@id/headerImage"
+                android:layout_marginStart="20dp" />
+
+            <TextView
+                android:id="@+id/headerDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Members Yet"
+                android:textColor="@color/lavender"
+                android:textSize="14sp"
+                android:layout_below="@id/headerTitle"
+                android:layout_toEndOf="@id/headerImage"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/headerTotalSpent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Spent: $0"
+                android:textColor="@color/lavender"
+                android:textSize="14sp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/headerTitle"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:id="@+id/headerTotalBudget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Budget: $0"
+                android:textColor="@color/lavender"
+                android:textSize="14sp"
+                android:layout_below="@id/headerTotalSpent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="12dp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ListrecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/listHeaderView"
+        android:layout_below="@id/headerCard"
         android:layout_marginTop="10dp"
         android:background="#A7D0F6"
-        android:contentDescription="@string/main_scroller"
         android:scrollbars="vertical" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,9 +97,8 @@
         android:layout_margin="40dp"
         android:backgroundTint="@color/red"
         android:contentDescription="Deleting Member Button"
-        app:tint = "@color/white"
+        app:tint="@color/white"
         android:src="@drawable/add_new" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/memberfab"
@@ -45,7 +109,6 @@
         android:layout_margin="40dp"
         android:backgroundTint="@color/BorderBlue"
         android:contentDescription="Creating Member Button"
-        app:tint = "@color/white"
+        app:tint="@color/white"
         android:src="@drawable/add_new" />
-
 </RelativeLayout>
