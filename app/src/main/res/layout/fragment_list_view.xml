@@ -1,114 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePageUIClasses.HomeFragment">
+    android:fillViewport="true"
+    android:background="@color/light_blue">
 
-    <!-- 🔁 REPLACING the <include> with actual header layout -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/headerCard"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp">
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
-        <RelativeLayout
+        <!-- 🔵 HEADER Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/headerCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/headerImage"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/baseline_account_box_24"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/headerTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="List Name"
-                android:textColor="@color/BorderBlue"
-                android:textSize="20sp"
-                android:layout_marginTop="20dp"
-                android:layout_toEndOf="@id/headerImage"
-                android:layout_marginStart="20dp" />
-
-            <TextView
-                android:id="@+id/headerDesc"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No Members Yet"
-                android:textColor="@color/lavender"
-                android:textSize="14sp"
-                android:layout_below="@id/headerTitle"
-                android:layout_toEndOf="@id/headerImage"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="12dp" />
+                android:padding="10dp">
 
-            <TextView
-                android:id="@+id/headerTotalSpent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Spent: $0"
-                android:textColor="@color/lavender"
-                android:textSize="14sp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@id/headerTitle"
-                android:layout_marginEnd="12dp" />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/headerImage"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/baseline_account_box_24"
+                    android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/headerTotalBudget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Budget: $0"
-                android:textColor="@color/lavender"
-                android:textSize="14sp"
-                android:layout_below="@id/headerTotalSpent"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="12dp" />
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/headerTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="List Name"
+                    android:textColor="@color/BorderBlue"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toEndOf="@id/headerImage"
+                    android:layout_marginStart="20dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ListrecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/headerCard"
-        android:layout_marginTop="10dp"
-        android:background="#A7D0F6"
-        android:scrollbars="vertical" />
+                <TextView
+                    android:id="@+id/headerDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No Members Yet"
+                    android:textColor="@color/lavender"
+                    android:textSize="14sp"
+                    android:layout_below="@id/headerTitle"
+                    android:layout_toEndOf="@id/headerImage"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="12dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/memberdeletefab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="40dp"
-        android:backgroundTint="@color/red"
-        android:contentDescription="Deleting Member Button"
-        app:tint="@color/white"
-        android:src="@drawable/add_new" />
+                <TextView
+                    android:id="@+id/headerTotalSpent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Spent: $0"
+                    android:textColor="@color/lavender"
+                    android:textSize="14sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@id/headerTitle"
+                    android:layout_marginEnd="12dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/memberfab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="40dp"
-        android:backgroundTint="@color/BorderBlue"
-        android:contentDescription="Creating Member Button"
-        app:tint="@color/white"
-        android:src="@drawable/add_new" />
-</RelativeLayout>
+                <TextView
+                    android:id="@+id/headerTotalBudget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Budget: $0"
+                    android:textColor="@color/lavender"
+                    android:textSize="14sp"
+                    android:layout_below="@id/headerTotalSpent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="12dp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 🔴 Empty State Text -->
+        <TextView
+            android:id="@+id/emptyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No members in this list yet!"
+            android:textAlignment="center"
+            android:textColor="@color/christmas_blue"
+            android:textSize="18sp"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+        <!-- ♻️ Member Recycler -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ListrecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:padding="8dp"
+            android:scrollbars="vertical" />
+
+        <!-- ➕ Add Member Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/memberfab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Member"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/BorderBlue"
+            android:layout_margin="16dp"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

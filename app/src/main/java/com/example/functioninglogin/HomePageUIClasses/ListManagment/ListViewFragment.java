@@ -21,7 +21,7 @@ import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberAdap
 import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataClass;
 import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataUploadFragment;
 import com.example.functioninglogin.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
@@ -31,7 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ListViewFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private FloatingActionButton fab, deleteFab;
+    private MaterialButton fab;
+    private TextView emptyTextView;
     private List<MemberDataClass> memberList;
     private MemberAdapter memberAdapter;
     private DatabaseReference memberRef;
@@ -58,6 +59,7 @@ public class ListViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
 
+        // View Binding
         headerCard = view.findViewById(R.id.headerCard);
         headerTitle = view.findViewById(R.id.headerTitle);
         headerDesc = view.findViewById(R.id.headerDesc);
@@ -66,12 +68,9 @@ public class ListViewFragment extends Fragment {
         headerTotalBudget = view.findViewById(R.id.headerTotalBudget);
         recyclerView = view.findViewById(R.id.ListrecyclerView);
         fab = view.findViewById(R.id.memberfab);
-        deleteFab = view.findViewById(R.id.memberdeletefab);
+        emptyTextView = view.findViewById(R.id.emptyTextView);
 
         memberList = new ArrayList<>();
-        memberAdapter = new MemberAdapter(requireContext(), memberList, listKey);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(memberAdapter);
 
         if (getArguments() != null) {
             listKey = getArguments().getString("Key", "");
@@ -84,6 +83,10 @@ public class ListViewFragment extends Fragment {
                 headerImage.setImageResource(R.drawable.baseline_account_box_24);
             }
         }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        memberAdapter = new MemberAdapter(requireContext(), memberList, listKey);
+        recyclerView.setAdapter(memberAdapter);
 
         headerCard.setOnClickListener(v -> {
             EditListFragment fragment = EditListFragment.newInstance(
@@ -99,10 +102,10 @@ public class ListViewFragment extends Fragment {
                     .commit();
         });
 
-        AtomicReference<String> userId = new AtomicReference<>(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         memberRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
-                .child(userId.get())
+                .child(userId)
                 .child("lists")
                 .child(listKey)
                 .child("members");
@@ -113,10 +116,11 @@ public class ListViewFragment extends Fragment {
                 memberList.clear();
                 double totalSpent = 0;
                 int count = 0;
+
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     MemberDataClass member = snap.getValue(MemberDataClass.class);
                     if (member != null) {
-                        member.setKey(snap.getKey());
+                        member.setKey(snap.getKey()); // 🔑 Ensure we set this
                         Map<String, GiftItem> giftMap = new HashMap<>();
                         for (DataSnapshot giftSnap : snap.child("gifts").getChildren()) {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
@@ -132,6 +136,8 @@ public class ListViewFragment extends Fragment {
                         count++;
                     }
                 }
+
+                emptyTextView.setVisibility(memberList.isEmpty() ? View.VISIBLE : View.GONE);
 
                 headerDesc.setText(count == 0 ? "No Members Yet" : (count == 1 ? "1 member" : count + " members"));
                 headerTotalSpent.setText("Total Spent: $" + String.format("%.2f", totalSpent));
@@ -154,15 +160,6 @@ public class ListViewFragment extends Fragment {
                     .replace(R.id.home_fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
-        });
-
-        deleteFab.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Entire List?")
-                    .setMessage("This will permanently delete the list and all its members. Are you sure?")
-                    .setPositiveButton("Delete", (dialog, which) -> deleteEntireList())
-                    .setNegativeButton("Cancel", null)
-                    .show();
         });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -190,14 +187,14 @@ public class ListViewFragment extends Fragment {
                         .show();
             }
         });
+
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
         getParentFragmentManager().setFragmentResultListener("refreshList", this, (requestKey, bundle) -> {
             if (bundle.getBoolean("refreshListHeader", false)) {
-                // 🔁 Refresh header data
-                userId.set(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 DatabaseReference listMetaRef = FirebaseDatabase.getInstance()
                         .getReference("Unique User ID")
-                        .child(userId.get())
+                        .child(userId)
                         .child("lists")
                         .child(listKey);
 
@@ -221,23 +218,6 @@ public class ListViewFragment extends Fragment {
         });
 
         return view;
-    }
-
-    private void deleteEntireList() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase.getInstance()
-                .getReference("Unique User ID")
-                .child(userId)
-                .child("lists")
-                .child(listKey)
-                .removeValue()
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(requireContext(), "List deleted", Toast.LENGTH_SHORT).show();
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
     }
 
     private void deleteMemberFromFirebase(String memberKey) {

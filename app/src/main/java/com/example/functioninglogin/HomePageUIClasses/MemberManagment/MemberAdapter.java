@@ -48,14 +48,15 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         updateTextAnimated(holder.name, member.getName());
         updateTextAnimated(holder.role, " " + member.getRole());
 
+        // Load image
         if (member.getImageUrl() != null && !member.getImageUrl().isEmpty()) {
             Glide.with(context).load(member.getImageUrl()).into(holder.image);
         } else {
             holder.image.setImageResource(R.drawable.baseline_ac_unit_24);
         }
 
+        // Handle gifts
         holder.giftListContainer.removeAllViews();
-
         Map<String, GiftItem> gifts = member.getGifts();
         double total = 0;
 
@@ -78,23 +79,24 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             holder.price.setText("");
         }
 
+        // Click to open fragment
         holder.itemView.setOnClickListener(v -> {
-            String memberId = member.getKey();
-            if (memberId == null || listKey == null) {
-                Toast.makeText(context, "Could not open member. ID missing.", Toast.LENGTH_SHORT).show();
-                return;
+            if (member.getKey() != null && !member.getKey().isEmpty()) {
+                MemberViewFragment fragment = MemberViewFragment.newInstance(
+                        listKey,
+                        member.getKey()
+                );
+
+                ((AppCompatActivity) context).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.home_fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                Toast.makeText(context, "⏳ Member not ready. Try again shortly.", Toast.LENGTH_SHORT).show();
+                holder.itemView.setAlpha(0.5f); // visual cue it's not active yet
             }
-
-            MemberViewFragment fragment = MemberViewFragment.newInstance(listKey, member.getKey());
-
-            ((AppCompatActivity) context).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.home_fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
         });
-
-
     }
 
     private void updateTextAnimated(TextView view, String newText) {

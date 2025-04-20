@@ -51,7 +51,7 @@
             android:id="@+id/addListButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="➕ Add List"
+            android:text="Add List"
             android:textSize="18sp"
             android:textColor="@android:color/white"
             android:backgroundTint="@color/BorderBlue"
