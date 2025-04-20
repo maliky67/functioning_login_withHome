@@ -9,23 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.GiftViewHolder> {
 
     private final List<GiftItem> giftList;
-    private final String listKey;
-    private final String memberKey;
     private final Runnable onAddGiftCallback;
 
-    public GiftPagerAdapter(List<GiftItem> giftList, String listKey, String memberKey, Runnable onAddGiftCallback) {
+    private RecyclerView recyclerView;
+
+    public GiftPagerAdapter(List<GiftItem> giftList, Runnable onAddGiftCallback) {
         this.giftList = giftList;
-        this.listKey = listKey;
-        this.memberKey = memberKey;
         this.onAddGiftCallback = onAddGiftCallback;
     }
 
@@ -33,21 +28,21 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
     @Override
     public GiftViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_gift_form, parent, false);
+                .inflate(R.layout.add_gift_fragment, parent, false);
         return new GiftViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GiftViewHolder holder, int position) {
+        if (position >= giftList.size()) return;
+
         GiftItem gift = giftList.get(position);
 
-        // Load saved data
-        holder.giftName.setText(gift.getName());
-        holder.giftPrice.setText(gift.getPrice());
-        holder.giftWebsite.setText(gift.getWebsite());
-        holder.giftNotes.setText(gift.getNotes());
+        if (gift.getName() != null) holder.giftName.setText(gift.getName());
+        if (gift.getPrice() != null) holder.giftPrice.setText(gift.getPrice());
+        if (gift.getWebsite() != null) holder.giftWebsite.setText(gift.getWebsite());
+        if (gift.getNotes() != null) holder.giftNotes.setText(gift.getNotes());
 
-        // Select correct status
         if (gift.getStatus() != null) {
             switch (gift.getStatus().toLowerCase()) {
                 case "bought":
@@ -64,21 +59,24 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
             }
         }
 
-        // Save on focus loss
         holder.giftName.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) gift.setName(holder.giftName.getText().toString().trim());
+            if (!hasFocus)
+                gift.setName(holder.giftName.getText().toString().trim());
         });
 
         holder.giftPrice.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) gift.setPrice(holder.giftPrice.getText().toString().trim());
+            if (!hasFocus)
+                gift.setPrice(holder.giftPrice.getText().toString().trim());
         });
 
         holder.giftWebsite.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) gift.setWebsite(holder.giftWebsite.getText().toString().trim());
+            if (!hasFocus)
+                gift.setWebsite(holder.giftWebsite.getText().toString().trim());
         });
 
         holder.giftNotes.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) gift.setNotes(holder.giftNotes.getText().toString().trim());
+            if (!hasFocus)
+                gift.setNotes(holder.giftNotes.getText().toString().trim());
         });
 
         holder.statusGroup.setOnCheckedChangeListener((group, checkedId) -> {
@@ -86,40 +84,12 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
             if (checkedId == R.id.radioBought) status = "Bought";
             else if (checkedId == R.id.radioArrived) status = "Arrived";
             else if (checkedId == R.id.radioWrapped) status = "Wrapped";
-
-            gift.setStatus(status); // ✅ Update in model
+            gift.setStatus(status);
         });
 
-        // Add Gift
-        holder.addFab.setOnClickListener(v -> {
+        // Handle add gift button
+        holder.addGiftButton.setOnClickListener(v -> {
             if (onAddGiftCallback != null) onAddGiftCallback.run();
-        });
-
-        // Delete Gift
-        holder.deleteButton.setOnClickListener(v -> {
-            if (gift.getKey() != null) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                FirebaseDatabase.getInstance()
-                        .getReference("Unique User ID")
-                        .child(userId)
-                        .child("lists") // <-- Add this
-                        .child(listKey)
-                        .child("members")
-                        .child(memberKey)
-                        .child("gifts")
-                        .child(gift.getKey())
-                        .removeValue();
-
-            }
-
-            giftList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, giftList.size());
-
-            if (giftList.isEmpty()) {
-                giftList.add(new GiftItem());
-                notifyItemInserted(0);
-            }
         });
     }
 
@@ -128,19 +98,27 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
         return giftList.size();
     }
 
-    private RecyclerView recyclerView;
-
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
+
     public void updateAllGiftItemsFromUI() {
+        if (recyclerView == null) return;
+
         for (int i = 0; i < giftList.size(); i++) {
-            GiftViewHolder holder = (GiftViewHolder) recyclerView.findViewHolderForAdapterPosition(i);
-            if (holder != null) {
+            RecyclerView.ViewHolder vh = recyclerView.findViewHolderForAdapterPosition(i);
+            if (vh instanceof GiftViewHolder) {
+                GiftViewHolder holder = (GiftViewHolder) vh;
                 GiftItem item = giftList.get(i);
+
                 item.setName(holder.giftName.getText().toString().trim());
                 item.setPrice(holder.giftPrice.getText().toString().trim());
                 item.setWebsite(holder.giftWebsite.getText().toString().trim());
@@ -159,9 +137,8 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
 
     public static class GiftViewHolder extends RecyclerView.ViewHolder {
         EditText giftName, giftPrice, giftWebsite, giftNotes;
-        Button deleteButton;
-        FloatingActionButton addFab;
         RadioGroup statusGroup;
+        Button addGiftButton;
 
         public GiftViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -169,9 +146,8 @@ public class GiftPagerAdapter extends RecyclerView.Adapter<GiftPagerAdapter.Gift
             giftPrice = itemView.findViewById(R.id.giftPriceEdit);
             giftWebsite = itemView.findViewById(R.id.giftWebsiteEdit);
             giftNotes = itemView.findViewById(R.id.giftNotesEdit);
-            deleteButton = itemView.findViewById(R.id.deleteGiftFab);
-            addFab = itemView.findViewById(R.id.addGiftFab);
             statusGroup = itemView.findViewById(R.id.statusGroup);
+            addGiftButton = itemView.findViewById(R.id.saveGiftButton); // 👈 matches your XML
         }
     }
 }

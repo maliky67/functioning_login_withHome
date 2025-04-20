@@ -81,7 +81,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
         // Click to open fragment
         holder.itemView.setOnClickListener(v -> {
-            if (member.getKey() != null && !member.getKey().isEmpty()) {
+            if (listKey != null && member.getKey() != null && !member.getKey().isEmpty()) {
                 MemberViewFragment fragment = MemberViewFragment.newInstance(
                         listKey,
                         member.getKey()
@@ -94,9 +94,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                         .commit();
             } else {
                 Toast.makeText(context, "⏳ Member not ready. Try again shortly.", Toast.LENGTH_SHORT).show();
-                holder.itemView.setAlpha(0.5f); // visual cue it's not active yet
+                holder.itemView.setAlpha(0.5f);
             }
         });
+
     }
 
     private void updateTextAnimated(TextView view, String newText) {

@@ -30,13 +30,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/create_member"
+                android:text="Edit Member"
                 android:textAlignment="center"
                 android:textColor="@color/christmas_blue"
                 android:textSize="30sp" />
 
             <ImageView
-                android:id="@+id/memberImageView"
+                android:id="@+id/editmemberImageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
@@ -44,7 +44,7 @@
                 android:src="@drawable/baseline_account_box_24" />
 
             <EditText
-                android:id="@+id/memberNameEditText"
+                android:id="@+id/editmemberNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
@@ -55,7 +55,7 @@
                 android:textColor="@color/christmas_blue" />
 
             <EditText
-                android:id="@+id/memberRoleEditText"
+                android:id="@+id/editmemberRoleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
@@ -66,13 +66,14 @@
                 android:textColor="@color/lavender" />
 
 
+
             <Button
-                android:id="@+id/saveMemberButton"
+                android:id="@+id/editMemberButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rounded_blue"
-                android:text="@string/save"
+                android:text="Edit Member"
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
         </LinearLayout>

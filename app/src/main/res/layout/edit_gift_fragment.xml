@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="16dp">
+
+        <!-- 🎁 Gift Entry Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/white">
+
+                <!-- Header -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Gift"
+                    android:textAlignment="center"
+                    android:id="@+id/edit_gifts"
+                    android:textColor="@color/christmas_blue"
+                    android:textSize="30sp"
+                    android:paddingBottom="12dp"/>
+
+                <!-- Status Label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status"
+                    android:textColor="@color/christmas_blue"
+                    android:textSize="16sp" />
+
+                <!-- Status Options -->
+                <RadioGroup
+                    android:id="@+id/editstatusGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
+
+                    <RadioButton
+                        android:id="@+id/editradioIdea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/idea"
+                        android:buttonTint="@color/pink"
+                        android:textColor="@color/pink" />
+
+                    <RadioButton
+                        android:id="@+id/editradioBought"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bought"
+                        android:buttonTint="@color/green"
+                        android:textColor="@color/green"
+                        android:layout_marginStart="5dp" />
+
+                    <RadioButton
+                        android:id="@+id/editradioArrived"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/arrived"
+                        android:buttonTint="@color/blue"
+                        android:textColor="@color/blue"
+                        android:layout_marginStart="5dp" />
+
+                    <RadioButton
+                        android:id="@+id/editradioWrapped"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wrapped"
+                        android:buttonTint="@color/red"
+                        android:textColor="@color/red"
+                        android:layout_marginStart="5dp" />
+                </RadioGroup>
+
+                <!-- Gift Name -->
+                <EditText
+                    android:id="@+id/editgiftNameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/gift_idea"
+                    android:background="@drawable/borderblue"
+                    android:textColor="@color/christmas_blue"
+                    android:padding="16dp" />
+
+                <!-- Gift Price -->
+                <EditText
+                    android:id="@+id/editgiftPriceEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/price"
+                    android:inputType="numberDecimal"
+                    android:background="@drawable/borderblue"
+                    android:textColor="@color/christmas_blue"
+                    android:padding="16dp" />
+
+                <!-- Website -->
+                <EditText
+                    android:id="@+id/editgiftWebsiteEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/website_url"
+                    android:inputType="textUri"
+                    android:background="@drawable/borderblue"
+                    android:textColor="@color/christmas_blue"
+                    android:padding="16dp" />
+
+                <!-- Notes -->
+                <EditText
+                    android:id="@+id/editgiftNotesEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/notes"
+                    android:inputType="textMultiLine"
+                    android:background="@drawable/borderblue"
+                    android:textColor="@color/christmas_blue"
+                    android:padding="16dp" />
+
+                <!-- Save Gift Button -->
+                <Button
+                    android:id="@+id/editGiftButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rounded_blue"
+                    android:text="Edit Gift"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

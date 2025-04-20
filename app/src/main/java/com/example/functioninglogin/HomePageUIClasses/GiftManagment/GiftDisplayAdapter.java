@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.R;
@@ -16,10 +17,14 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
 
     private final Context context;
     private final List<GiftItem> giftList;
+    private final String listKey;
+    private final String memberKey;
 
-    public GiftDisplayAdapter(Context context, List<GiftItem> giftList) {
+    public GiftDisplayAdapter(Context context, List<GiftItem> giftList, String listKey, String memberKey) {
         this.context = context;
         this.giftList = giftList;
+        this.listKey = listKey;
+        this.memberKey = memberKey;
     }
 
     @NonNull
@@ -37,7 +42,7 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
         holder.giftUrl.setText(gift.getWebsite());
         holder.giftPrice.setText("$" + gift.getPrice());
 
-        // Use status to change image dynamically if needed
+        // Status icon logic
         String status = gift.getStatus();
         if (status != null) {
             switch (status.toLowerCase()) {
@@ -54,6 +59,18 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
                     holder.giftStatus.setImageResource(R.drawable.baseline_ac_unit_24);
             }
         }
+
+        // ✏️ OPEN EditGiftFragment
+        holder.itemView.setOnClickListener(v -> {
+            if (gift.getKey() != null) {
+                EditGiftFragment fragment = EditGiftFragment.newInstance(listKey, memberKey, gift.getKey());
+                ((AppCompatActivity) context).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.home_fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @Override
