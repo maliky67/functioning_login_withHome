@@ -8,10 +8,11 @@ import java.util.List;
 
 public class GiftList {
     private String listTitle;
-    private double totalBudget;// This is now Total Budget
+    private double totalBudget;
     private String listImage;
     private String listId;
     private long timestamp;
+    private String listDesc; // ✅ ADDED: to fix Firebase warning
     private HashMap<String, MemberDataClass> members;
     private String formattedMemberPreview;
 
@@ -28,12 +29,9 @@ public class GiftList {
     public String getListTitle() { return listTitle; }
     public void setListTitle(String listTitle) { this.listTitle = listTitle; }
 
-    public double getTotalBudget() {
-        return totalBudget;
-    }
-    public void setTotalBudget(double totalBudget) {
-        this.totalBudget = totalBudget;
-    }
+    public double getTotalBudget() { return totalBudget; }
+    public void setTotalBudget(double totalBudget) { this.totalBudget = totalBudget; }
+
     public String getListImage() { return listImage; }
     public void setListImage(String listImage) { this.listImage = listImage; }
 
@@ -42,6 +40,9 @@ public class GiftList {
 
     public long getTimestamp() { return timestamp; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    public String getListDesc() { return listDesc; } // ✅ Getter
+    public void setListDesc(String listDesc) { this.listDesc = listDesc; } // ✅ Setter
 
     public HashMap<String, MemberDataClass> getMembers() { return members; }
     public void setMembers(HashMap<String, MemberDataClass> members) { this.members = members; }
@@ -55,9 +56,11 @@ public class GiftList {
         }
         return names;
     }
+
     public void setFormattedMemberPreview(String formattedMemberPreview) {
         this.formattedMemberPreview = formattedMemberPreview;
     }
+
     public String getFormattedMemberPreview() {
         List<String> names = getMemberNamesList();
         int maxToShow = 3;

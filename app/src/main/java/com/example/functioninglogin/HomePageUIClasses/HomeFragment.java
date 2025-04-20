@@ -146,11 +146,14 @@ public class HomeFragment extends Fragment {
                             for (DataSnapshot mSnap : listSnap.child("members").getChildren()) {
                                 MemberDataClass member = mSnap.getValue(MemberDataClass.class);
                                 if (member != null) {
-                                    members.put(mSnap.getKey(), member);
+                                    member.setKey(mSnap.getKey()); // ✅ Properly assign key
+                                    members.put(mSnap.getKey(), member); // ✅ Add to map correctly
                                 }
                             }
                             list.setMembers(members);
                         }
+
+
 
                         dataList.add(list);
                     }

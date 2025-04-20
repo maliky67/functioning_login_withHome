@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,10 +79,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         }
 
         holder.itemView.setOnClickListener(v -> {
-            MemberViewFragment fragment = MemberViewFragment.newInstance(
-                    listKey,
-                    member.getKey()
-            );
+            String memberId = member.getKey();
+            if (memberId == null || listKey == null) {
+                Toast.makeText(context, "Could not open member. ID missing.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            MemberViewFragment fragment = MemberViewFragment.newInstance(listKey, member.getKey());
 
             ((AppCompatActivity) context).getSupportFragmentManager()
                     .beginTransaction()
@@ -89,6 +93,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                     .addToBackStack(null)
                     .commit();
         });
+
+
     }
 
     private void updateTextAnimated(TextView view, String newText) {

@@ -133,7 +133,7 @@ public class MemberDataUploadFragment extends Fragment {
         String name = memberNameEditText.getText().toString().trim();
         String role = memberRoleEditText.getText().toString().trim();
 
-        if (name.isEmpty() || role.isEmpty()) {
+        if (name.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
