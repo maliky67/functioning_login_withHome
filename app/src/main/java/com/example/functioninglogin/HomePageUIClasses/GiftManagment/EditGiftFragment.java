@@ -1,24 +1,26 @@
 package com.example.functioninglogin.HomePageUIClasses.GiftManagment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberViewFragment;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EditGiftFragment extends Fragment {
 
-    private EditText giftNameEdit, giftPriceEdit, giftWebsiteEdit, giftNotesEdit;
-    private RadioGroup statusGroup;
-    private Button saveGiftButton;
-
     private String listKey, memberKey, giftKey;
+    private EditText nameEdit, priceEdit, websiteEdit, notesEdit;
+    private RadioGroup statusGroup;
+    private Button editGiftButton;
 
     public static EditGiftFragment newInstance(String listKey, String memberKey, String giftKey) {
         EditGiftFragment fragment = new EditGiftFragment();
@@ -35,33 +37,31 @@ public class EditGiftFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_gift_fragment, container, false);
 
-        // 🔗 Extract arguments
+        // 🧠 Retrieve arguments
         if (getArguments() != null) {
             listKey = getArguments().getString("listKey");
             memberKey = getArguments().getString("memberKey");
             giftKey = getArguments().getString("giftKey");
         }
 
-        // 🧠 Bind views
-        giftNameEdit = view.findViewById(R.id.editgiftNameEdit);
-        giftPriceEdit = view.findViewById(R.id.editgiftPriceEdit);
-        giftWebsiteEdit = view.findViewById(R.id.editgiftWebsiteEdit);
-        giftNotesEdit = view.findViewById(R.id.editgiftNotesEdit);
+        // ⚙️ View Binding
+        nameEdit = view.findViewById(R.id.editgiftNameEdit);
+        priceEdit = view.findViewById(R.id.editgiftPriceEdit);
+        websiteEdit = view.findViewById(R.id.editgiftWebsiteEdit);
+        notesEdit = view.findViewById(R.id.editgiftNotesEdit);
         statusGroup = view.findViewById(R.id.editstatusGroup);
-        saveGiftButton = view.findViewById(R.id.editGiftButton);
+        editGiftButton = view.findViewById(R.id.editGiftButton);
 
-        // 📥 Load data
-        loadGiftFromFirebase();
+        loadGiftData();
 
-        // 💾 Save click
-        saveGiftButton.setOnClickListener(v -> saveUpdatedGift());
+        editGiftButton.setOnClickListener(v -> saveGiftData());
 
         return view;
     }
 
-    private void loadGiftFromFirebase() {
+    private void loadGiftData() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance()
+        DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
                 .child("lists")
@@ -71,30 +71,31 @@ public class EditGiftFragment extends Fragment {
                 .child("gifts")
                 .child(giftKey);
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        giftRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 GiftItem gift = snapshot.getValue(GiftItem.class);
                 if (gift != null) {
-                    giftNameEdit.setText(gift.getName());
-                    giftPriceEdit.setText(gift.getPrice());
-                    giftWebsiteEdit.setText(gift.getWebsite());
-                    giftNotesEdit.setText(gift.getNotes());
+                    nameEdit.setText(gift.getName());
+                    priceEdit.setText(gift.getPrice());
+                    websiteEdit.setText(gift.getWebsite());
+                    notesEdit.setText(gift.getNotes());
 
-                    String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "";
-                    switch (status) {
-                        case "bought":
-                            statusGroup.check(R.id.editradioBought);
-                            break;
-                        case "arrived":
-                            statusGroup.check(R.id.editradioArrived);
-                            break;
-                        case "wrapped":
-                            statusGroup.check(R.id.editradioWrapped);
-                            break;
-                        default:
-                            statusGroup.check(R.id.editradioIdea);
-                            break;
+                    String status = gift.getStatus();
+                    if (status != null) {
+                        switch (status.toLowerCase()) {
+                            case "bought":
+                                statusGroup.check(R.id.editradioBought);
+                                break;
+                            case "arrived":
+                                statusGroup.check(R.id.editradioArrived);
+                                break;
+                            case "wrapped":
+                                statusGroup.check(R.id.editradioWrapped);
+                                break;
+                            default:
+                                statusGroup.check(R.id.editradioIdea);
+                        }
                     }
                 }
             }
@@ -106,28 +107,19 @@ public class EditGiftFragment extends Fragment {
         });
     }
 
-    private void saveUpdatedGift() {
-        String name = giftNameEdit.getText().toString().trim();
-        String price = giftPriceEdit.getText().toString().trim();
-        String website = giftWebsiteEdit.getText().toString().trim();
-        String notes = giftNotesEdit.getText().toString().trim();
-
-        if (TextUtils.isEmpty(name)) {
-            giftNameEdit.setError("Name required");
-            return;
-        }
+    private void saveGiftData() {
+        String name = nameEdit.getText().toString().trim();
+        String price = priceEdit.getText().toString().trim();
+        String website = websiteEdit.getText().toString().trim();
+        String notes = notesEdit.getText().toString().trim();
+        int checkedId = statusGroup.getCheckedRadioButtonId();
 
         String status = "Idea";
-        int checkedId = statusGroup.getCheckedRadioButtonId();
         if (checkedId == R.id.editradioBought) status = "Bought";
         else if (checkedId == R.id.editradioArrived) status = "Arrived";
         else if (checkedId == R.id.editradioWrapped) status = "Wrapped";
 
-        GiftItem updatedGift = new GiftItem(name, price, website, notes, status);
-        updatedGift.setKey(giftKey); // 🔑 important for consistency
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -138,13 +130,23 @@ public class EditGiftFragment extends Fragment {
                 .child("gifts")
                 .child(giftKey);
 
-        giftRef.setValue(updatedGift)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(requireContext(), "Gift updated", Toast.LENGTH_SHORT).show();
-                    requireActivity().getSupportFragmentManager().popBackStack(); // go back
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to update gift", Toast.LENGTH_SHORT).show();
-                });
+        Map<String, Object> updatedGift = new HashMap<>();
+        updatedGift.put("name", name);
+        updatedGift.put("price", price);
+        updatedGift.put("website", website);
+        updatedGift.put("notes", notes);
+        updatedGift.put("status", status);
+
+        giftRef.updateChildren(updatedGift)
+                .addOnSuccessListener(unused -> Toast.makeText(requireContext(), "🎁 Gift updated", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "❌ Failed to update gift", Toast.LENGTH_SHORT).show());
+        // 🚀 Navigate back to MemberViewFragment
+        MemberViewFragment fragment = MemberViewFragment.newInstance(listKey, memberKey);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
+
 }

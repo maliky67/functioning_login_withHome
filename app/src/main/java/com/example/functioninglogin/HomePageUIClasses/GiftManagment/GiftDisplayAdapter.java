@@ -42,7 +42,7 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
         holder.giftUrl.setText(gift.getWebsite());
         holder.giftPrice.setText("$" + gift.getPrice());
 
-        // Status icon logic
+        // Set gift status image based on status
         String status = gift.getStatus();
         if (status != null) {
             switch (status.toLowerCase()) {
@@ -60,10 +60,11 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
             }
         }
 
-        // ✏️ OPEN EditGiftFragment
+        // 🧠 On Click -> Launch EditGiftFragment
         holder.itemView.setOnClickListener(v -> {
             if (gift.getKey() != null) {
                 EditGiftFragment fragment = EditGiftFragment.newInstance(listKey, memberKey, gift.getKey());
+
                 ((AppCompatActivity) context).getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.home_fragment_container, fragment)
