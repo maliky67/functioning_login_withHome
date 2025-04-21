@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.functioninglogin.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -34,32 +36,45 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     public void onBindViewHolder(@NonNull ShoppingViewHolder holder, int position) {
         ShoppingListItem item = shoppingList.get(position);
 
-        holder.itemName.setText("🎁 " + item.getItemName());
+        holder.itemName.setText("🎁 " + item.getGiftName());
         holder.memberName.setText("🎅 For: " + item.getMemberName());
         holder.itemPrice.setText("$" + item.getPrice());
 
         boolean isBought = item.getStatus().equalsIgnoreCase("bought");
         holder.itemCheck.setChecked(isBought);
 
-        // Visual feedback for bought items
-        if (isBought) {
-            holder.itemName.setPaintFlags(holder.itemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            holder.itemName.setPaintFlags(holder.itemName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        }
+        // Visual feedback
+        holder.itemName.setPaintFlags(isBought
+                ? holder.itemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+                : holder.itemName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
         holder.itemCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                holder.itemName.setPaintFlags(holder.itemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                Toast.makeText(holder.itemView.getContext(), "Marked as Purchased", Toast.LENGTH_SHORT).show();
+            String newStatus = isChecked ? "bought" : "idea";
 
-                // TODO: Optional - Update Firebase status to "bought"
-            } else {
-                holder.itemName.setPaintFlags(holder.itemName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                Toast.makeText(holder.itemView.getContext(), "Marked as Idea", Toast.LENGTH_SHORT).show();
+            // Local visual change
+            holder.itemName.setPaintFlags(isChecked
+                    ? holder.itemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+                    : holder.itemName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
-                // TODO: Optional - Update Firebase status to "idea"
-            }
+            // Local state update
+            item.setStatus(newStatus);
+
+            // 🔥 Firebase Update
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseDatabase.getInstance()
+                    .getReference("Unique User ID")
+                    .child(userId)
+                    .child("lists")
+                    .child(item.getListId())
+                    .child("members")
+                    .child(item.getMemberId())
+                    .child("gifts")
+                    .child(item.getGiftId())
+                    .child("status")
+                    .setValue(newStatus);
+
+            Toast.makeText(holder.itemView.getContext(),
+                    isChecked ? "Marked as Purchased" : "Marked as Idea", Toast.LENGTH_SHORT).show();
         });
     }
 

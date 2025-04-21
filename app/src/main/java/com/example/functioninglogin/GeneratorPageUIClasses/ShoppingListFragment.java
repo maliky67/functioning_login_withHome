@@ -2,10 +2,9 @@ package com.example.functioninglogin.GeneratorPageUIClasses;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,10 +25,9 @@ public class ShoppingListFragment extends Fragment {
     private RecyclerView shoppingRecyclerView;
     private ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
+    private FrameLayout progressOverlay;
 
-    public ShoppingListFragment() {
-        // Required empty constructor
-    }
+    public ShoppingListFragment() {}
 
     @Nullable
     @Override
@@ -40,6 +38,8 @@ public class ShoppingListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
         shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        progressOverlay = view.findViewById(R.id.progressOverlay);
         adapter = new ShoppingListAdapter(shoppingList);
         shoppingRecyclerView.setAdapter(adapter);
 
@@ -47,7 +47,16 @@ public class ShoppingListFragment extends Fragment {
         return view;
     }
 
+    private void showLoading() {
+        if (progressOverlay != null) progressOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        if (progressOverlay != null) progressOverlay.setVisibility(View.GONE);
+    }
+
     private void fetchShoppingList() {
+        showLoading();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
@@ -60,13 +69,19 @@ public class ShoppingListFragment extends Fragment {
                 shoppingList.clear();
 
                 for (DataSnapshot listSnap : snapshot.getChildren()) {
+                    String listId = listSnap.getKey();
+
                     for (DataSnapshot memberSnap : listSnap.child("members").getChildren()) {
+                        String memberId = memberSnap.getKey();
                         String memberName = memberSnap.child("name").getValue(String.class);
 
                         for (DataSnapshot giftSnap : memberSnap.child("gifts").getChildren()) {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
                             if (gift != null && gift.getName() != null) {
                                 shoppingList.add(new ShoppingListItem(
+                                        listId,
+                                        memberId,
+                                        giftSnap.getKey(),
                                         memberName,
                                         gift.getName(),
                                         gift.getPrice() != null ? gift.getPrice() : "0.00",
@@ -79,13 +94,39 @@ public class ShoppingListFragment extends Fragment {
 
                 Log.d("SHOPPING_FETCH", "Total Items: " + shoppingList.size());
                 adapter.notifyDataSetChanged();
+                hideLoading();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Failed to load shopping list: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "❌ Failed to load shopping list: " + error.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("SHOPPING_ERROR", error.getMessage());
+                hideLoading();
             }
         });
+    }
+
+    private void updateGiftStatus(ShoppingListItem item, boolean isChecked) {
+        String newStatus = isChecked ? "bought" : "idea";
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference giftRef = FirebaseDatabase.getInstance()
+                .getReference("Unique User ID")
+                .child(userId)
+                .child("lists")
+                .child(item.getListId())
+                .child("members")
+                .child(item.getMemberId())
+                .child("gifts")
+                .child(item.getGiftId())
+                .child("status");
+
+        giftRef.setValue(newStatus)
+                .addOnSuccessListener(aVoid ->
+                        Log.d("STATUS_UPDATE", "✅ Updated status for " + item.getGiftName() + " to " + newStatus)
+                )
+                .addOnFailureListener(e ->
+                        Log.e("STATUS_UPDATE", "❌ Failed to update status", e)
+                );
     }
 }

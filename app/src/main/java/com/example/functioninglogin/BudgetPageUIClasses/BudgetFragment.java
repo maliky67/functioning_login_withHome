@@ -2,13 +2,8 @@ package com.example.functioninglogin.BudgetPageUIClasses;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,52 +16,38 @@ import com.example.functioninglogin.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.data.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BudgetFragment extends Fragment {
 
     private RecyclerView budgetRecyclerView;
     private ImageButton chartToggleButton;
     private RadioGroup categoryTabs;
-    private TextView titleTextView;
+    private TextView titleTextView, emptyTextView;
     private BarChart barChart;
     private PieChart pieChart;
+    private FrameLayout progressOverlay;
 
     private boolean isPie = false;
     private final Map<String, List<GiftItem>> memberGifts = new HashMap<>();
     private BudgetAdapter adapter;
 
-    // Remove this entire onCreate block
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // listKey is no longer needed
-    }
-
-
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(com.example.functioninglogin.R.layout.fragment_budget, container, false);
+        View view = inflater.inflate(R.layout.fragment_budget, container, false);
 
-        budgetRecyclerView = view.findViewById(com.example.functioninglogin.R.id.budgetRecyclerView);
-        chartToggleButton = view.findViewById(com.example.functioninglogin.R.id.chartToggleButton);
-        categoryTabs = view.findViewById(com.example.functioninglogin.R.id.categoryTabs);
-        titleTextView = view.findViewById(com.example.functioninglogin.R.id.budgetTitleTextView);
-        barChart = view.findViewById(com.example.functioninglogin.R.id.budgetBarChart);
-        pieChart = view.findViewById(com.example.functioninglogin.R.id.budgetPieChart);
+        budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
+        chartToggleButton = view.findViewById(R.id.chartToggleButton);
+        categoryTabs = view.findViewById(R.id.categoryTabs);
+        titleTextView = view.findViewById(R.id.budgetTitleTextView);
+        barChart = view.findViewById(R.id.budgetBarChart);
+        pieChart = view.findViewById(R.id.budgetPieChart);
+        emptyTextView = view.findViewById(R.id.emptyTextView); // Add this TextView in XML
+        progressOverlay = view.findViewById(R.id.progressOverlay); // Add FrameLayout to XML
 
         budgetRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new BudgetAdapter(new ArrayList<>());
@@ -87,6 +68,8 @@ public class BudgetFragment extends Fragment {
     }
 
     private void loadBudgetData() {
+        progressOverlay.setVisibility(View.VISIBLE); // ✅ Show loading
+
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
@@ -130,15 +113,21 @@ public class BudgetFragment extends Fragment {
 
                 adapter.setBudgetList(budgetDataList);
                 updateChart();
+
+                // ✅ Hide progress after full chart update
+                progressOverlay.setVisibility(View.GONE);
+
+                // ✅ Show empty state if needed
+                emptyTextView.setVisibility(budgetDataList.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getContext(), "Failed to load lists: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                progressOverlay.setVisibility(View.GONE); // ✅ Hide progress on failure too
             }
         });
     }
-
 
     private void updateChart() {
         List<BarEntry> barEntries = new ArrayList<>();
@@ -155,8 +144,8 @@ public class BudgetFragment extends Fragment {
                 int selectedId = categoryTabs.getCheckedRadioButtonId();
                 String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "idea";
 
-                if (selectedId == com.example.functioninglogin.R.id.tabIdeas && !status.equals("idea")) matchesFilter = false;
-                if (selectedId == com.example.functioninglogin.R.id.tabPurchased && !status.equals("bought")) matchesFilter = false;
+                if (selectedId == R.id.tabIdeas && !status.equals("idea")) matchesFilter = false;
+                if (selectedId == R.id.tabPurchased && !status.equals("bought")) matchesFilter = false;
                 if (selectedId == R.id.tabGifts) {
                     total = gifts.size();
                     break;
