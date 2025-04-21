@@ -1,24 +1,16 @@
 package com.example.functioninglogin.DiscountPageUIClasses;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.fragment.app.Fragment;
-
-import com.example.functioninglogin.R;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
+import android.view.*;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.*;
+
+import com.example.functioninglogin.R;
 
 import java.util.List;
 
@@ -40,7 +32,7 @@ public class DiscountsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_discounts, container, false);
 
         recyclerView = view.findViewById(R.id.dealsRecycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new DealsAdapter();
         recyclerView.setAdapter(adapter);
 
@@ -51,17 +43,26 @@ public class DiscountsFragment extends Fragment {
 
     private void fetchDeals() {
         DealsApi api = RetrofitInstance.getApi();
-        api.getDeals().enqueue(new Callback<List<DealItem>>() {
+
+        // Real API: this should call "deals-v2" or similar, not product-offers
+        Call<DealResponse> call = api.getDeals("US", "ALL", "ALL", 1);
+
+        call.enqueue(new Callback<DealResponse>() {
             @Override
-            public void onResponse(Call<List<DealItem>> call, Response<List<DealItem>> response) {
+            public void onResponse(@NonNull Call<DealResponse> call, @NonNull Response<DealResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    adapter.setDealList(response.body());
+                    List<DealItem> deals = response.body().getData().getDeals();
+                    adapter.updateDeals(deals);
+                } else {
+                    Log.e("DEAL_FETCH", "❌ Unexpected response: " + response.code());
+                    Toast.makeText(requireContext(), "❌ Failed to load deals", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<DealItem>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to load deals", Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<DealResponse> call, @NonNull Throwable t) {
+                Log.e("API", "Failed: " + t.getMessage());
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
