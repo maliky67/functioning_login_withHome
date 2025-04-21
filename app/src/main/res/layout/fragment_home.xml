@@ -1,62 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/light_blue">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- ✅ Your current layout preserved inside -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="@color/light_blue">
 
-        <!-- Search View -->
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:background="@drawable/borderblue"
-            android:queryHint="Search..."
-            app:iconifiedByDefault="false"
-            app:searchHintIcon="@null"
-            app:searchIcon="@drawable/baseline_account_box_24"
-            app:closeIcon="@drawable/baseline_account_box_24" />
+            android:paddingBottom="16dp">
 
-        <!-- Empty State Text -->
-        <TextView
-            android:id="@+id/emptyTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_lists_yet_start_by_adding_one"
-            android:textAlignment="center"
-            android:padding="16dp"
-            android:textColor="@color/christmas_blue"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            <!-- 🔍 Search -->
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/borderblue"
+                android:queryHint="Search..."
+                app:iconifiedByDefault="false"
+                app:searchHintIcon="@null"
+                app:searchIcon="@drawable/baseline_account_box_24"
+                app:closeIcon="@drawable/baseline_account_box_24" />
 
-        <!-- RecyclerView (wrap_content for scrolling inside NestedScrollView) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:padding="8dp"
-            android:clipToPadding="false" />
+            <!-- 🚫 Empty text -->
+            <TextView
+                android:id="@+id/emptyTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_lists_yet_start_by_adding_one"
+                android:textAlignment="center"
+                android:padding="16dp"
+                android:textColor="@color/christmas_blue"
+                android:textSize="20sp"
+                android:visibility="gone" />
 
-        <!-- Add List Button (right under the RecyclerView) -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addListButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add List"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/BorderBlue"
-            android:layout_margin="16dp"
-            app:cornerRadius="8dp" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <!-- 📦 Lists -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:padding="8dp"
+                android:clipToPadding="false" />
+
+            <!-- ➕ Add Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addListButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add List"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/BorderBlue"
+                android:layout_margin="16dp"
+                app:cornerRadius="8dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 🌀 Your loading overlay -->
+    <include
+        android:id="@+id/progressOverlay"
+        layout="@layout/progress_layout" />
+</FrameLayout>

@@ -1,6 +1,5 @@
 package com.example.functioninglogin.HomePageUIClasses;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -35,10 +34,10 @@ public class HomeFragment extends Fragment {
     private MaterialButton addListButton;
     private SearchView searchView;
     private TextView emptyTextView;
+    private View progressOverlay;
     private List<GiftList> dataList;
     private MyAdapter adapter;
     private DatabaseReference databaseReference;
-    private AlertDialog dialog;
 
     private boolean shouldRefreshOnResume = false;
     private boolean isFetching = false;
@@ -52,6 +51,7 @@ public class HomeFragment extends Fragment {
         addListButton = view.findViewById(R.id.addListButton);
         searchView = view.findViewById(R.id.search);
         emptyTextView = view.findViewById(R.id.emptyTextView);
+        progressOverlay = view.findViewById(R.id.progressOverlay); // ✅ new
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
@@ -122,16 +122,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDataFromFirebase() {
-        if (dialog == null) {
-            dialog = new AlertDialog.Builder(requireContext())
-                    .setView(R.layout.progress_layout)
-                    .setCancelable(false)
-                    .create();
-        }
+        if (progressOverlay != null) progressOverlay.setVisibility(View.VISIBLE); // 🌀 show spinner
 
-        dialog.show();
-
-        databaseReference.child("lists").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("lists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();
@@ -140,20 +133,17 @@ public class HomeFragment extends Fragment {
                     if (list != null) {
                         list.setListId(listSnap.getKey());
 
-                        // 🔁 Load member data
                         if (listSnap.hasChild("members")) {
                             HashMap<String, MemberDataClass> members = new HashMap<>();
                             for (DataSnapshot mSnap : listSnap.child("members").getChildren()) {
                                 MemberDataClass member = mSnap.getValue(MemberDataClass.class);
                                 if (member != null) {
-                                    member.setKey(mSnap.getKey()); // ✅ Properly assign key
-                                    members.put(mSnap.getKey(), member); // ✅ Add to map correctly
+                                    member.setKey(mSnap.getKey());
+                                    members.put(mSnap.getKey(), member);
                                 }
                             }
                             list.setMembers(members);
                         }
-
-
 
                         dataList.add(list);
                     }
@@ -161,14 +151,14 @@ public class HomeFragment extends Fragment {
 
                 adapter.updateData(dataList);
                 emptyTextView.setVisibility(dataList.isEmpty() ? View.VISIBLE : View.GONE);
-                dialog.dismiss();
+                if (progressOverlay != null) progressOverlay.setVisibility(View.GONE); // ✅ hide spinner
                 isFetching = false;
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(requireContext(), "Live update error ❌", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                if (progressOverlay != null) progressOverlay.setVisibility(View.GONE);
                 isFetching = false;
             }
         });
@@ -196,7 +186,7 @@ public class HomeFragment extends Fragment {
                 int position = viewHolder.getAdapterPosition();
                 GiftList toDelete = dataList.get(position);
 
-                new AlertDialog.Builder(requireContext())
+                new android.app.AlertDialog.Builder(requireContext())
                         .setTitle("Delete List?")
                         .setMessage("Are you sure you want to delete the list \"" + toDelete.getListTitle() + "\" and all its members?")
                         .setPositiveButton("Delete", (dialog, which) -> {
@@ -224,22 +214,13 @@ public class HomeFragment extends Fragment {
                                     });
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> {
-                            adapter.notifyItemChanged(position); // put it back
+                            adapter.notifyItemChanged(position);
                         })
                         .setCancelable(false)
                         .show();
             }
-
         };
 
         new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
     }
 }

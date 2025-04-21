@@ -12,54 +12,59 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:padding="16dp">
 
-        <!-- 🟢 Icon for the deal status/type -->
+        <!-- 🖼️ Product Image -->
         <ImageView
             android:id="@+id/dealImage"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="90dp"
             android:layout_alignParentStart="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="Product Image"
             android:src="@drawable/baseline_lightbulb_24" />
 
         <!-- 🏷️ Deal Title -->
         <TextView
             android:id="@+id/dealTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/dealImage"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/deal_title"
-            android:textSize="20sp"
+            android:layout_alignTop="@id/dealImage"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="70dp"
+            android:text="King Size 4 Piece Sheet Set"
+            android:textSize="16sp"
             android:textColor="@color/BorderBlue"
-            android:maxLines="1" />
+            android:textStyle="bold"
+            android:maxLines="3"
+            android:ellipsize="end" />
 
-        <!-- 🔗 Deal URL -->
+        <!-- 🔗 Deal Link (now allowed to wrap) -->
         <TextView
             android:id="@+id/dealLink"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dealTitle"
-            android:layout_toEndOf="@id/dealImage"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="12dp"
-            android:text="@string/deal_link"
-            android:textSize="14sp"
+            android:layout_alignStart="@id/dealTitle"
+            android:layout_marginTop="4dp"
+            android:text="https://www.amazon.com/King-Size-Piece-Sheet-Set/dp/B01LWMWAXV"
             android:textColor="@color/BorderBlue"
-            android:maxLines="1" />
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end" />
 
-        <!-- 💰 Deal Price -->
+        <!-- 💰 Price aligned right -->
         <TextView
             android:id="@+id/dealPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/_0"
-            android:textSize="16sp"
-            android:textColor="@color/BorderBlue"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:text="$24.49"
+            android:textColor="@color/BorderBlue"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -22,6 +22,7 @@ public class DiscountsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private DealsAdapter adapter;
+    private View loadingOverlay;
 
     @Nullable
     @Override
@@ -36,20 +37,24 @@ public class DiscountsFragment extends Fragment {
         adapter = new DealsAdapter();
         recyclerView.setAdapter(adapter);
 
+        loadingOverlay = view.findViewById(R.id.loadingOverlay); // 🌟 this was the missing piece!
+
         fetchDeals();
 
         return view;
     }
 
     private void fetchDeals() {
+        showLoading(true);
+
         DealsApi api = RetrofitInstance.getApi();
 
-        // Real API: this should call "deals-v2" or similar, not product-offers
         Call<DealResponse> call = api.getDeals("US", "ALL", "ALL", 1);
 
         call.enqueue(new Callback<DealResponse>() {
             @Override
             public void onResponse(@NonNull Call<DealResponse> call, @NonNull Response<DealResponse> response) {
+                showLoading(false);
                 if (response.isSuccessful() && response.body() != null) {
                     List<DealItem> deals = response.body().getData().getDeals();
                     adapter.updateDeals(deals);
@@ -61,9 +66,16 @@ public class DiscountsFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<DealResponse> call, @NonNull Throwable t) {
+                showLoading(false);
                 Log.e("API", "Failed: " + t.getMessage());
                 Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void showLoading(boolean show) {
+        if (loadingOverlay != null) {
+            loadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 }

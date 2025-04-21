@@ -1,25 +1,38 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/light_blue"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/discountsRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_blue">
 
-    <TextView
-        android:id="@+id/title"
-        android:text="Today's Deals 🎁"
-        android:textSize="25sp"
-        android:layout_gravity="center"
-        android:textColor="@color/blue_background"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dealsRecycler"
+    <!-- 🧾 MAIN CONTENT: Title + Recycler -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-</LinearLayout>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:text="Today's Deals 🎁"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:textColor="@color/blue_background"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dealsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- 🌀 LOADING OVERLAY -->
+    <include
+        android:id="@+id/loadingOverlay"
+        layout="@layout/progress_layout"
+        android:visibility="gone" />
+</FrameLayout>
