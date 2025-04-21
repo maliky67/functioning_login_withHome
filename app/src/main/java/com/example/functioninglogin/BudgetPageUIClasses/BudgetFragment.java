@@ -167,12 +167,47 @@ public class BudgetFragment extends Fragment {
 
         if (isPie) {
             PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Breakdown");
-            pieDataSet.setColors(new int[]{Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN});
+            pieDataSet.setColors(new int[]{
+                    Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN,
+                    Color.RED, Color.YELLOW, Color.LTGRAY, Color.DKGRAY,
+                    Color.BLACK, Color.WHITE, Color.parseColor("#FFA500"), // Orange
+                    Color.parseColor("#FFC0CB"), // Pink
+                    Color.parseColor("#00CED1"), // Dark Turquoise
+                    Color.parseColor("#FFD700"), // Gold
+                    Color.parseColor("#ADFF2F"), // Green Yellow
+                    Color.parseColor("#8A2BE2"), // Blue Violet
+                    Color.parseColor("#FF69B4"), // Hot Pink
+                    Color.parseColor("#7FFF00"), // Chartreuse
+                    Color.parseColor("#00FA9A"), // Medium Spring Green
+                    Color.parseColor("#DC143C"), // Crimson
+                    Color.parseColor("#FF8C00"), // Dark Orange
+                    Color.parseColor("#1E90FF"), // Dodger Blue
+                    Color.parseColor("#9400D3"), // Dark Violet
+                    Color.parseColor("#F4A460"), // Sandy Brown
+            });
             pieChart.setData(new PieData(pieDataSet));
             pieChart.setDescription(getChartDescription("Pie Chart View"));
             pieChart.invalidate();
         } else {
             BarDataSet barDataSet = new BarDataSet(barEntries, "Budget Total");
+            barDataSet.setColors(new int[]{
+                    Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN,
+                    Color.RED, Color.YELLOW, Color.LTGRAY, Color.DKGRAY,
+                    Color.BLACK, Color.WHITE, Color.parseColor("#FFA500"), // Orange
+                    Color.parseColor("#FFC0CB"), // Pink
+                    Color.parseColor("#00CED1"), // Dark Turquoise
+                    Color.parseColor("#FFD700"), // Gold
+                    Color.parseColor("#ADFF2F"), // Green Yellow
+                    Color.parseColor("#8A2BE2"), // Blue Violet
+                    Color.parseColor("#FF69B4"), // Hot Pink
+                    Color.parseColor("#7FFF00"), // Chartreuse
+                    Color.parseColor("#00FA9A"), // Medium Spring Green
+                    Color.parseColor("#DC143C"), // Crimson
+                    Color.parseColor("#FF8C00"), // Dark Orange
+                    Color.parseColor("#1E90FF"), // Dodger Blue
+                    Color.parseColor("#9400D3"), // Dark Violet
+                    Color.parseColor("#F4A460"), // Sandy Brown
+            });
             BarData barData = new BarData(barDataSet);
             barChart.setData(barData);
             barChart.setDescription(getChartDescription("Bar Chart View"));
