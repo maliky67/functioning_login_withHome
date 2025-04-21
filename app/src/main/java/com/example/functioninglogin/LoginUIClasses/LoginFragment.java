@@ -2,31 +2,24 @@ package com.example.functioninglogin.LoginUIClasses;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.text.InputType;
+import android.view.*;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.HomePageUIClasses.MainActivity;
 import com.example.functioninglogin.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.*;
 
 public class LoginFragment extends Fragment {
 
     private EditText loginEmail, loginPassword;
     private Button loginButton;
-    private TextView signupRedirectText, forgotpasswordRedirectText;
+    private TextView signupRedirectText, forgotPasswordRedirectText;
+    private ImageView passwordToggle;
+    private boolean isPasswordVisible = false;
     private FirebaseAuth auth;
 
     public LoginFragment() {
@@ -37,7 +30,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -47,11 +39,27 @@ public class LoginFragment extends Fragment {
 
         loginEmail = view.findViewById(R.id.login_username);
         loginPassword = view.findViewById(R.id.login_password);
-        signupRedirectText = view.findViewById(R.id.loginRedirectText);
-        forgotpasswordRedirectText = view.findViewById(R.id.forgot_passwordRedirectText);
+        passwordToggle = view.findViewById(R.id.password_toggle);
         loginButton = view.findViewById(R.id.login_button);
+        signupRedirectText = view.findViewById(R.id.loginRedirectText);
+        forgotPasswordRedirectText = view.findViewById(R.id.forgot_passwordRedirectText);
 
         auth = FirebaseAuth.getInstance();
+
+        // 👁️ Toggle password visibility
+        passwordToggle.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                // Hide password
+                loginPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                passwordToggle.setImageResource(R.drawable.blind_eye); // Swap this with your "eye closed" icon
+            } else {
+                // Show password
+                loginPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                passwordToggle.setImageResource(R.drawable.eye_open); // Swap this with your "eye open" icon
+            }
+            isPasswordVisible = !isPasswordVisible;
+            loginPassword.setSelection(loginPassword.getText().length()); // Keep cursor at end
+        });
 
         loginButton.setOnClickListener(v -> {
             String email = loginEmail.getText().toString().trim();
@@ -68,7 +76,6 @@ public class LoginFragment extends Fragment {
                             FirebaseUser user = auth.getCurrentUser();
                             if (user != null) {
                                 String userId = user.getUid();
-
                                 Intent intent = new Intent(requireContext(), MainActivity.class);
                                 intent.putExtra("userId", userId);
                                 startActivity(intent);
@@ -90,7 +97,7 @@ public class LoginFragment extends Fragment {
                     .commit();
         });
 
-        forgotpasswordRedirectText.setOnClickListener(v -> {
+        forgotPasswordRedirectText.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.auth_fragment_container, new ForgotPasswordFragment())

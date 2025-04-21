@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,9 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="76dp"
         android:baselineAligned="false"
-        android:src="@drawable/lightv1"
-        tools:src="@drawable/lightv1"
-        tools:srcCompat="@drawable/lightv1" />
+        android:src="@drawable/lightv1" />
 
     <TextView
         android:id="@+id/textView6"
@@ -27,17 +25,14 @@
         android:text="Santa's Helper"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="48sp"
-        android:typeface="normal" />
+        android:textSize="48sp" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="83dp"
         android:layout_marginTop="15dp"
-        android:src="@drawable/hatv1"
-        tools:src="@drawable/hatv1"
-        tools:srcCompat="@drawable/hatv1" />
+        android:src="@drawable/hatv1" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -49,11 +44,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/rounded_white_bg"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="24dp"
+            android:background="@drawable/rounded_white_bg">
 
+            <!-- EMAIL FIELD -->
             <EditText
                 android:id="@+id/login_username"
                 android:layout_width="match_parent"
@@ -66,18 +61,37 @@
                 android:padding="8dp"
                 android:textColor="@color/black" />
 
-            <EditText
-                android:id="@+id/login_password"
+            <!-- PASSWORD FIELD + EYE TOGGLE -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/borderblue"
-                android:drawableStart="@drawable/baseline_ac_unit_24"
-                android:drawablePadding="8dp"
-                android:hint="Password"
-                android:padding="8dp"
-                android:textColor="@color/black" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
 
+                <EditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/borderblue"
+                    android:drawableStart="@drawable/baseline_ac_unit_24"
+                    android:drawablePadding="8dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:paddingEnd="48dp" />
+
+                <ImageView
+                    android:id="@+id/password_toggle"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/blind_eye"
+                    android:contentDescription="Toggle Password Visibility" />
+            </RelativeLayout>
+
+            <!-- LOGIN BUTTON -->
             <Button
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
@@ -86,8 +100,7 @@
                 android:background="@drawable/rounded_blue"
                 android:text="@string/login"
                 android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cornerRadius="20dp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/loginRedirectText"
@@ -112,5 +125,4 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>
