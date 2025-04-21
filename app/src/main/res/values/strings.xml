@@ -93,4 +93,7 @@
     <string name="no_lists_yet_start_by_adding_one">No lists yet. Start by adding one!</string>
     <string name="members">Members</string>
     <string name="mom_dad_2">Mom, Dad, +2</string>
+    <string name="deal_title">Deal Title</string>
+    <string name="deal_link">Deal Link</string>
+    <string name="_0">$0</string>
 </resources>
