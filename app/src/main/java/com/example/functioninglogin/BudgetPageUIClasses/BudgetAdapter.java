@@ -3,8 +3,7 @@ package com.example.functioninglogin.BudgetPageUIClasses;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,12 +32,21 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
     @Override
     public void onBindViewHolder(@NonNull BudgetViewHolder holder, int position) {
         BudgetData data = budgetList.get(position);
-        String name = data.getMemberName() != null ? data.getMemberName() : "No Name";
-        double total = data.getTotalPrice();
 
+        // Fallbacks
+        String name = data.getMemberName() != null ? data.getMemberName() : "No Name";
+        double totalSpent = data.getTotalPrice();
+        double totalBudget = data.getTotalBudget();
+
+        // Set values
         holder.nameTextView.setText(name);
-        holder.totalTextView.setText(String.format("Total: $%.2f", total));
-        holder.memberImageView.setImageResource(R.drawable.baseline_ac_unit_24);
+        holder.totalTextView.setText(String.format("Gift Total: $%.2f", totalSpent));
+        holder.maxTextView.setText(String.format("Budget: $%.2f", totalBudget));
+        holder.memberImageView.setImageResource(R.drawable.baseline_account_box_24); // can update to URL later
+
+        // Progress logic
+        float progress = data.getProgressPercentage(); // 0–100
+        holder.progressBar.setProgress((int) progress);
     }
 
     @Override
@@ -51,16 +59,18 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
         notifyDataSetChanged();
     }
 
-    public class BudgetViewHolder extends RecyclerView.ViewHolder {
+    public static class BudgetViewHolder extends RecyclerView.ViewHolder {
         ImageView memberImageView;
-        TextView nameTextView, totalTextView;
+        TextView nameTextView, totalTextView, maxTextView;
+        ProgressBar progressBar;
 
         public BudgetViewHolder(@NonNull View itemView) {
             super(itemView);
-            memberImageView = itemView.findViewById(R.id.memberImage); // <- Make sure this ID matches layout
+            memberImageView = itemView.findViewById(R.id.memberImage);
             nameTextView = itemView.findViewById(R.id.budgetCardName);
             totalTextView = itemView.findViewById(R.id.budgetCardTotal);
+            maxTextView = itemView.findViewById(R.id.budgetCardMax);
+            progressBar = itemView.findViewById(R.id.budgetProgressBar);
         }
     }
-
 }

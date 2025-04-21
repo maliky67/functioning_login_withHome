@@ -6,6 +6,9 @@ public class BudgetData {
     private String memberImageUrl;
     private double totalPrice;
 
+    // ✅ NEW: total budget assigned to this list
+    private double totalBudget;
+
     public BudgetData() {}
 
     public BudgetData(String memberName, String memberRole, String memberImageUrl, double totalPrice) {
@@ -13,6 +16,15 @@ public class BudgetData {
         this.memberRole = memberRole;
         this.memberImageUrl = memberImageUrl;
         this.totalPrice = totalPrice;
+    }
+
+    // ✅ NEW: overloaded constructor to include total budget
+    public BudgetData(String memberName, String memberRole, String memberImageUrl, double totalPrice, double totalBudget) {
+        this.memberName = memberName;
+        this.memberRole = memberRole;
+        this.memberImageUrl = memberImageUrl;
+        this.totalPrice = totalPrice;
+        this.totalBudget = totalBudget;
     }
 
     public String getMemberName() {
@@ -45,5 +57,20 @@ public class BudgetData {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    // ✅ NEW: list total budget
+    public double getTotalBudget() {
+        return totalBudget;
+    }
+
+    public void setTotalBudget(double totalBudget) {
+        this.totalBudget = totalBudget;
+    }
+
+    // ✅ NEW: derived % for UI use
+    public float getProgressPercentage() {
+        if (totalBudget <= 0) return 0f;
+        return (float) ((totalPrice / totalBudget) * 100f);
     }
 }

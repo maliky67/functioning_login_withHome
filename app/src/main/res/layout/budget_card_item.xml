@@ -17,7 +17,7 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Image on the left -->
+        <!-- Member Image -->
         <ImageView
             android:id="@+id/memberImage"
             android:layout_width="48dp"
@@ -26,13 +26,14 @@
             android:scaleType="centerCrop"
             android:src="@drawable/baseline_account_box_24" />
 
-        <!-- Texts on the right -->
+        <!-- Info + Progress -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <!-- Name -->
             <TextView
                 android:id="@+id/budgetCardName"
                 android:layout_width="wrap_content"
@@ -42,14 +43,37 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <!-- Total Spent -->
             <TextView
                 android:id="@+id/budgetCardTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total: $0.00"
+                android:text="Gift Total: $0.00"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:layout_marginTop="4dp" />
+
+            <!-- Budget Cap -->
+            <TextView
+                android:id="@+id/budgetCardMax"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Budget: $0.00"
+                android:layout_gravity="end"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_marginTop="2dp" />
+
+            <!-- ProgressBar -->
+            <ProgressBar
+                android:id="@+id/budgetProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="8dp"
+                android:progress="30"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressTint="#2D2FDF"
+                android:backgroundTint="#D1D8FF" />
         </LinearLayout>
 
     </LinearLayout>
