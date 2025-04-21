@@ -33,30 +33,31 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
     public void onBindViewHolder(@NonNull BudgetViewHolder holder, int position) {
         BudgetData data = budgetList.get(position);
 
-        // Fallbacks
         String name = data.getMemberName() != null ? data.getMemberName() : "No Name";
         double totalSpent = data.getTotalPrice();
         double totalBudget = data.getTotalBudget();
 
-        // Set values
         holder.nameTextView.setText(name);
         holder.totalTextView.setText(String.format("Gift Total: $%.2f", totalSpent));
         holder.maxTextView.setText(String.format("Budget: $%.2f", totalBudget));
-        holder.memberImageView.setImageResource(R.drawable.baseline_account_box_24); // can update to URL later
+        holder.memberImageView.setImageResource(R.drawable.baseline_account_box_24);
 
-        // Progress logic
-        float progress = data.getProgressPercentage(); // 0–100
-        holder.progressBar.setProgress((int) progress);
+        int progress = (int) data.getProgressPercentage();
+        holder.progressBar.setProgress(progress);
     }
 
     @Override
     public int getItemCount() {
-        return budgetList.size();
+        return budgetList != null ? budgetList.size() : 0;
     }
 
     public void setBudgetList(List<BudgetData> newList) {
         this.budgetList = newList != null ? newList : new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public List<BudgetData> getBudgetList() {
+        return this.budgetList;
     }
 
     public static class BudgetViewHolder extends RecyclerView.ViewHolder {
