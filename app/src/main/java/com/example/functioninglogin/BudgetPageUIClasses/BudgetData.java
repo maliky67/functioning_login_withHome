@@ -1,10 +1,16 @@
 package com.example.functioninglogin.BudgetPageUIClasses;
 
+import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class BudgetData {
     private String memberName;
     private String memberRole;
     private String memberImageUrl;
     private double totalPrice;
+    private List<GiftItem> gifts = new ArrayList<>();
 
     // ✅ NEW: total budget assigned to this list
     private double totalBudget;
@@ -72,5 +78,12 @@ public class BudgetData {
     public float getProgressPercentage() {
         if (totalBudget <= 0) return 0f;
         return (float) ((totalPrice / totalBudget) * 100f);
+    }
+    public List<GiftItem> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(List<GiftItem> gifts) {
+        this.gifts = (gifts != null) ? gifts : new ArrayList<>();
     }
 }

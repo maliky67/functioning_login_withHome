@@ -96,4 +96,5 @@
     <string name="deal_title">Deal Title</string>
     <string name="deal_link">Deal Link</string>
     <string name="_0">$0</string>
+    <string name="idea_total_0_00">Idea Total: $0.00</string>
 </resources>

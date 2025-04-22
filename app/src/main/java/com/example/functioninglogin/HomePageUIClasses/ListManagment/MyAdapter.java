@@ -16,6 +16,7 @@ import com.example.functioninglogin.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -68,18 +69,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         GiftList list = dataList.get(position);
 
         holder.recTitle.setText(list.getListTitle() != null ? list.getListTitle() : "No Title");
-
-        // 👥 Members
         holder.recDesc.setText(list.getFormattedMemberPreview());
 
-        // 💰 Budget
-        holder.totalBudget.setText("Total Budget: $" + list.getTotalBudget());
-
-        // 💸 Total Spent
         double spent = calculateTotalSpent(list);
-        holder.totalSpent.setText("Total Spent: $" + spent);
+        String totalSpentStr = String.format(Locale.US, "$%.2f", spent);
+        String totalBudgetStr = String.format(Locale.US, "$%.2f", list.getTotalBudget());
 
-        // 🖼 Image
+        holder.totalSpent.setText("Total Spent: " + totalSpentStr);
+        holder.totalBudget.setText("Total Budget: " + totalBudgetStr);
+
         String imageUrl = list.getListImage();
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context).load(imageUrl).into(holder.recImage);

@@ -1,3 +1,5 @@
+// 🔧 FULLY FIXED BudgetFragment.java
+// 👇 START OF FILE
 package com.example.functioninglogin.BudgetPageUIClasses;
 
 import android.graphics.Color;
@@ -14,11 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
 import com.example.functioninglogin.R;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
@@ -35,12 +39,10 @@ public class BudgetFragment extends Fragment {
     private FrameLayout progressOverlay;
     private Spinner listSpinner;
 
-    private boolean isPie = false;
+    private boolean isPie = true;
 
-    private final Map<String, List<GiftItem>> memberGifts = new HashMap<>();
     private final Map<String, List<BudgetData>> allListBudgets = new HashMap<>();
     private final Map<String, Double> listBudgets = new HashMap<>();
-
     private BudgetAdapter adapter;
     private ArrayAdapter<String> spinnerAdapter;
     private String selectedList = "";
@@ -57,26 +59,26 @@ public class BudgetFragment extends Fragment {
         pieChart = view.findViewById(R.id.budgetPieChart);
         emptyTextView = view.findViewById(R.id.emptyTextView);
         progressOverlay = view.findViewById(R.id.progressOverlay);
+
         listSpinner = new Spinner(requireContext());
-        ((LinearLayout) view.findViewById(R.id.budgetInnerLayout)).addView(listSpinner, 1); // insert below title
+        ((LinearLayout) view.findViewById(R.id.budgetInnerLayout)).addView(listSpinner, 1);
 
         budgetRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new BudgetAdapter(new ArrayList<>());
         budgetRecyclerView.setAdapter(adapter);
 
-        chartToggleButton.setOnClickListener(v -> toggleChart());
+        chartToggleButton.setOnClickListener(v -> {
+            isPie = !isPie;
+            pieChart.setVisibility(isPie ? View.VISIBLE : View.GONE);
+            barChart.setVisibility(isPie ? View.GONE : View.VISIBLE);
+            updateChart();
+        });
+
         categoryTabs.setOnCheckedChangeListener((group, checkedId) -> updateChart());
 
+        disableChartInteractivity(barChart);
         loadBudgetData();
-
         return view;
-    }
-
-    private void toggleChart() {
-        isPie = !isPie;
-        pieChart.setVisibility(isPie ? View.VISIBLE : View.GONE);
-        barChart.setVisibility(isPie ? View.GONE : View.VISIBLE);
-        updateChart();
     }
 
     private void loadBudgetData() {
@@ -92,7 +94,6 @@ public class BudgetFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 allListBudgets.clear();
                 listBudgets.clear();
-
                 List<String> listTitles = new ArrayList<>();
 
                 for (DataSnapshot listSnap : snapshot.getChildren()) {
@@ -100,16 +101,13 @@ public class BudgetFragment extends Fragment {
                     if (listTitle == null) continue;
                     listTitles.add(listTitle);
 
-                    double listBudget = 0.0;
-                    try {
-                        listBudget = listSnap.child("totalBudget").getValue(Double.class);
-                    } catch (Exception ignored) {}
-
+                    double listBudget = listSnap.child("totalBudget").getValue(Double.class) != null
+                            ? listSnap.child("totalBudget").getValue(Double.class) : 0.0;
                     listBudgets.put(listTitle, listBudget);
 
                     List<BudgetData> members = new ArrayList<>();
                     for (DataSnapshot memberSnap : listSnap.child("members").getChildren()) {
-                        String memberName = memberSnap.child("name").getValue(String.class);
+                        String name = memberSnap.child("name").getValue(String.class);
                         String role = memberSnap.child("role").getValue(String.class);
                         String image = memberSnap.child("imageUrl").getValue(String.class);
 
@@ -126,8 +124,9 @@ public class BudgetFragment extends Fragment {
                             } catch (Exception ignored) {}
                         }
 
-                        memberGifts.put(memberName, gifts);
-                        members.add(new BudgetData(memberName, role, image, total, listBudget));
+                        BudgetData data = new BudgetData(name, role, image, total, listBudget);
+                        data.setGifts(gifts);
+                        members.add(data);
                     }
 
                     allListBudgets.put(listTitle, members);
@@ -145,24 +144,33 @@ public class BudgetFragment extends Fragment {
         });
     }
 
+    private boolean shouldIncludeGift(GiftItem gift) {
+        int selectedId = categoryTabs.getCheckedRadioButtonId();
+        String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "";
+
+        if (selectedId == R.id.tabIdeas) {
+            return status.equals("idea");
+        } else if (selectedId == R.id.tabPurchased) {
+            return status.equals("bought") || status.equals("arrived") || status.equals("wrapped");
+        } else {
+            return true;
+        }
+    }
+
     private void setupSpinner(List<String> titles) {
         spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, titles);
         listSpinner.setAdapter(spinnerAdapter);
 
         if (!titles.isEmpty()) {
             selectedList = titles.get(0);
-            listSpinner.setSelection(0);
-            adapter.setBudgetList(allListBudgets.get(selectedList));
             updateChart();
         }
 
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedList = titles.get(position);
-                adapter.setBudgetList(allListBudgets.get(selectedList));
                 updateChart();
             }
-
             @Override public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
@@ -170,58 +178,135 @@ public class BudgetFragment extends Fragment {
     private void updateChart() {
         if (!allListBudgets.containsKey(selectedList)) return;
 
-        List<BudgetData> list = allListBudgets.get(selectedList);
-        float maxY = 0;
-        List<BarEntry> barEntries = new ArrayList<>();
-        List<PieEntry> pieEntries = new ArrayList<>();
+        double listBudget = listBudgets.getOrDefault(selectedList, 0.0);
+        List<BudgetData> allMembers = allListBudgets.get(selectedList);
 
-        int index = 0;
-        for (BudgetData d : list) {
-            float amount = (float) d.getTotalPrice();
-            if (amount > 0) {
-                barEntries.add(new BarEntry(index, amount));
-                pieEntries.add(new PieEntry(amount, d.getMemberName()));
-                maxY = Math.max(maxY, (float) d.getTotalBudget());
-                index++;
+        List<BudgetData> filteredMembers = new ArrayList<>();
+        List<Float> stack = new ArrayList<>();
+        List<PieEntry> pieEntries = new ArrayList<>();
+        List<String> memberNames = new ArrayList<>();
+        float totalSpent = 0f;
+
+        for (BudgetData member : allMembers) {
+            float value = 0f;
+            List<GiftItem> gifts = member.getGifts();
+            if (gifts != null) {
+                for (GiftItem gift : gifts) {
+                    if (shouldIncludeGift(gift)) {
+                        try {
+                            value += Float.parseFloat(gift.getPrice());
+                        } catch (Exception ignored) {}
+                    }
+                }
+            }
+
+            if (value > 0f) {
+                BudgetData filtered = new BudgetData(
+                        member.getMemberName(),
+                        member.getMemberRole(),
+                        member.getMemberImageUrl(),
+                        value,
+                        listBudget
+                );
+                filtered.setGifts(gifts);
+                filteredMembers.add(filtered);
+                stack.add(value);
+                memberNames.add(member.getMemberName());
+                pieEntries.add(new PieEntry(value, member.getMemberName()));
+                totalSpent += value;
             }
         }
 
+        float remaining = (float) listBudget - totalSpent;
+        if (remaining > 0) {
+            stack.add(remaining);
+            memberNames.add("Unused");
+            pieEntries.add(new PieEntry(remaining, "Unused"));
+        }
+
+        int[] rawColors = getChartColors();
+
         if (isPie) {
-            PieDataSet pieDataSet = new PieDataSet(pieEntries, "Gift Distribution");
-            pieDataSet.setColors(getChartColors());
+            List<Integer> pieColors = new ArrayList<>();
+            for (int i = 0; i < pieEntries.size(); i++) {
+                pieColors.add(i == pieEntries.size() - 1 && remaining > 0 ? Color.WHITE : rawColors[i % rawColors.length]);
+            }
+
+            PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Usage");
+            pieDataSet.setColors(pieColors);
+            pieDataSet.setValueTextColor(Color.BLACK);
+            pieDataSet.setValueTextSize(14f);
+            pieDataSet.setValueFormatter(new ValueFormatter() {
+                @Override public String getPieLabel(float value, PieEntry entry) {
+                    return "$" + String.format("%.2f", value);
+                }
+            });
+
             pieChart.setData(new PieData(pieDataSet));
             pieChart.setDescription(getChartDescription("Pie Chart"));
             pieChart.invalidate();
         } else {
-            BarDataSet barDataSet = new BarDataSet(barEntries, "Gift Spending");
-            barDataSet.setColors(getChartColors());
+            if (!stack.isEmpty()) {
+                float[] barStack = new float[stack.size()];
+                for (int i = 0; i < stack.size(); i++) barStack[i] = stack.get(i);
 
-            BarData data = new BarData(barDataSet);
-            barChart.setData(data);
+                BarDataSet barDataSet = new BarDataSet(Collections.singletonList(new BarEntry(0, barStack)), "Spending vs Budget");
+                List<Integer> barColors = new ArrayList<>();
+                for (int i = 0; i < stack.size(); i++) {
+                    barColors.add(i == stack.size() - 1 && remaining > 0 ? Color.WHITE : rawColors[i % rawColors.length]);
+                }
 
-            barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-            YAxis yAxis = barChart.getAxisLeft();
-            yAxis.setAxisMinimum(0f);
-            yAxis.setAxisMaximum(maxY > 0 ? maxY : 100); // fallback
+                barDataSet.setColors(barColors);
+                barDataSet.setStackLabels(memberNames.toArray(new String[0]));
+                barDataSet.setDrawValues(true);
+                barDataSet.setValueTextColor(Color.BLACK);
+                barDataSet.setValueTextSize(14f);
+                barDataSet.setValueFormatter(new ValueFormatter() {
+                    @Override public String getBarStackedLabel(float value, BarEntry entry) {
+                        return "$" + String.format("%.2f", value);
+                    }
+                });
 
-            barChart.getAxisRight().setEnabled(false);
-            barChart.setDescription(getChartDescription("Bar Chart: Spending vs Budget"));
-            barChart.invalidate();
+                barChart.setData(new BarData(barDataSet));
+                barChart.getXAxis().setEnabled(false);
+                barChart.getAxisLeft().setAxisMinimum(0f);
+                barChart.getAxisLeft().setAxisMaximum((float) listBudget);
+                barChart.getAxisLeft().setGranularity(10f);
+                barChart.getAxisLeft().setValueFormatter(new ValueFormatter() {
+                    @Override public String getFormattedValue(float value) {
+                        return "$" + String.format("%.2f", value);
+                    }
+                });
+                barChart.getAxisRight().setEnabled(false);
+                barChart.setDescription(getChartDescription("Spending vs Budget"));
+                barChart.invalidate();
+            }
         }
 
-        emptyTextView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+        adapter.setBudgetList(filteredMembers);
+        emptyTextView.setVisibility(filteredMembers.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private int[] getChartColors() {
         return new int[]{
                 Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
-                Color.YELLOW, Color.LTGRAY, Color.DKGRAY, Color.BLACK, Color.WHITE,
+                Color.YELLOW, Color.LTGRAY, Color.DKGRAY, Color.BLACK,
                 Color.parseColor("#FFA500"), Color.parseColor("#FFC0CB"), Color.parseColor("#00CED1"),
                 Color.parseColor("#FFD700"), Color.parseColor("#ADFF2F"), Color.parseColor("#8A2BE2"),
                 Color.parseColor("#FF69B4"), Color.parseColor("#7FFF00"), Color.parseColor("#00FA9A"),
                 Color.parseColor("#DC143C"), Color.parseColor("#FF8C00"), Color.parseColor("#1E90FF"),
                 Color.parseColor("#9400D3"), Color.parseColor("#F4A460")
         };
+    }
+
+    private void disableChartInteractivity(BarLineChartBase<?> chart) {
+        chart.setTouchEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
+        chart.setHighlightPerDragEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setClickable(false);
     }
 
     private Description getChartDescription(String text) {
