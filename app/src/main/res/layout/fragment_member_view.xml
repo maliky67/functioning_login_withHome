@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Role or Description"
-                    android:textColor="@color/lavender"
+                    android:textColor="@color/BorderBlue"
                     android:textSize="14sp"
                     android:layout_below="@id/memberName"
                     android:layout_alignStart="@id/memberName" />

@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/create_list"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"
+                android:textColor="@color/BorderBlue"
                 android:textSize="30sp" />
 
             <ImageView
@@ -56,7 +56,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_list_name"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
             <EditText
                 android:id="@+id/uploadDesc"
@@ -67,7 +67,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_list_total_budget"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
 
             <Button

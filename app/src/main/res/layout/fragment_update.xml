@@ -31,7 +31,7 @@
                 android:text="@string/update_data"
                 android:textSize="30sp"
                 android:textAlignment="center"
-                android:textColor="@color/lavender"/>
+                android:textColor="@color/BorderBlue"/>
 
             <ImageView
                 android:id="@+id/updateImage"
@@ -50,7 +50,7 @@
                 android:hint="@string/enter_member_name"
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
             <EditText
                 android:id="@+id/updateDesc"
@@ -61,7 +61,7 @@
                 android:hint="@string/enter_preferences"
                 android:gravity="start|center_vertical"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
             <!-- 🔹 Gift Idea + Price side by side -->
             <LinearLayout
@@ -82,7 +82,7 @@
                     android:hint="@string/gift_idea"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
-                    android:textColor="@color/lavender" />
+                    android:textColor="@color/BorderBlue" />
 
                 <EditText
                     android:id="@+id/updatePrice"
@@ -94,7 +94,7 @@
                     android:hint="$Price"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
-                    android:textColor="@color/lavender" />
+                    android:textColor="@color/BorderBlue" />
             </LinearLayout>
 
             <Button

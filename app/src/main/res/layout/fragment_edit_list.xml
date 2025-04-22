@@ -56,7 +56,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_list_name"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
             <EditText
                 android:id="@+id/editTotalBudget"
@@ -67,7 +67,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_list_total_budget"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
 
             <Button

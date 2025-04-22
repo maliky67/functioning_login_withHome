@@ -52,7 +52,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_member_name"
                 android:padding="16dp"
-                android:textColor="@color/christmas_blue" />
+                android:textColor="@color/BorderBlue" />
 
             <EditText
                 android:id="@+id/memberRoleEditText"
@@ -63,7 +63,7 @@
                 android:gravity="start|center_vertical"
                 android:hint="@string/enter_preferences"
                 android:padding="16dp"
-                android:textColor="@color/lavender" />
+                android:textColor="@color/BorderBlue" />
 
 
             <Button
