@@ -183,14 +183,19 @@ public class ListViewFragment extends Fragment {
                         .setMessage("Delete \"" + toDelete.getName() + "\" and all their gifts?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             deleteMemberFromFirebase(toDelete.getKey());
-                            memberList.remove(position);
-                            memberAdapter.notifyItemRemoved(position);
+                            // Do not manually remove or notify — listener will auto-refresh
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> {
+                            // Restore the swiped item visually
+                            memberAdapter.notifyItemChanged(position);
+                        })
+                        .setOnCancelListener(dialog -> {
+                            // If dialog is dismissed via back button, also restore
                             memberAdapter.notifyItemChanged(position);
                         })
                         .show();
             }
+
         });
 
         itemTouchHelper.attachToRecyclerView(recyclerView);
