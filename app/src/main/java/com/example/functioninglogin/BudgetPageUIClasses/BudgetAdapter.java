@@ -1,5 +1,6 @@
 package com.example.functioninglogin.BudgetPageUIClasses;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.BudgetView
 
         int progress = (int) data.getProgressPercentage();
         holder.progressBar.setProgress(progress);
+        holder.progressBar.setProgressTintList(ColorStateList.valueOf(data.getAssignedColor())); // ✅ match pie color
+
     }
 
     @Override

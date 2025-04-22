@@ -11,6 +11,7 @@ public class BudgetData {
     private String memberImageUrl;
     private double totalPrice;
     private List<GiftItem> gifts = new ArrayList<>();
+    private int assignedColor;
 
     // ✅ NEW: total budget assigned to this list
     private double totalBudget;
@@ -85,5 +86,12 @@ public class BudgetData {
 
     public void setGifts(List<GiftItem> gifts) {
         this.gifts = (gifts != null) ? gifts : new ArrayList<>();
+    }
+    public int getAssignedColor() {
+        return assignedColor;
+    }
+
+    public void setAssignedColor(int assignedColor) {
+        this.assignedColor = assignedColor;
     }
 }

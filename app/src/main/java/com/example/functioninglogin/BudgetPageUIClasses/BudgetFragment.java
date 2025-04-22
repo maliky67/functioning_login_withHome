@@ -1,5 +1,3 @@
-// 🔧 FULLY FIXED BudgetFragment.java
-// 👇 START OF FILE
 package com.example.functioninglogin.BudgetPageUIClasses;
 
 import android.graphics.Color;
@@ -67,18 +65,25 @@ public class BudgetFragment extends Fragment {
         adapter = new BudgetAdapter(new ArrayList<>());
         budgetRecyclerView.setAdapter(adapter);
 
-        chartToggleButton.setOnClickListener(v -> {
-            isPie = !isPie;
-            pieChart.setVisibility(isPie ? View.VISIBLE : View.GONE);
-            barChart.setVisibility(isPie ? View.GONE : View.VISIBLE);
-            updateChart();
-        });
+        // Default to Pie chart on open
+        pieChart.setVisibility(View.VISIBLE);
+        barChart.setVisibility(View.GONE);
+        isPie = true;
 
+        chartToggleButton.setOnClickListener(v -> toggleChart());
         categoryTabs.setOnCheckedChangeListener((group, checkedId) -> updateChart());
 
         disableChartInteractivity(barChart);
         loadBudgetData();
+        updateChart(); // 🔥 triggers initial chart rendering
         return view;
+    }
+
+    private void toggleChart() {
+        isPie = !isPie;
+        pieChart.setVisibility(isPie ? View.VISIBLE : View.GONE);
+        barChart.setVisibility(isPie ? View.GONE : View.VISIBLE);
+        updateChart();
     }
 
     private void loadBudgetData() {
@@ -101,32 +106,31 @@ public class BudgetFragment extends Fragment {
                     if (listTitle == null) continue;
                     listTitles.add(listTitle);
 
-                    double listBudget = listSnap.child("totalBudget").getValue(Double.class) != null
-                            ? listSnap.child("totalBudget").getValue(Double.class) : 0.0;
+                    double listBudget = 0.0;
+                    try {
+                        listBudget = listSnap.child("totalBudget").getValue(Double.class);
+                    } catch (Exception ignored) {}
+
                     listBudgets.put(listTitle, listBudget);
 
                     List<BudgetData> members = new ArrayList<>();
                     for (DataSnapshot memberSnap : listSnap.child("members").getChildren()) {
-                        String name = memberSnap.child("name").getValue(String.class);
+                        String memberName = memberSnap.child("name").getValue(String.class);
                         String role = memberSnap.child("role").getValue(String.class);
                         String image = memberSnap.child("imageUrl").getValue(String.class);
 
                         List<GiftItem> gifts = new ArrayList<>();
+                        double total = 0;
                         for (DataSnapshot giftSnap : memberSnap.child("gifts").getChildren()) {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
-                            if (gift != null) gifts.add(gift);
+                            if (gift != null) {
+                                gifts.add(gift);
+                            }
                         }
 
-                        double total = 0;
-                        for (GiftItem gift : gifts) {
-                            try {
-                                total += Double.parseDouble(gift.getPrice());
-                            } catch (Exception ignored) {}
-                        }
-
-                        BudgetData data = new BudgetData(name, role, image, total, listBudget);
-                        data.setGifts(gifts);
-                        members.add(data);
+                        BudgetData member = new BudgetData(memberName, role, image, total, listBudget);
+                        member.setGifts(gifts);
+                        members.add(member);
                     }
 
                     allListBudgets.put(listTitle, members);
@@ -151,7 +155,7 @@ public class BudgetFragment extends Fragment {
         if (selectedId == R.id.tabIdeas) {
             return status.equals("idea");
         } else if (selectedId == R.id.tabPurchased) {
-            return status.equals("bought") || status.equals("arrived") || status.equals("wrapped");
+            return status.equals("bought") || status.equals("wrapped") || status.equals("arrived");
         } else {
             return true;
         }
@@ -163,7 +167,8 @@ public class BudgetFragment extends Fragment {
 
         if (!titles.isEmpty()) {
             selectedList = titles.get(0);
-            updateChart();
+            listSpinner.setSelection(0);
+            updateChart(); // 👈 will run automatically
         }
 
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -171,7 +176,8 @@ public class BudgetFragment extends Fragment {
                 selectedList = titles.get(position);
                 updateChart();
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -182,10 +188,14 @@ public class BudgetFragment extends Fragment {
         List<BudgetData> allMembers = allListBudgets.get(selectedList);
 
         List<BudgetData> filteredMembers = new ArrayList<>();
+        List<BarEntry> stackedEntries = new ArrayList<>();
         List<Float> stack = new ArrayList<>();
         List<PieEntry> pieEntries = new ArrayList<>();
         List<String> memberNames = new ArrayList<>();
         float totalSpent = 0f;
+
+        int[] rawColors = getChartColors();
+        int colorIndex = 0;
 
         for (BudgetData member : allMembers) {
             float value = 0f;
@@ -195,7 +205,8 @@ public class BudgetFragment extends Fragment {
                     if (shouldIncludeGift(gift)) {
                         try {
                             value += Float.parseFloat(gift.getPrice());
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) {
+                        }
                     }
                 }
             }
@@ -208,7 +219,11 @@ public class BudgetFragment extends Fragment {
                         value,
                         listBudget
                 );
+
                 filtered.setGifts(gifts);
+                filtered.setAssignedColor(rawColors[colorIndex % rawColors.length]); // 🎯 assign matching color
+                colorIndex++;
+
                 filteredMembers.add(filtered);
                 stack.add(value);
                 memberNames.add(member.getMemberName());
@@ -220,16 +235,19 @@ public class BudgetFragment extends Fragment {
         float remaining = (float) listBudget - totalSpent;
         if (remaining > 0) {
             stack.add(remaining);
-            memberNames.add("Unused");
-            pieEntries.add(new PieEntry(remaining, "Unused"));
+            memberNames.add("Remaining");
+            pieEntries.add(new PieEntry(remaining, "Remaining"));
         }
 
-        int[] rawColors = getChartColors();
 
         if (isPie) {
             List<Integer> pieColors = new ArrayList<>();
             for (int i = 0; i < pieEntries.size(); i++) {
-                pieColors.add(i == pieEntries.size() - 1 && remaining > 0 ? Color.WHITE : rawColors[i % rawColors.length]);
+                if (i == pieEntries.size() - 1 && remaining > 0) {
+                    pieColors.add(Color.WHITE);
+                } else {
+                    pieColors.add(rawColors[i % rawColors.length]);
+                }
             }
 
             PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Usage");
@@ -237,23 +255,34 @@ public class BudgetFragment extends Fragment {
             pieDataSet.setValueTextColor(Color.BLACK);
             pieDataSet.setValueTextSize(14f);
             pieDataSet.setValueFormatter(new ValueFormatter() {
-                @Override public String getPieLabel(float value, PieEntry entry) {
+                @Override
+                public String getPieLabel(float value, PieEntry entry) {
                     return "$" + String.format("%.2f", value);
                 }
             });
 
-            pieChart.setData(new PieData(pieDataSet));
+            PieData pieData = new PieData(pieDataSet);
+            pieChart.setData(pieData);
             pieChart.setDescription(getChartDescription("Pie Chart"));
+            pieChart.setHoleColor(Color.TRANSPARENT);
             pieChart.invalidate();
         } else {
             if (!stack.isEmpty()) {
                 float[] barStack = new float[stack.size()];
                 for (int i = 0; i < stack.size(); i++) barStack[i] = stack.get(i);
 
-                BarDataSet barDataSet = new BarDataSet(Collections.singletonList(new BarEntry(0, barStack)), "Spending vs Budget");
+                BarEntry entry = new BarEntry(0, barStack);
+                stackedEntries.add(entry);
+
+                BarDataSet barDataSet = new BarDataSet(stackedEntries, "Spending vs Budget");
+
                 List<Integer> barColors = new ArrayList<>();
                 for (int i = 0; i < stack.size(); i++) {
-                    barColors.add(i == stack.size() - 1 && remaining > 0 ? Color.WHITE : rawColors[i % rawColors.length]);
+                    if (i == stack.size() - 1 && remaining > 0) {
+                        barColors.add(Color.WHITE);
+                    } else {
+                        barColors.add(rawColors[i % rawColors.length]);
+                    }
                 }
 
                 barDataSet.setColors(barColors);
@@ -262,21 +291,32 @@ public class BudgetFragment extends Fragment {
                 barDataSet.setValueTextColor(Color.BLACK);
                 barDataSet.setValueTextSize(14f);
                 barDataSet.setValueFormatter(new ValueFormatter() {
-                    @Override public String getBarStackedLabel(float value, BarEntry entry) {
+                    @Override
+                    public String getBarStackedLabel(float value, BarEntry entry) {
+                        if (value <= 0f) return "";
                         return "$" + String.format("%.2f", value);
                     }
                 });
 
-                barChart.setData(new BarData(barDataSet));
-                barChart.getXAxis().setEnabled(false);
-                barChart.getAxisLeft().setAxisMinimum(0f);
-                barChart.getAxisLeft().setAxisMaximum((float) listBudget);
-                barChart.getAxisLeft().setGranularity(10f);
-                barChart.getAxisLeft().setValueFormatter(new ValueFormatter() {
-                    @Override public String getFormattedValue(float value) {
+
+                BarData barData = new BarData(barDataSet);
+                barData.setBarWidth(0.4f);
+                barChart.setData(barData);
+
+                XAxis xAxis = barChart.getXAxis();
+                xAxis.setEnabled(false);
+
+                YAxis yAxis = barChart.getAxisLeft();
+                yAxis.setAxisMinimum(0f);
+                yAxis.setAxisMaximum((float) listBudget);
+                yAxis.setGranularity(10f);
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
                         return "$" + String.format("%.2f", value);
                     }
                 });
+
                 barChart.getAxisRight().setEnabled(false);
                 barChart.setDescription(getChartDescription("Spending vs Budget"));
                 barChart.invalidate();
