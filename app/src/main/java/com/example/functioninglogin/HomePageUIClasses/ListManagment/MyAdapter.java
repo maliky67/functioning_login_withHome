@@ -91,19 +91,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private double calculateTotalSpent(GiftList list) {
         double total = 0.0;
         HashMap<String, MemberDataClass> members = list.getMembers();
+
         if (members != null) {
             for (MemberDataClass member : members.values()) {
                 if (member.getGifts() != null) {
                     for (GiftItem gift : member.getGifts().values()) {
-                        try {
-                            total += Double.parseDouble(gift.getPrice());
-                        } catch (Exception ignored) {}
+                        String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "";
+                        if (status.equals("bought") || status.equals("wrapped") || status.equals("arrived")) {
+                            try {
+                                total += Double.parseDouble(gift.getPrice());
+                            } catch (Exception ignored) {}
+                        }
                     }
                 }
             }
         }
         return total;
     }
+
 
     @Override
     public int getItemCount() {

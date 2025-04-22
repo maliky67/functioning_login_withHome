@@ -126,11 +126,16 @@ public class ListViewFragment extends Fragment {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
                             if (gift != null) {
                                 giftMap.put(giftSnap.getKey(), gift);
-                                try {
-                                    totalSpent += Double.parseDouble(gift.getPrice());
-                                } catch (Exception ignored) {}
+
+                                String status = gift.getStatus() != null ? gift.getStatus().toLowerCase() : "";
+                                if (status.equals("bought") || status.equals("arrived") || status.equals("wrapped")) {
+                                    try {
+                                        totalSpent += Double.parseDouble(gift.getPrice());
+                                    } catch (Exception ignored) {}
+                                }
                             }
                         }
+
                         member.setGifts(giftMap);
                         memberList.add(member);
                         count++;
