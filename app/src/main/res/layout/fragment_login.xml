@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="76dp"
         android:baselineAligned="false"
+        android:importantForAccessibility="no"
         android:src="@drawable/lightv1" />
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="cursive"
-        android:text="Santa's Helper"
+        android:text="@string/santa_s_helper"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="48sp" />
@@ -32,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="83dp"
         android:layout_marginTop="15dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/hatv1" />
 
     <androidx.cardview.widget.CardView
@@ -74,10 +76,11 @@
                     android:background="@drawable/borderblue"
                     android:drawableStart="@drawable/baseline_ac_unit_24"
                     android:drawablePadding="8dp"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="8dp"
                     android:textColor="@color/black"
+                    android:paddingStart="8dp"
                     android:paddingEnd="48dp" />
 
                 <ImageView
@@ -88,7 +91,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="12dp"
                     android:src="@drawable/blind_eye"
-                    android:contentDescription="Toggle Password Visibility" />
+                    android:contentDescription="@null" />
             </RelativeLayout>
 
             <!-- LOGIN BUTTON -->
@@ -120,7 +123,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:padding="8dp"
-                android:text="Forgot Password?"
+                android:text="@string/forgot_password"
                 android:textColor="@color/BorderBlue"
                 android:textSize="18sp" />
         </LinearLayout>

@@ -23,6 +23,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="16dp"
+            android:contentDescription="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/baseline_account_box_24" />
 
@@ -38,7 +39,7 @@
                 android:id="@+id/budgetCardName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Member Name"
+                android:text="@string/member_name"
                 android:textColor="@color/BorderBlue"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -58,7 +59,7 @@
                 android:id="@+id/budgetCardMax"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Budget: $0.00"
+                android:text="@string/budget_0_00"
                 android:layout_gravity="end"
                 android:textSize="14sp"
                 android:textColor="#333333"

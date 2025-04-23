@@ -97,4 +97,13 @@
     <string name="deal_link">Deal Link</string>
     <string name="_0">$0</string>
     <string name="idea_total_0_00">Idea Total: $0.00</string>
+    <string name="dinosaur_meat">🎁 Dinosaur Meat</string>
+    <string name="for_luffy">For: Luffy</string>
+    <string name="_19_99">$19.99</string>
+    <string name="budget_0_00">Budget: $0.00</string>
+    <string name="edit_list">Edit List</string>
+    <string name="edit_member">Edit Member</string>
+    <string name="santa_s_helper">Santa\'s Helper</string>
+    <string name="no_gifts_added_yet_for_this_member">No gifts added yet for this member!</string>
+    <string name="add_gift">Add Gift</string>
 </resources>

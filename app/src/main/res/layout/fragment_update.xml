@@ -38,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="10dp"
+                android:importantForAccessibility="no"
                 android:scaleType="fitXY"
                 android:src="@drawable/baseline_account_box_24" />
 
@@ -91,7 +92,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/borderblue"
-                    android:hint="$Price"
+                    android:hint="@string/price"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
                     android:textColor="@color/BorderBlue" />

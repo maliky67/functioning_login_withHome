@@ -5,7 +5,6 @@
     android:layout_marginBottom="12dp"
     app:cardElevation="8dp"
     app:cardCornerRadius="16dp"
-    layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -16,7 +15,7 @@
 
         <TextView
             android:id="@+id/itemName"
-            android:text="🎁 Dinosaur Meat"
+            android:text="@string/dinosaur_meat"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000000"
@@ -25,14 +24,14 @@
 
         <TextView
             android:id="@+id/memberName"
-            android:text="For: Luffy"
+            android:text="@string/for_luffy"
             android:textColor="#444444"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
 
         <TextView
             android:id="@+id/itemPrice"
-            android:text="$19.99"
+            android:text="@string/_19_99"
             android:textColor="#008000"
             android:textStyle="italic"
             android:layout_height="wrap_content"
