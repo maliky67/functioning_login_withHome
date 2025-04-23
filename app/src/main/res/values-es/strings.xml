@@ -87,5 +87,22 @@
     <string name="account_settings">Configuración de la cuenta</string>
     <string name="appearance">Apariencia</string>
     <string name="other_settings">Otras configuraciones</string>
-
+    <string name="add_list">➕ Agregar lista</string>
+    <string name="enter_list_total_budget">Ingresar presupuesto total de la lista</string>
+    <string name="no_lists_yet_start_by_adding_one">Aún no hay listas. ¡Empieza agregando una!</string>
+    <string name="members">Miembros</string>
+    <string name="mom_dad_2">Mamá, Papá, +2</string>
+    <string name="deal_title">Título de la oferta</string>
+    <string name="deal_link">Enlace de la oferta</string>
+    <string name="_0">$0</string>
+    <string name="idea_total_0_00">Total de ideas: $0.00</string>
+    <string name="dinosaur_meat">🎁 Carne de dinosaurio</string>
+    <string name="for_luffy">Para: Luffy</string>
+    <string name="_19_99">$19.99</string>
+    <string name="budget_0_00">Presupuesto: $0.00</string>
+    <string name="edit_list">Editar lista</string>
+    <string name="edit_member">Editar miembro</string>
+    <string name="santa_s_helper">Ayudante de Santa</string>
+    <string name="no_gifts_added_yet_for_this_member">¡Aún no se han agregado regalos para este miembro!</string>
+    <string name="add_gift">Agregar regalo</string>
 </resources>
