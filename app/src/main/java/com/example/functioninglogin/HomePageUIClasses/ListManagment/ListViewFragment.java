@@ -26,12 +26,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ListViewFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private MaterialButton fab;
     private TextView emptyTextView;
     private List<MemberDataClass> memberList;
     private MemberAdapter memberAdapter;
@@ -41,7 +38,6 @@ public class ListViewFragment extends Fragment {
 
     private TextView headerTitle, headerDesc, headerTotalSpent, headerTotalBudget;
     private ImageView headerImage;
-    private CardView headerCard;
 
     public static ListViewFragment newInstance(String key, String title, String budget, String imageUrl) {
         ListViewFragment fragment = new ListViewFragment();
@@ -60,14 +56,14 @@ public class ListViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
 
         // View Binding
-        headerCard = view.findViewById(R.id.headerCard);
+        CardView headerCard = view.findViewById(R.id.headerCard);
         headerTitle = view.findViewById(R.id.headerTitle);
         headerDesc = view.findViewById(R.id.headerDesc);
         headerImage = view.findViewById(R.id.headerImage);
         headerTotalSpent = view.findViewById(R.id.headerTotalSpent);
         headerTotalBudget = view.findViewById(R.id.headerTotalBudget);
-        recyclerView = view.findViewById(R.id.ListrecyclerView);
-        fab = view.findViewById(R.id.memberfab);
+        RecyclerView recyclerView = view.findViewById(R.id.ListrecyclerView);
+        MaterialButton fab = view.findViewById(R.id.memberfab);
         emptyTextView = view.findViewById(R.id.emptyTextView);
 
         memberList = new ArrayList<>();
@@ -102,7 +98,7 @@ public class ListViewFragment extends Fragment {
                     .commit();
         });
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         memberRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -231,7 +227,7 @@ public class ListViewFragment extends Fragment {
     }
 
     private void deleteMemberFromFirebase(String memberKey) {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -240,12 +236,8 @@ public class ListViewFragment extends Fragment {
                 .child("members")
                 .child(memberKey)
                 .removeValue()
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(requireContext(), "Member deleted", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Error deleting member", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(unused -> Toast.makeText(requireContext(), "Member deleted", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Error deleting member", Toast.LENGTH_SHORT).show());
     }
 
     @Override

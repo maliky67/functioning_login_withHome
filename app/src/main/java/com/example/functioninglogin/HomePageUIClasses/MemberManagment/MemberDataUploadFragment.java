@@ -31,7 +31,6 @@ public class MemberDataUploadFragment extends Fragment {
 
     private Uri selectedImageUri;
     private String imageUrl;
-    private String listKey, userId;
     private DatabaseReference memberRef;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
@@ -50,8 +49,8 @@ public class MemberDataUploadFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_member_upload, container, false);
 
-        listKey = getArguments() != null ? getArguments().getString("listKey") : null;
-        userId = FirebaseAuth.getInstance().getCurrentUser() != null
+        String listKey = getArguments() != null ? getArguments().getString("listKey") : null;
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null
                 ? FirebaseAuth.getInstance().getCurrentUser().getUid()
                 : null;
 
@@ -117,13 +116,11 @@ public class MemberDataUploadFragment extends Fragment {
                 .getReference("Member Images")
                 .child(Objects.requireNonNull(selectedImageUri.getLastPathSegment()));
 
-        storageRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> {
-            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                imageUrl = uri.toString();
-                dialog.dismiss();
-                saveMemberData(imageUrl);
-            });
-        }).addOnFailureListener(e -> {
+        storageRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+            imageUrl = uri.toString();
+            dialog.dismiss();
+            saveMemberData(imageUrl);
+        })).addOnFailureListener(e -> {
             dialog.dismiss();
             Toast.makeText(requireContext(), "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
@@ -142,12 +139,10 @@ public class MemberDataUploadFragment extends Fragment {
         MemberDataClass member = new MemberDataClass(name, role, imageUrl);
         member.setKey(key);
 
-        memberRef.child(key).setValue(member).addOnSuccessListener(unused -> {
+        memberRef.child(Objects.requireNonNull(key)).setValue(member).addOnSuccessListener(unused -> {
             Toast.makeText(requireContext(), "Member added!", Toast.LENGTH_SHORT).show();
             requireActivity().getSupportFragmentManager().popBackStack();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(requireContext(), "Failed to add member: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to add member: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private AlertDialog showProgressDialog() {

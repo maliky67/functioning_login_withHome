@@ -19,10 +19,10 @@ import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ShoppingListFragment extends Fragment {
 
-    private RecyclerView shoppingRecyclerView;
     private ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
     private FrameLayout progressOverlay;
@@ -36,7 +36,7 @@ public class ShoppingListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
-        shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
+        RecyclerView shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
         shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         progressOverlay = view.findViewById(R.id.progressOverlay);
@@ -57,7 +57,7 @@ public class ShoppingListFragment extends Fragment {
 
     private void fetchShoppingList() {
         showLoading();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -109,7 +109,7 @@ public class ShoppingListFragment extends Fragment {
     private void updateGiftStatus(ShoppingListItem item, boolean isChecked) {
         String newStatus = isChecked ? "bought" : "idea";
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)

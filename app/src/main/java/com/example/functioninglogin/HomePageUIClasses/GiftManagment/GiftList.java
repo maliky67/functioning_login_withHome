@@ -14,7 +14,6 @@ public class GiftList {
     private long timestamp;
     private String listDesc; // ✅ ADDED: to fix Firebase warning
     private HashMap<String, MemberDataClass> members;
-    private String formattedMemberPreview;
 
     public GiftList() {}
 
@@ -58,7 +57,6 @@ public class GiftList {
     }
 
     public void setFormattedMemberPreview(String formattedMemberPreview) {
-        this.formattedMemberPreview = formattedMemberPreview;
     }
 
     public String getFormattedMemberPreview() {

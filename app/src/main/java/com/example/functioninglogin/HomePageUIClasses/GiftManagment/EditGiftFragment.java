@@ -16,6 +16,7 @@ import com.google.firebase.database.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EditGiftFragment extends Fragment {
 
@@ -65,7 +66,7 @@ public class EditGiftFragment extends Fragment {
     }
 
     private void loadGiftData() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -124,7 +125,7 @@ public class EditGiftFragment extends Fragment {
         else if (checkedId == R.id.editradioArrived) status = "Arrived";
         else if (checkedId == R.id.editradioWrapped) status = "Wrapped";
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)

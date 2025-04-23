@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,7 +43,6 @@ public class UploadListFragment extends Fragment {
 
     private ImageView imageViewUpload;
     private EditText editTextTopic, editTextDesc;
-    private Button buttonSave;
 
     private Uri selectedImageUri;
     private String imageURL;
@@ -64,9 +62,9 @@ public class UploadListFragment extends Fragment {
         imageViewUpload = view.findViewById(R.id.uploadImage);
         editTextTopic = view.findViewById(R.id.uploadTopic);
         editTextDesc = view.findViewById(R.id.uploadDesc);
-        buttonSave = view.findViewById(R.id.saveButton);
+        Button buttonSave = view.findViewById(R.id.saveButton);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId);
@@ -206,7 +204,7 @@ public class UploadListFragment extends Fragment {
         // Save GiftList object under /users/userId/lists/listId
         databaseReference
                 .child("lists")
-                .child(listId)
+                .child(Objects.requireNonNull(listId))
                 .setValue(giftList)
                 .addOnSuccessListener(unused -> {
                     dialog.dismiss();

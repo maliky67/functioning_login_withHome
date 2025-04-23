@@ -20,7 +20,6 @@ import retrofit2.Response;
 
 public class DiscountsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private DealsAdapter adapter;
     private View loadingOverlay;
 
@@ -32,7 +31,7 @@ public class DiscountsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_discounts, container, false);
 
-        recyclerView = view.findViewById(R.id.dealsRecycler);
+        RecyclerView recyclerView = view.findViewById(R.id.dealsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new DealsAdapter();
         recyclerView.setAdapter(adapter);
@@ -51,7 +50,7 @@ public class DiscountsFragment extends Fragment {
 
         Call<DealResponse> call = api.getDeals("US", "ALL", "ALL", 1);
 
-        call.enqueue(new Callback<DealResponse>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<DealResponse> call, @NonNull Response<DealResponse> response) {
                 showLoading(false);

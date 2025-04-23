@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingViewHolder> {
 
@@ -60,7 +61,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             item.setStatus(newStatus);
 
             // 🔥 Firebase Update
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             FirebaseDatabase.getInstance()
                     .getReference("Unique User ID")
                     .child(userId)

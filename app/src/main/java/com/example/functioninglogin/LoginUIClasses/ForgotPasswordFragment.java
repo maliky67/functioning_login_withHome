@@ -13,14 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.functioninglogin.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class ForgotPasswordFragment extends Fragment {
 
     private EditText forgotEmail;
-    private Button resetButton;
     private FirebaseAuth auth;
 
     public ForgotPasswordFragment() {
@@ -41,7 +40,7 @@ public class ForgotPasswordFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         forgotEmail = view.findViewById(R.id.forgot_email);
-        resetButton = view.findViewById(R.id.btn_reset_password);
+        Button resetButton = view.findViewById(R.id.btn_reset_password);
         auth = FirebaseAuth.getInstance();
 
         resetButton.setOnClickListener(v -> {
@@ -63,7 +62,7 @@ public class ForgotPasswordFragment extends Fragment {
 
                         } else {
                             Toast.makeText(requireContext(),
-                                    "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    "Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         });

@@ -14,6 +14,7 @@ import com.google.firebase.database.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddGiftFragment extends Fragment {
 
@@ -21,7 +22,6 @@ public class AddGiftFragment extends Fragment {
 
     private EditText giftNameEdit, giftPriceEdit, giftWebsiteEdit, giftNotesEdit;
     private RadioGroup statusGroup;
-    private Button saveGiftButton;
 
     public static AddGiftFragment newInstance(String listKey, String memberKey) {
         AddGiftFragment fragment = new AddGiftFragment();
@@ -55,11 +55,9 @@ public class AddGiftFragment extends Fragment {
         giftPriceEdit = view.findViewById(R.id.giftPriceEdit);
         giftWebsiteEdit = view.findViewById(R.id.giftWebsiteEdit);
         giftNotesEdit = view.findViewById(R.id.giftNotesEdit);
-        saveGiftButton = view.findViewById(R.id.saveGiftButton);
+        Button saveGiftButton = view.findViewById(R.id.saveGiftButton);
 
-        saveGiftButton.setOnClickListener(v -> {
-            uploadGiftToFirebase();
-        });
+        saveGiftButton.setOnClickListener(v -> uploadGiftToFirebase());
 
         return view;
     }
@@ -76,7 +74,7 @@ public class AddGiftFragment extends Fragment {
             return;
         }
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -111,9 +109,7 @@ public class AddGiftFragment extends Fragment {
                             .addToBackStack(null)
                             .commit();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to save gift: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to save gift: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private String getStatusFromRadio() {

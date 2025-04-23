@@ -1,13 +1,9 @@
 package com.example.functioninglogin.DiscountPageUIClasses;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.io.IOException;
 
 public class RetrofitInstance {
 
@@ -17,17 +13,14 @@ public class RetrofitInstance {
 
     static {
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request original = chain.request();
-                        Request request = original.newBuilder()
-                                .header("x-rapidapi-host", "real-time-amazon-data.p.rapidapi.com")
-                                .header("x-rapidapi-key", "e158c548c3msheb43562695abde8p132483jsnc2bc35c17259")
-                                .method(original.method(), original.body())
-                                .build();
-                        return chain.proceed(request);
-                    }
+                .addInterceptor(chain -> {
+                    Request original = chain.request();
+                    Request request = original.newBuilder()
+                            .header("x-rapidapi-host", "real-time-amazon-data.p.rapidapi.com")
+                            .header("x-rapidapi-key", "e158c548c3msheb43562695abde8p132483jsnc2bc35c17259")
+                            .method(original.method(), original.body())
+                            .build();
+                    return chain.proceed(request);
                 })
                 .build();
 

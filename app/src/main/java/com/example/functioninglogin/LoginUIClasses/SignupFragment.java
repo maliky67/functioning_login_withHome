@@ -16,11 +16,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 public class SignupFragment extends Fragment {
 
     private EditText signupName, signupEmail, signupPassword;
-    private Button signupButton;
-    private TextView loginRedirectText;
 
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -36,8 +36,8 @@ public class SignupFragment extends Fragment {
         signupName = view.findViewById(R.id.signup_name);
         signupEmail = view.findViewById(R.id.signup_email);
         signupPassword = view.findViewById(R.id.signup_password);
-        signupButton = view.findViewById(R.id.signup_button);
-        loginRedirectText = view.findViewById(R.id.loginRedirectText);
+        Button signupButton = view.findViewById(R.id.signup_button);
+        TextView loginRedirectText = view.findViewById(R.id.loginRedirectText);
 
         auth = FirebaseAuth.getInstance();
 
@@ -55,6 +55,7 @@ public class SignupFragment extends Fragment {
                     .addOnCompleteListener(requireActivity(), task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
+                            assert user != null;
                             String userId = user.getUid();
 
                             databaseReference = FirebaseDatabase.getInstance()
@@ -68,7 +69,7 @@ public class SignupFragment extends Fragment {
                             // Go back to login fragment
                             requireActivity().getSupportFragmentManager().popBackStack();
                         } else {
-                            Toast.makeText(requireContext(), "Signup Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Signup Failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         });

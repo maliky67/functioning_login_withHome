@@ -13,12 +13,12 @@ import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
+import java.util.Objects;
+
 public class EditMemberFragment extends Fragment {
 
-    private String listKey, memberKey;
     private ImageView memberImageView;
     private EditText nameEditText, roleEditText;
-    private Button saveButton;
     private DatabaseReference memberRef;
     private ProgressDialog progressDialog;
 
@@ -37,22 +37,23 @@ public class EditMemberFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_member, container, false);
 
         // 💡 Firebase paths
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        listKey = getArguments().getString("listKey");
-        memberKey = getArguments().getString("memberKey");
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        assert getArguments() != null;
+        String listKey = getArguments().getString("listKey");
+        String memberKey = getArguments().getString("memberKey");
         memberRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
                 .child("lists")
-                .child(listKey)
+                .child(Objects.requireNonNull(listKey))
                 .child("members")
-                .child(memberKey);
+                .child(Objects.requireNonNull(memberKey));
 
         // 🧱 Bind Views
         memberImageView = view.findViewById(R.id.editmemberImageView);
         nameEditText = view.findViewById(R.id.editmemberNameEditText);
         roleEditText = view.findViewById(R.id.editmemberRoleEditText);
-        saveButton = view.findViewById(R.id.editMemberButton);
+        Button saveButton = view.findViewById(R.id.editMemberButton);
 
         progressDialog = new ProgressDialog(requireContext());
         progressDialog.setMessage("Saving changes...");

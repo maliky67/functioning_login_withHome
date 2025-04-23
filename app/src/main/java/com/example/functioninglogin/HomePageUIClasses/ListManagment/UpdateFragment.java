@@ -20,17 +20,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.google.firebase.storage.*;
 
+import java.util.Objects;
+
 public class UpdateFragment extends Fragment {
 
     private ImageView updateImage;
-    private Button updateButton;
     private EditText updateTitle, updateDesc;
 
     private String type, key, listKey, imageUrl, oldImageURL;
     private Uri uri = null;
 
     private DatabaseReference databaseReference;
-    private StorageReference storageReference;
 
     private ActivityResultLauncher<Intent> imagePicker;
 
@@ -51,7 +51,7 @@ public class UpdateFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_update, container, false);
 
         updateImage = view.findViewById(R.id.updateImage);
-        updateButton = view.findViewById(R.id.updateButton);
+        Button updateButton = view.findViewById(R.id.updateButton);
         updateTitle = view.findViewById(R.id.updateTitle);
         updateDesc = view.findViewById(R.id.updateDesc);
 
@@ -63,7 +63,7 @@ public class UpdateFragment extends Fragment {
             oldImageURL = bundle.getString("Image");
         }
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         if ("member".equals(type)) {
             databaseReference = FirebaseDatabase.getInstance()
@@ -142,9 +142,9 @@ public class UpdateFragment extends Fragment {
     }
 
     private void uploadNewImage() {
-        storageReference = FirebaseStorage.getInstance()
+        StorageReference storageReference = FirebaseStorage.getInstance()
                 .getReference("Member Images")
-                .child(uri.getLastPathSegment());
+                .child(Objects.requireNonNull(uri.getLastPathSegment()));
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setCancelable(false)
@@ -179,9 +179,7 @@ public class UpdateFragment extends Fragment {
             deleteOldImage();
             Toast.makeText(requireContext(), "Member updated", Toast.LENGTH_SHORT).show();
             requireActivity().getSupportFragmentManager().popBackStack();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(requireContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e -> Toast.makeText(requireContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void deleteOldImage() {

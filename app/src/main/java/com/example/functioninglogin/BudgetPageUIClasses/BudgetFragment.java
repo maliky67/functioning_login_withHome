@@ -28,10 +28,8 @@ import java.util.*;
 
 public class BudgetFragment extends Fragment {
 
-    private RecyclerView budgetRecyclerView;
-    private ImageButton chartToggleButton;
     private RadioGroup categoryTabs;
-    private TextView titleTextView, emptyTextView;
+    private TextView emptyTextView;
     private BarChart barChart;
     private PieChart pieChart;
     private FrameLayout progressOverlay;
@@ -42,17 +40,16 @@ public class BudgetFragment extends Fragment {
     private final Map<String, List<BudgetData>> allListBudgets = new HashMap<>();
     private final Map<String, Double> listBudgets = new HashMap<>();
     private BudgetAdapter adapter;
-    private ArrayAdapter<String> spinnerAdapter;
     private String selectedList = "";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_budget, container, false);
 
-        budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
-        chartToggleButton = view.findViewById(R.id.chartToggleButton);
+        RecyclerView budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
+        ImageButton chartToggleButton = view.findViewById(R.id.chartToggleButton);
         categoryTabs = view.findViewById(R.id.categoryTabs);
-        titleTextView = view.findViewById(R.id.budgetTitleTextView);
+        TextView titleTextView = view.findViewById(R.id.budgetTitleTextView);
         barChart = view.findViewById(R.id.budgetBarChart);
         pieChart = view.findViewById(R.id.budgetPieChart);
         emptyTextView = view.findViewById(R.id.emptyTextView);
@@ -88,7 +85,7 @@ public class BudgetFragment extends Fragment {
 
     private void loadBudgetData() {
         progressOverlay.setVisibility(View.VISIBLE);
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -162,7 +159,7 @@ public class BudgetFragment extends Fragment {
     }
 
     private void setupSpinner(List<String> titles) {
-        spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, titles);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, titles);
         listSpinner.setAdapter(spinnerAdapter);
 
         if (!titles.isEmpty()) {
@@ -197,7 +194,7 @@ public class BudgetFragment extends Fragment {
         int[] rawColors = getChartColors();
         int colorIndex = 0;
 
-        for (BudgetData member : allMembers) {
+        for (BudgetData member : Objects.requireNonNull(allMembers)) {
             float value = 0f;
             List<GiftItem> gifts = member.getGifts();
             if (gifts != null) {
@@ -241,27 +238,7 @@ public class BudgetFragment extends Fragment {
 
 
         if (isPie) {
-            List<Integer> pieColors = new ArrayList<>();
-            for (int i = 0; i < pieEntries.size(); i++) {
-                if (i == pieEntries.size() - 1 && remaining > 0) {
-                    pieColors.add(Color.WHITE);
-                } else {
-                    pieColors.add(rawColors[i % rawColors.length]);
-                }
-            }
-
-            PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Usage");
-            pieDataSet.setColors(pieColors);
-            pieDataSet.setValueTextColor(Color.BLACK);
-            pieDataSet.setValueTextSize(14f);
-            pieDataSet.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getPieLabel(float value, PieEntry entry) {
-                    return "$" + String.format("%.2f", value);
-                }
-            });
-
-            PieData pieData = new PieData(pieDataSet);
+            PieData pieData = getPieData(pieEntries, remaining, rawColors);
             pieChart.setData(pieData);
             pieChart.setDescription(getChartDescription("Pie Chart"));
             pieChart.setHoleColor(Color.TRANSPARENT);
@@ -325,6 +302,31 @@ public class BudgetFragment extends Fragment {
 
         adapter.setBudgetList(filteredMembers);
         emptyTextView.setVisibility(filteredMembers.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    @NonNull
+    private static PieData getPieData(List<PieEntry> pieEntries, float remaining, int[] rawColors) {
+        List<Integer> pieColors = new ArrayList<>();
+        for (int i = 0; i < pieEntries.size(); i++) {
+            if (i == pieEntries.size() - 1 && remaining > 0) {
+                pieColors.add(Color.WHITE);
+            } else {
+                pieColors.add(rawColors[i % rawColors.length]);
+            }
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Usage");
+        pieDataSet.setColors(pieColors);
+        pieDataSet.setValueTextColor(Color.BLACK);
+        pieDataSet.setValueTextSize(14f);
+        pieDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getPieLabel(float value, PieEntry entry) {
+                return "$" + String.format("%.2f", value);
+            }
+        });
+
+        return new PieData(pieDataSet);
     }
 
     private int[] getChartColors() {

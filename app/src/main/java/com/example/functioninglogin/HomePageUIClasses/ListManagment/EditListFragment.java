@@ -3,8 +3,6 @@ package com.example.functioninglogin.HomePageUIClasses.ListManagment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
@@ -28,7 +26,6 @@ public class EditListFragment extends Fragment {
 
     private ImageView editImage;
     private EditText editListName, editTotalBudget;
-    private Button editButton;
     private Uri selectedImageUri;
     private String imageUrl;
     private String listKey;
@@ -54,7 +51,7 @@ public class EditListFragment extends Fragment {
         editImage = view.findViewById(R.id.editImage);
         editListName = view.findViewById(R.id.editListName);
         editTotalBudget = view.findViewById(R.id.editTotalBudget);
-        editButton = view.findViewById(R.id.EditButton);
+        Button editButton = view.findViewById(R.id.EditButton);
 
         if (getArguments() != null) {
             listKey = getArguments().getString("Key", "");
@@ -120,17 +117,15 @@ public class EditListFragment extends Fragment {
                 .child(Objects.requireNonNull(selectedImageUri.getLastPathSegment()));
 
         storageRef.putFile(selectedImageUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    taskSnapshot.getStorage().getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                dialog.dismiss();
-                                updateFirebase(name, budget, uri.toString());
-                            })
-                            .addOnFailureListener(e -> {
-                                dialog.dismiss();
-                                Toast.makeText(requireContext(), "Failed to get image URL", Toast.LENGTH_SHORT).show();
-                            });
-                })
+                .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            dialog.dismiss();
+                            updateFirebase(name, budget, uri.toString());
+                        })
+                        .addOnFailureListener(e -> {
+                            dialog.dismiss();
+                            Toast.makeText(requireContext(), "Failed to get image URL", Toast.LENGTH_SHORT).show();
+                        }))
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -138,7 +133,7 @@ public class EditListFragment extends Fragment {
     }
 
     private void updateFirebase(String name, double budget, String newImageUrl) {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)

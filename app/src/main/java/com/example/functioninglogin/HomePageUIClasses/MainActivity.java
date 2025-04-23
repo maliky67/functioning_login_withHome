@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -55,23 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Bottom nav setup
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
-
-            int id = item.getItemId();
-            if (id == R.id.home) {
-                selectedFragment = new HomeFragment();
-            } else if (id == R.id.Budget) {
-                // ✅ Create BudgetFragment and attach listKey
-                BudgetFragment budgetFragment = new BudgetFragment();
-                Bundle args = new Bundle();
-                args.putString("listKey", "-ONpmJ4VSnsF6StbrGW1"); // 👈 Replace with your actual listKey
-                budgetFragment.setArguments(args);
-                selectedFragment = budgetFragment;
-            } else if (id == R.id.Discounts) {
-                selectedFragment = new DiscountsFragment();
-            } else if (id == R.id.Generator) {
-                selectedFragment = new ShoppingListFragment();
-            }
+            Fragment selectedFragment = getSelectedFragment(item);
 
             if (selectedFragment != null) {
                 Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.home_fragment_container);
@@ -92,6 +77,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.home);
         }
+    }
+
+    @Nullable
+    private static Fragment getSelectedFragment(MenuItem item) {
+        Fragment selectedFragment = null;
+
+        int id = item.getItemId();
+        if (id == R.id.home) {
+            selectedFragment = new HomeFragment();
+        } else if (id == R.id.Budget) {
+            // ✅ Create BudgetFragment and attach listKey
+            BudgetFragment budgetFragment = new BudgetFragment();
+            Bundle args = new Bundle();
+            args.putString("listKey", "-ONpmJ4VSnsF6StbrGW1"); // 👈 Replace with your actual listKey
+            budgetFragment.setArguments(args);
+            selectedFragment = budgetFragment;
+        } else if (id == R.id.Discounts) {
+            selectedFragment = new DiscountsFragment();
+        } else if (id == R.id.Generator) {
+            selectedFragment = new ShoppingListFragment();
+        }
+        return selectedFragment;
     }
 
     @Override

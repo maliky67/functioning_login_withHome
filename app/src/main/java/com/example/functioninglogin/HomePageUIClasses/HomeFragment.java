@@ -27,12 +27,11 @@ import com.google.firebase.database.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private MaterialButton addListButton;
-    private SearchView searchView;
     private TextView emptyTextView;
     private View progressOverlay;
     private List<GiftList> dataList;
@@ -48,8 +47,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
-        addListButton = view.findViewById(R.id.addListButton);
-        searchView = view.findViewById(R.id.search);
+        MaterialButton addListButton = view.findViewById(R.id.addListButton);
+        SearchView searchView = view.findViewById(R.id.search);
         emptyTextView = view.findViewById(R.id.emptyTextView);
         progressOverlay = view.findViewById(R.id.progressOverlay); // ✅ new
 
@@ -73,18 +72,16 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId);
 
-        addListButton.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.home_fragment_container, new UploadListFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        addListButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.home_fragment_container, new UploadListFragment())
+                .addToBackStack(null)
+                .commit());
 
         getParentFragmentManager().setFragmentResultListener("refreshHome", this, (requestKey, bundle) -> {
             boolean refresh = bundle.getBoolean("refreshNeeded", false);
@@ -191,7 +188,7 @@ public class HomeFragment extends Fragment {
                         .setMessage("Are you sure you want to delete the list \"" + toDelete.getListTitle() + "\" and all its members?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             String listId = toDelete.getListId();
-                            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
                             DatabaseReference listRef = FirebaseDatabase.getInstance()
                                     .getReference("Unique User ID")
                                     .child(userId)
@@ -213,9 +210,7 @@ public class HomeFragment extends Fragment {
                                         adapter.notifyItemChanged(position);
                                     });
                         })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
-                            adapter.notifyItemChanged(position);
-                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> adapter.notifyItemChanged(position))
                         .setCancelable(false)
                         .show();
             }
@@ -223,4 +218,5 @@ public class HomeFragment extends Fragment {
 
         new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView);
     }
+
 }

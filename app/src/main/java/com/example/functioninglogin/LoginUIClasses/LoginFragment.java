@@ -13,11 +13,11 @@ import com.example.functioninglogin.HomePageUIClasses.MainActivity;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.*;
 
+import java.util.Objects;
+
 public class LoginFragment extends Fragment {
 
     private EditText loginEmail, loginPassword;
-    private Button loginButton;
-    private TextView signupRedirectText, forgotPasswordRedirectText;
     private ImageView passwordToggle;
     private boolean isPasswordVisible = false;
     private FirebaseAuth auth;
@@ -40,9 +40,9 @@ public class LoginFragment extends Fragment {
         loginEmail = view.findViewById(R.id.login_username);
         loginPassword = view.findViewById(R.id.login_password);
         passwordToggle = view.findViewById(R.id.password_toggle);
-        loginButton = view.findViewById(R.id.login_button);
-        signupRedirectText = view.findViewById(R.id.loginRedirectText);
-        forgotPasswordRedirectText = view.findViewById(R.id.forgot_passwordRedirectText);
+        Button loginButton = view.findViewById(R.id.login_button);
+        TextView signupRedirectText = view.findViewById(R.id.loginRedirectText);
+        TextView forgotPasswordRedirectText = view.findViewById(R.id.forgot_passwordRedirectText);
 
         auth = FirebaseAuth.getInstance();
 
@@ -83,26 +83,22 @@ public class LoginFragment extends Fragment {
                             }
                         } else {
                             Toast.makeText(requireContext(),
-                                    "Login Failed: " + task.getException().getMessage(),
+                                    "Login Failed: " + Objects.requireNonNull(task.getException()).getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        signupRedirectText.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.auth_fragment_container, new SignupFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        signupRedirectText.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.auth_fragment_container, new SignupFragment())
+                .addToBackStack(null)
+                .commit());
 
-        forgotPasswordRedirectText.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.auth_fragment_container, new ForgotPasswordFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        forgotPasswordRedirectText.setOnClickListener(v -> requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.auth_fragment_container, new ForgotPasswordFragment())
+                .addToBackStack(null)
+                .commit());
     }
 }

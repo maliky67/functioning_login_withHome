@@ -26,9 +26,6 @@ public class MemberViewFragment extends Fragment {
     private String listKey, memberKey;
     private TextView memberName, memberRole, memberTotalSpent;
     private ImageView memberImage;
-    private RecyclerView giftRecyclerView;
-    private MaterialButton addGiftButton;
-    private CardView memberHeaderCard;
 
     private final List<GiftItem> giftList = new ArrayList<>();
     private GiftDisplayAdapter giftAdapter;
@@ -63,9 +60,9 @@ public class MemberViewFragment extends Fragment {
         memberRole = view.findViewById(R.id.memberRole);
         memberImage = view.findViewById(R.id.memberImage);
         memberTotalSpent = view.findViewById(R.id.memberTotalSpent);
-        giftRecyclerView = view.findViewById(R.id.giftRecyclerView);
-        addGiftButton = view.findViewById(R.id.addGiftButton);
-        memberHeaderCard = view.findViewById(R.id.memberHeaderCard);
+        RecyclerView giftRecyclerView = view.findViewById(R.id.giftRecyclerView);
+        MaterialButton addGiftButton = view.findViewById(R.id.addGiftButton);
+        CardView memberHeaderCard = view.findViewById(R.id.memberHeaderCard);
 
         // ➕ Add gift
         addGiftButton.setOnClickListener(v -> {
@@ -115,7 +112,7 @@ public class MemberViewFragment extends Fragment {
                         .setMessage("Are you sure you want to delete \"" + toDelete.getName() + "\"?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             if (toDelete.getKey() != null) {
-                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
                                 FirebaseDatabase.getInstance()
                                         .getReference("Unique User ID")
@@ -163,7 +160,7 @@ public class MemberViewFragment extends Fragment {
     }
 
     private void loadMemberInfo() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
@@ -196,7 +193,7 @@ public class MemberViewFragment extends Fragment {
     }
 
     private void loadGiftData() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(userId)
