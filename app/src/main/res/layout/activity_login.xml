@@ -99,6 +99,28 @@
                 android:text="@string/not_yet_registered_sign_up"
                 android:textColor="@color/BorderBlue"
                 android:textSize="18sp" />
+
+            <!-- Botón Google Sign-In con ID corregido -->
+            <TextView
+                android:id="@+id/forgot_passwordRedirectText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:padding="8dp"
+                android:text="Forgot Password?"
+                android:textColor="@color/BorderBlue"
+                android:textSize="18sp" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/googleSignInBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:visibility="visible" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.storage)
+    implementation(libs.play.services.auth)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation (libs.glide)
     testImplementation(libs.junit)
@@ -70,5 +71,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
 }

@@ -52,4 +52,5 @@
     <string name="shorts">Shorts</string>
     <string name="home">Home</string>
     <string name="santa_s_helpers">Santa\'s Helpers</string>
+    <string name="default_web_client_id">YOUR_CLIENT_ID_FROM_GOOGLE</string>
 </resources>
