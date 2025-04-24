@@ -14,7 +14,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.example.functioninglogin.GeneratorPageUIClasses.ShoppingListFragment;
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
 import com.example.functioninglogin.NavDrawerUIClasses.LocaleHelper;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Google Sign-In Client setup
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
 
         // Bottom nav setup
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -138,9 +149,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, AuthActivity.class));
-            finish();
-            return true;
+            mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+                startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                finish();
+            });
         }
 
         return false;

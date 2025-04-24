@@ -106,4 +106,5 @@
     <string name="santa_s_helper">Santa\'s Helper</string>
     <string name="no_gifts_added_yet_for_this_member">No gifts added yet for this member!</string>
     <string name="add_gift">Add Gift</string>
+    <string name="default_web_client_id">\n</string>
 </resources>

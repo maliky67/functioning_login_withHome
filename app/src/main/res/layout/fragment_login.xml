@@ -99,12 +99,19 @@
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_blue"
                 android:text="@string/login"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
-
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/googleSignInBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:visibility="visible" />
             <TextView
                 android:id="@+id/loginRedirectText"
                 android:layout_width="wrap_content"
@@ -121,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:padding="8dp"
                 android:text="@string/forgot_password"
                 android:textColor="@color/BorderBlue"

@@ -76,4 +76,5 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.gson.core)
     implementation(libs.okhttp.logging)
+    implementation(libs.play.services.auth)
 }
