@@ -22,12 +22,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
+
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Google Sign-In Client setup
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Bottom nav setup
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -85,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.home_fragment_container, new HomeFragment())
                     .commit();
-            bottomNavigationView.setSelectedItemId(R.id.home); // Optional: sync bottom nav
+            bottomNavigationView.setSelectedItemId(R.id.home);
             return true;
 
         } else if (id == R.id.settings || id == R.id.about || id == R.id.share) {
@@ -93,9 +106,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
 
         } else if (id == R.id.logout) {
+            // Sign out of Firebase
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+
+            // Sign out of Google
+            mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            });
             return true;
         }
 
