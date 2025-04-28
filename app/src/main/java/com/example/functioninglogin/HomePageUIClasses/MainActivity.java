@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.home) {
             selectedFragment = new HomeFragment();
         } else if (id == R.id.Budget) {
-            // ✅ Create BudgetFragment and attach listKey
             BudgetFragment budgetFragment = new BudgetFragment();
             Bundle args = new Bundle();
             args.putString("listKey", "-ONpmJ4VSnsF6StbrGW1"); // 👈 Replace with your actual listKey

@@ -16,17 +16,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.SignInButton;
 import com.example.functioninglogin.HomePageUIClasses.MainActivity;
-import com.example.functioninglogin.R;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.AuthCredential;
-
-
-
-import java.util.Objects;
 
 public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 9001;
@@ -40,7 +34,8 @@ public class LoginFragment extends Fragment {
 
     public LoginFragment() { /* Required empty */ }
 
-    @Nullable @Override
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -98,17 +93,24 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             launchMainActivity();
                         } else {
+                            String errorMessage = task.getException() != null
+                                    ? task.getException().getMessage()
+                                    : "Unknown error";
                             Toast.makeText(getContext(),
-                                    "Login Failed: " + task.getException().getMessage(),
+                                    "Login Failed: " + errorMessage,
                                     Toast.LENGTH_LONG).show();
                         }
                     });
         });
 
-        // — Google login
+        // — Google login with forced account chooser
         googleSignInButton.setOnClickListener(v -> {
-            Intent intent = mGoogleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_SIGN_IN);
+            // Sign out from Google to force account selection
+            mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity(), signOutTask -> {
+                // After sign-out, start the sign-in intent
+                Intent intent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(intent, RC_SIGN_IN);
+            });
         });
 
         // — Navigation targets
@@ -129,6 +131,7 @@ public class LoginFragment extends Fragment {
     }
 
     // — Handle Google Sign-In result
+    @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -138,22 +141,32 @@ public class LoginFragment extends Fragment {
                 GoogleSignIn.getSignedInAccountFromIntent(data);
 
         try {
-            String idToken = task.getResult(ApiException.class).getIdToken();
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            if (account == null) {
+                Toast.makeText(getContext(),
+                        "Google Sign-In failed: No account selected",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            String idToken = account.getIdToken();
             AuthCredential cred = GoogleAuthProvider.getCredential(idToken, null);
             auth.signInWithCredential(cred)
                     .addOnCompleteListener(requireActivity(), authTask -> {
                         if (authTask.isSuccessful()) {
                             launchMainActivity();
                         } else {
+                            String errorMessage = authTask.getException() != null
+                                    ? authTask.getException().getMessage()
+                                    : "Unknown error";
                             Toast.makeText(getContext(),
-                                    "Google Sign-In failed: " +
-                                            authTask.getException().getMessage(),
+                                    "Google Sign-In failed: " + errorMessage,
                                     Toast.LENGTH_LONG).show();
                         }
                     });
         } catch (ApiException e) {
+            String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error";
             Toast.makeText(getContext(),
-                    "Google sign in error: " + e.getMessage(),
+                    "Google sign in error: " + errorMessage,
                     Toast.LENGTH_LONG).show();
         }
     }
