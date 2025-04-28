@@ -1,12 +1,17 @@
 package com.example.functioninglogin.BudgetPageUIClasses;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -227,6 +232,11 @@ public class BudgetFragment extends Fragment {
         float remaining = (float) listBudget - totalSpent;
         boolean isOverBudget = totalSpent > listBudget;
 
+        if (isOverBudget) {
+            float overAmount = totalSpent - (float) listBudget;
+            sendOverBudgetNotification(selectedList, overAmount);
+        }
+
         if (remaining > 0) {
             stack.add(remaining);
             memberNames.add("Remaining");
@@ -273,6 +283,7 @@ public class BudgetFragment extends Fragment {
                 barDataSet.setDrawValues(true);
                 barDataSet.setValueTextColor(Color.BLACK);
                 barDataSet.setValueTextSize(14f);
+
                 barDataSet.setValueFormatter(new ValueFormatter() {
                     @Override
                     public String getBarStackedLabel(float value, BarEntry entry) {
@@ -292,14 +303,7 @@ public class BudgetFragment extends Fragment {
                 yAxis.setAxisMinimum(0f);
                 yAxis.setAxisMaximum(isOverBudget ? totalSpent * 1.1f : (float) listBudget);
                 yAxis.setGranularity(10f);
-                yAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getFormattedValue(float value) {
-                        return "$" + String.format("%.2f", value);
-                    }
-                });
 
-                // ➡️ Add Red Budget Line
                 yAxis.removeAllLimitLines();
                 if (listBudget > 0) {
                     LimitLine budgetLine = new LimitLine((float) listBudget, "Budget");
@@ -320,6 +324,36 @@ public class BudgetFragment extends Fragment {
         emptyTextView.setVisibility(filteredMembers.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+    private void sendOverBudgetNotification(String listName, double overAmount) {
+        String channelId = "over_budget_channel";
+        String channelName = "Over Budget Alerts";
+
+        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Notifications when a list goes over budget");
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), channelId)
+                .setSmallIcon(R.drawable.baseline_access_alarms_24)
+                .setContentTitle("⚠️ Budget Alert!")
+                .setContentText(listName + " list is over budget by $" + String.format("%.2f", overAmount) + "!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        if (notificationManager != null) {
+            notificationManager.notify(listName.hashCode(), builder.build());
+        }
+    }
+
     @NonNull
     private static PieData getPieData(List<PieEntry> pieEntries, float remaining, int[] rawColors) {
         List<Integer> pieColors = new ArrayList<>();
@@ -333,10 +367,9 @@ public class BudgetFragment extends Fragment {
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, " ");
         pieDataSet.setColors(pieColors);
-        pieDataSet.setValueTextColor(Color.BLACK); // value label like "$64.99" is black
+        pieDataSet.setValueTextColor(Color.BLACK);
         pieDataSet.setValueTextSize(14f);
 
-        // ⚡ ADDED: Move name labels outside slices and color black
         pieDataSet.setValueLineColor(Color.BLACK);
         pieDataSet.setValueLinePart1Length(0.3f);
         pieDataSet.setValueLinePart2Length(0.4f);
@@ -351,7 +384,6 @@ public class BudgetFragment extends Fragment {
 
         return new PieData(pieDataSet);
     }
-
 
     private int[] getChartColors() {
         return new int[]{
