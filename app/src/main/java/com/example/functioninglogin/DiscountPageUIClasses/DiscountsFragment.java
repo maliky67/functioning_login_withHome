@@ -33,10 +33,18 @@ public class DiscountsFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.dealsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        adapter = new DealsAdapter();
+        adapter = new DealsAdapter(deal -> {
+            // Navigate to DealDetailsFragment when a deal is clicked
+            DealDetailsFragment fragment = DealDetailsFragment.newInstance(deal);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.home_fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
         recyclerView.setAdapter(adapter);
 
-        loadingOverlay = view.findViewById(R.id.loadingOverlay); // 🌟 this was the missing piece!
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
 
         fetchDeals();
 

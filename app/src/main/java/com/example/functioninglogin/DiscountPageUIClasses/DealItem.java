@@ -1,6 +1,8 @@
 package com.example.functioninglogin.DiscountPageUIClasses;
 
-public class DealItem {
+import java.io.Serializable;
+
+public class DealItem implements Serializable {
 
     private String deal_title;
     private String deal_photo;
@@ -36,6 +38,11 @@ public class DealItem {
 
     public String getDeal_badge() {
         return deal_badge;
+    }
+
+    // Add a method to get a description (since the API doesn't provide one, we'll return a placeholder)
+    public String getDescription() {
+        return "Savings: " + savings_percentage + "% off"; // Placeholder description
     }
 
     public static class DealPrice {

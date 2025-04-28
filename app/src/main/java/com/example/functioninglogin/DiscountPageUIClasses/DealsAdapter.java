@@ -18,6 +18,15 @@ import java.util.List;
 public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.DealViewHolder> {
 
     private final List<DealItem> dealList = new ArrayList<>();
+    private final OnDealClickListener listener;
+
+    public interface OnDealClickListener {
+        void onDealClick(DealItem deal);
+    }
+
+    public DealsAdapter(OnDealClickListener listener) {
+        this.listener = listener;
+    }
 
     public void updateDeals(List<DealItem> deals) {
         dealList.clear();
@@ -58,6 +67,9 @@ public class DealsAdapter extends RecyclerView.Adapter<DealsAdapter.DealViewHold
         } else {
             holder.image.setImageResource(R.drawable.baseline_ac_unit_24);
         }
+
+        // Set click listener for the entire item view
+        holder.itemView.setOnClickListener(v -> listener.onDealClick(deal));
     }
 
     @Override

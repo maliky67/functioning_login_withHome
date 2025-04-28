@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deal Details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:textColor="@android:color/black" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/dealImageView"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/baseline_lightbulb_24"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Deal Image" />
+
+                <TextView
+                    android:id="@+id/dealNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deal Name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/dealPriceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/dealUrlTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="https://www.example.com"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textColor="@android:color/darker_gray" />
+
+                <TextView
+                    android:id="@+id/dealDescriptionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to Gift List"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black" />
+
+        <Spinner
+            android:id="@+id/listSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/memberSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/addGiftButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Gift to Member"
+            android:backgroundTint="@color/BorderBlue"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</ScrollView>
