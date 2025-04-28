@@ -102,12 +102,12 @@ public class AddGiftFragment extends Fragment {
         giftRef.child(giftId).setValue(giftMap)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(requireContext(), "🎁 Gift added!", Toast.LENGTH_SHORT).show();
-                    // Go back to member screen
-                    requireActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.home_fragment_container, MemberViewFragment.newInstance(listKey, memberKey))
-                            .addToBackStack(null)
-                            .commit();
+
+                    // Clear the form fields to prevent duplicates
+                    clearForm();
+
+                    // Pop this fragment from the back stack
+                    requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to save gift: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
@@ -119,5 +119,13 @@ public class AddGiftFragment extends Fragment {
         else if (id == R.id.radioArrived) return "Arrived";
         else if (id == R.id.radioWrapped) return "Wrapped";
         return "Idea"; // default fallback
+    }
+
+    private void clearForm() {
+        giftNameEdit.setText("");
+        giftPriceEdit.setText("");
+        giftWebsiteEdit.setText("");
+        giftNotesEdit.setText("");
+        statusGroup.check(R.id.radioIdea); // Reset to default status
     }
 }
