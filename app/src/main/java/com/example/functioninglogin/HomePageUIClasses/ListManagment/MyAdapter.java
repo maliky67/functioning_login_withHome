@@ -1,11 +1,19 @@
 package com.example.functioninglogin.HomePageUIClasses.ListManagment;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.functioninglogin.HomePageUIClasses.GiftManagment.GiftItem;
@@ -17,10 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -85,8 +89,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             holder.recImage.setImageResource(R.drawable.hatv1);
         }
 
+        // 🛎️ Check overbudget and adjust visuals
+        if (spent > list.getTotalBudget()) {
+            // Card background light red
+            holder.recCard.setCardBackgroundColor(context.getResources().getColor(R.color.overbudget_background));
+            // Text color red
+            holder.totalSpent.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
+            holder.recTitle.setTextColor(context.getResources().getColor(R.color.christmas_blue));
+            holder.recDesc.setTextColor(context.getResources().getColor(R.color.christmas_blue));
+            holder.totalBudget.setTextColor(context.getResources().getColor(R.color.christmas_blue));
+        } else {
+            // Reset to normal if not over budget
+            holder.recCard.setCardBackgroundColor(context.getResources().getColor(R.color.white)); // your normal background
+        }
+
         holder.recCard.setOnClickListener(v -> listener.onItemClick(list));
     }
+
 
     private double calculateTotalSpent(GiftList list) {
         double total = 0.0;
@@ -109,6 +128,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         return total;
     }
 
+    private void sendOverBudgetNotification(String listTitle, double spent, double budget) {
+        String channelId = "over_budget_channel";
+        String channelName = "Over Budget Alerts";
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Notifications when a list goes over budget");
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.baseline_access_alarms_24) // ⚡ Make sure you have a notification icon here
+                .setContentTitle("Over Budget!")
+                .setContentText(String.format(Locale.US, "%s list spent $%.2f / budget $%.2f", listTitle, spent, budget))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        int notificationId = listTitle.hashCode(); // Unique per list
+        if (notificationManager != null) {
+            notificationManager.notify(notificationId, builder.build());
+        }
+    }
 
     @Override
     public int getItemCount() {

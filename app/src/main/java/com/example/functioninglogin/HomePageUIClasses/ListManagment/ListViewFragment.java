@@ -116,7 +116,7 @@ public class ListViewFragment extends Fragment {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     MemberDataClass member = snap.getValue(MemberDataClass.class);
                     if (member != null) {
-                        member.setKey(snap.getKey()); // 🔑 Ensure we set this
+                        member.setKey(snap.getKey());
                         Map<String, GiftItem> giftMap = new HashMap<>();
                         for (DataSnapshot giftSnap : snap.child("gifts").getChildren()) {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
@@ -143,8 +143,30 @@ public class ListViewFragment extends Fragment {
                 headerDesc.setText(count == 0 ? "No Members Yet" : (count == 1 ? "1 member" : count + " members"));
                 headerTotalSpent.setText("Total Spent: $" + String.format("%.2f", totalSpent));
 
+                // ✨ Overbudget detection ✨
+                double budget = 0;
+                try {
+                    String budgetString = getArguments().getString("Budget", "0");
+                    budget = Double.parseDouble(budgetString);
+                } catch (Exception ignored) {}
+
+                if (totalSpent > budget) {
+                    // Overbudget: make background light red and text dark red
+                    CardView headerCard = requireView().findViewById(R.id.headerCard);
+                    headerCard.setCardBackgroundColor(requireContext().getResources().getColor(R.color.overbudget_background));
+                    headerTotalSpent.setTextColor(requireContext().getResources().getColor(android.R.color.holo_red_dark));
+                    headerTitle.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                    headerDesc.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                    headerTotalBudget.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                } else {
+                    // Normal colors
+                    CardView headerCard = requireView().findViewById(R.id.headerCard);
+                    headerCard.setCardBackgroundColor(requireContext().getResources().getColor(R.color.white)); // or your default
+                }
+
                 memberAdapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -217,6 +239,27 @@ public class ListViewFragment extends Fragment {
                             Glide.with(requireContext()).load(updatedImage).into(headerImage);
                         } else {
                             headerImage.setImageResource(R.drawable.baseline_account_box_24);
+                        }
+                        // 🛎️ Re-check if overbudget immediately after fetching updated budget
+                        double totalSpent = 0;
+                        try {
+                            String spentStr = headerTotalSpent.getText().toString().replace("Total Spent: $", "");
+                            totalSpent = Double.parseDouble(spentStr);
+                        } catch (Exception ignored) {}
+
+                        if (updatedBudget != null && totalSpent > updatedBudget) {
+                            headerCard.setCardBackgroundColor(requireContext().getResources().getColor(android.R.color.holo_red_light));
+                            headerTotalSpent.setTextColor(requireContext().getResources().getColor(android.R.color.holo_red_dark));
+                            headerTitle.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                            headerDesc.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                            headerTotalBudget.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
+                        } else {
+                            headerCard.setCardBackgroundColor(requireContext().getResources().getColor(R.color.white));
+                            headerTitle.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
+                            headerDesc.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
+                            headerTotalBudget.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
+                            headerTotalSpent.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
+                            ;
                         }
                     }
                 });

@@ -20,6 +20,6 @@
     <color name="light_blue">#A7D0F6</color>
     <color name="light_grey">#E0E0E0</color>
     <color name="dark_grey">#616161</color>
-    <color name="overbudget_background">#F04D4D</color>
+    <color name="overbudget_background">#CCF04D4D</color>
 
 </resources>
