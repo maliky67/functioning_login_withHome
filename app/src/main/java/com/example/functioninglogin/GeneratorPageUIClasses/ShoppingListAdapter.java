@@ -41,14 +41,19 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         holder.memberName.setText("🎅 For: " + item.getMemberName());
         holder.itemPrice.setText("$" + item.getPrice());
 
-        boolean isBought = item.getStatus().equalsIgnoreCase("bought");
-        holder.itemCheck.setChecked(isBought);
+        // Treat "bought", "arrived", or "wrapped" as purchased
+        boolean isPurchased = item.getStatus().equalsIgnoreCase("bought") ||
+                item.getStatus().equalsIgnoreCase("arrived") ||
+                item.getStatus().equalsIgnoreCase("wrapped");
+        holder.itemCheck.setChecked(isPurchased);
 
-        // Visual feedback
-        holder.itemName.setPaintFlags(isBought
+        // Visual feedback (strike-through)
+        holder.itemName.setPaintFlags(isPurchased
                 ? holder.itemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                 : holder.itemName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
+        // Reset the listener to avoid multiple listeners stacking
+        holder.itemCheck.setOnCheckedChangeListener(null);
         holder.itemCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String newStatus = isChecked ? "bought" : "idea";
 
@@ -60,7 +65,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             // Local state update
             item.setStatus(newStatus);
 
-            // 🔥 Firebase Update
+            // Firebase Update
             String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             FirebaseDatabase.getInstance()
                     .getReference("Unique User ID")

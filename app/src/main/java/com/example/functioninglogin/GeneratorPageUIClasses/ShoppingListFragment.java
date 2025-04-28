@@ -26,6 +26,7 @@ public class ShoppingListFragment extends Fragment {
     private ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
     private FrameLayout progressOverlay;
+    private ValueEventListener shoppingListListener; // To keep track of the listener for cleanup
 
     public ShoppingListFragment() {}
 
@@ -63,7 +64,12 @@ public class ShoppingListFragment extends Fragment {
                 .child(userId)
                 .child("lists");
 
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Remove any existing listener to prevent duplicates
+        if (shoppingListListener != null) {
+            dbRef.removeEventListener(shoppingListListener);
+        }
+
+        shoppingListListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 shoppingList.clear();
@@ -103,7 +109,9 @@ public class ShoppingListFragment extends Fragment {
                 Log.e("SHOPPING_ERROR", error.getMessage());
                 hideLoading();
             }
-        });
+        };
+
+        dbRef.addValueEventListener(shoppingListListener);
     }
 
     private void updateGiftStatus(ShoppingListItem item, boolean isChecked) {
@@ -128,5 +136,19 @@ public class ShoppingListFragment extends Fragment {
                 .addOnFailureListener(e ->
                         Log.e("STATUS_UPDATE", "❌ Failed to update status", e)
                 );
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Clean up the listener when the fragment's view is destroyed
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        DatabaseReference dbRef = FirebaseDatabase.getInstance()
+                .getReference("Unique User ID")
+                .child(userId)
+                .child("lists");
+        if (shoppingListListener != null) {
+            dbRef.removeEventListener(shoppingListListener);
+        }
     }
 }
