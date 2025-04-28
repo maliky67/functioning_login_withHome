@@ -34,7 +34,6 @@
                     android:layout_height="wrap_content"
                     android:text="Edit Gift"
                     android:textAlignment="center"
-                    android:id="@+id/edit_gifts"
                     android:textColor="@color/christmas_blue"
                     android:textSize="30sp"
                     android:paddingBottom="12dp"/>

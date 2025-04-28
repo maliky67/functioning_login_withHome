@@ -1,6 +1,7 @@
 package com.example.functioninglogin.DiscountPageUIClasses;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.*;
 import android.widget.Toast;
@@ -23,9 +24,9 @@ public class DiscountsFragment extends Fragment {
 
     private DealsAdapter adapter;
     private View loadingOverlay;
-    private final List<DealItem> cachedDeals = new ArrayList<>(); // Cache for deals
-    private long lastFetchTime = 0; // Timestamp of last API call
-    private static final long FETCH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes interval
+    private final List<DealItem> cachedDeals = new ArrayList<>();
+    private long lastFetchTime = 0;
+    private static final long FETCH_INTERVAL_MS = 5 * 60 * 1000;
 
     @Nullable
     @Override
@@ -38,24 +39,23 @@ public class DiscountsFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.dealsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new DealsAdapter(deal -> {
-            // Navigate to DealDetailsFragment when a deal is clicked
-            DealDetailsFragment fragment = DealDetailsFragment.newInstance(deal);
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.home_fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            if (isAdded()) {
+                DealDetailsFragment fragment = DealDetailsFragment.newInstance(deal);
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.home_fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
         recyclerView.setAdapter(adapter);
 
         loadingOverlay = view.findViewById(R.id.loadingOverlay);
 
-        // Load cached deals if available
         if (!cachedDeals.isEmpty()) {
             adapter.updateDeals(cachedDeals);
         }
 
-        // Fetch deals if needed
         fetchDeals();
 
         return view;
@@ -78,12 +78,15 @@ public class DiscountsFragment extends Fragment {
 
     private void fetchDealsWithRetry(Call<DealResponse> call, int retryCount) {
         final int MAX_RETRIES = 3;
-        final long BASE_DELAY_MS = 60 * 1000; // 1 minute base delay
+        final long BASE_DELAY_MS = 60 * 1000;
 
         call.clone().enqueue(new Callback<DealResponse>() {
             @Override
             public void onResponse(@NonNull Call<DealResponse> call, @NonNull Response<DealResponse> response) {
+                if (!isAdded()) return; // 💥 Safe: fragment not attached, do nothing
+
                 showLoading(false);
+
                 if (response.isSuccessful() && response.body() != null) {
                     List<DealItem> deals = response.body().getData().getDeals();
                     cachedDeals.clear();
@@ -92,21 +95,28 @@ public class DiscountsFragment extends Fragment {
                     adapter.updateDeals(deals);
                 } else {
                     if (response.code() == 429 && retryCount < MAX_RETRIES) {
-                        // Handle rate limit error with retry
-                        long delay = BASE_DELAY_MS * (long) Math.pow(2, retryCount); // Exponential backoff
-                        Toast.makeText(requireContext(), "Rate limit exceeded. Retrying in " + (delay / 1000) + " seconds...", Toast.LENGTH_LONG).show();
-                        new android.os.Handler().postDelayed(() -> fetchDealsWithRetry(call, retryCount + 1), delay);
+                        long delay = BASE_DELAY_MS * (long) Math.pow(2, retryCount);
+                        if (isAdded()) {
+                            Toast.makeText(requireContext(), "Rate limit exceeded. Retrying in " + (delay / 1000) + " seconds...", Toast.LENGTH_LONG).show();
+                        }
+                        new Handler().postDelayed(() -> fetchDealsWithRetry(call, retryCount + 1), delay);
                     } else if (response.code() == 429) {
-                        Toast.makeText(requireContext(), "Rate limit exceeded. Please try again later.", Toast.LENGTH_LONG).show();
+                        if (isAdded()) {
+                            Toast.makeText(requireContext(), "Rate limit exceeded. Please try again later.", Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         Log.e("DEAL_FETCH", "❌ Unexpected response: " + response.code());
-                        Toast.makeText(requireContext(), "❌ Failed to load deals", Toast.LENGTH_SHORT).show();
+                        if (isAdded()) {
+                            Toast.makeText(requireContext(), "❌ Failed to load deals", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<DealResponse> call, @NonNull Throwable t) {
+                if (!isAdded()) return; // 💥 Safe: fragment not attached, do nothing
+
                 showLoading(false);
                 Log.e("API", "Failed: " + t.getMessage());
                 Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();

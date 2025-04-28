@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/discountsRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue">
@@ -13,7 +12,6 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/title"
             android:text="Today's Deals 🎁"
             android:textSize="25sp"
             android:layout_gravity="center"

@@ -35,9 +35,6 @@ public class DealDetailsFragment extends Fragment {
 
     private DealItem deal;
     private Spinner listSpinner, memberSpinner;
-    private TextView dealTitleTextView, dealPriceTextView, dealUrlTextView, dealDescriptionTextView;
-    private ImageView dealImageView; // Added ImageView field
-    private Button addGiftButton;
 
     private List<String> listNames = new ArrayList<>();
     private List<String> listIds = new ArrayList<>();
@@ -65,14 +62,15 @@ public class DealDetailsFragment extends Fragment {
         }
 
         // Initialize views
-        dealImageView = view.findViewById(R.id.dealImageView); // Initialize the ImageView
-        dealTitleTextView = view.findViewById(R.id.dealNameTextView);
-        dealPriceTextView = view.findViewById(R.id.dealPriceTextView);
-        dealUrlTextView = view.findViewById(R.id.dealUrlTextView);
-        dealDescriptionTextView = view.findViewById(R.id.dealDescriptionTextView);
+        // Added ImageView field
+        ImageView dealImageView = view.findViewById(R.id.dealImageView); // Initialize the ImageView
+        TextView dealTitleTextView = view.findViewById(R.id.dealNameTextView);
+        TextView dealPriceTextView = view.findViewById(R.id.dealPriceTextView);
+        TextView dealUrlTextView = view.findViewById(R.id.dealUrlTextView);
+        TextView dealDescriptionTextView = view.findViewById(R.id.dealDescriptionTextView);
         listSpinner = view.findViewById(R.id.listSpinner);
         memberSpinner = view.findViewById(R.id.memberSpinner);
-        addGiftButton = view.findViewById(R.id.addGiftButton);
+        Button addGiftButton = view.findViewById(R.id.addGiftButton);
 
         // Populate deal details with null checks
         if (deal != null) {

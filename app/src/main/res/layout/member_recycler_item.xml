@@ -2,7 +2,6 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/memberCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
@@ -64,14 +63,11 @@
             android:layout_marginTop="4dp">
             <!-- Gift items will be added here dynamically -->
             <TextView
-                android:id="@+id/giftIdea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/memberRole"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="-4dp"
                 android:layout_marginBottom="12dp"
-                android:layout_toEndOf="@id/memberImage"
                 android:drawablePadding="4dp"
                 android:maxLines="1"
                 android:text="Gift Idea"

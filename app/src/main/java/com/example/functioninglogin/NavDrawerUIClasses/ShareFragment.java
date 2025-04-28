@@ -28,7 +28,6 @@ import java.util.List;
 public class ShareFragment extends Fragment {
 
     private Spinner listSpinner;
-    private Button shareButton;
     private TextView previewText;
 
     private final List<String> listNames = new ArrayList<>();
@@ -37,7 +36,6 @@ public class ShareFragment extends Fragment {
     private final List<GiftMember> giftMemberList = new ArrayList<>();
 
     private DatabaseReference databaseReference;
-    private String uid;
 
     @Nullable
     @Override
@@ -48,10 +46,10 @@ public class ShareFragment extends Fragment {
         View view = inflater.inflate(R.layout.share_fragment, container, false);
 
         listSpinner = view.findViewById(R.id.list_spinner);
-        shareButton = view.findViewById(R.id.share_button);
+        Button shareButton = view.findViewById(R.id.share_button);
         previewText = view.findViewById(R.id.preview_text);
 
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
                 .child(uid)

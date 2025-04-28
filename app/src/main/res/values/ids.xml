@@ -2,5 +2,4 @@
 <resources>
     <item name="recyclerView" type="id" />
     <item name="googleSignInBtn" type="id" />
-    <item name="dealTitleTextView" type="id" />
 </resources>

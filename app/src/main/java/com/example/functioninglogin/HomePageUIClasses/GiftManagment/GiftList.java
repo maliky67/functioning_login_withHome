@@ -56,9 +56,6 @@ public class GiftList {
         return names;
     }
 
-    public void setFormattedMemberPreview(String formattedMemberPreview) {
-    }
-
     public String getFormattedMemberPreview() {
         List<String> names = getMemberNamesList();
         int maxToShow = 3;

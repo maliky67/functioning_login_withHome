@@ -1,6 +1,5 @@
 package com.example.functioninglogin.NavDrawerUIClasses;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -26,13 +25,7 @@ public class LocaleHelper {
         Resources resources = context.getResources();
         Configuration config = new Configuration(resources.getConfiguration());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            config.setLocale(locale);
-            return context.createConfigurationContext(config);
-        } else {
-            config.locale = locale;
-            resources.updateConfiguration(config, resources.getDisplayMetrics());
-            return context;
-        }
+        config.setLocale(locale);
+        return context.createConfigurationContext(config);
     }
 }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.FunctioningLogin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -14,8 +14,4 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="DialogAnimation">
-        <item name= "android:windowEnterAnimation">@anim/slide_in</item>
-        <item name= "android:windowExitAnimation">@anim/slide_out</item>
-    </style>
 </resources>

@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberViewFragment;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;

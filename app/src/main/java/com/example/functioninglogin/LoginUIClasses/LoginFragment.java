@@ -18,9 +18,6 @@ import com.google.android.gms.common.SignInButton;
 import com.example.functioninglogin.HomePageUIClasses.MainActivity;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.AuthCredential;
 
 public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 9001;

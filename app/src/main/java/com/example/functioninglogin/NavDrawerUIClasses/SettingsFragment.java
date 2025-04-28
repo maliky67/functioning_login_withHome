@@ -1,7 +1,6 @@
 package com.example.functioninglogin.NavDrawerUIClasses;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -18,10 +17,8 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.example.functioninglogin.LoginUIClasses.AuthActivity;
 import com.example.functioninglogin.R;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
