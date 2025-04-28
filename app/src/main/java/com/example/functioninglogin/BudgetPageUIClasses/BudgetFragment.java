@@ -17,6 +17,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
@@ -49,7 +50,6 @@ public class BudgetFragment extends Fragment {
         RecyclerView budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
         ImageButton chartToggleButton = view.findViewById(R.id.chartToggleButton);
         categoryTabs = view.findViewById(R.id.categoryTabs);
-        TextView titleTextView = view.findViewById(R.id.budgetTitleTextView);
         barChart = view.findViewById(R.id.budgetBarChart);
         pieChart = view.findViewById(R.id.budgetPieChart);
         emptyTextView = view.findViewById(R.id.emptyTextView);
@@ -62,7 +62,6 @@ public class BudgetFragment extends Fragment {
         adapter = new BudgetAdapter(new ArrayList<>());
         budgetRecyclerView.setAdapter(adapter);
 
-        // Default to Pie chart on open
         pieChart.setVisibility(View.VISIBLE);
         barChart.setVisibility(View.GONE);
         isPie = true;
@@ -72,7 +71,7 @@ public class BudgetFragment extends Fragment {
 
         disableChartInteractivity(barChart);
         loadBudgetData();
-        updateChart(); // 🔥 triggers initial chart rendering
+        updateChart();
         return view;
     }
 
@@ -117,7 +116,6 @@ public class BudgetFragment extends Fragment {
                         String image = memberSnap.child("imageUrl").getValue(String.class);
 
                         List<GiftItem> gifts = new ArrayList<>();
-                        double total = 0;
                         for (DataSnapshot giftSnap : memberSnap.child("gifts").getChildren()) {
                             GiftItem gift = giftSnap.getValue(GiftItem.class);
                             if (gift != null) {
@@ -125,7 +123,7 @@ public class BudgetFragment extends Fragment {
                             }
                         }
 
-                        BudgetData member = new BudgetData(memberName, role, image, total, listBudget);
+                        BudgetData member = new BudgetData(memberName, role, image, 0, listBudget);
                         member.setGifts(gifts);
                         members.add(member);
                     }
@@ -165,7 +163,7 @@ public class BudgetFragment extends Fragment {
         if (!titles.isEmpty()) {
             selectedList = titles.get(0);
             listSpinner.setSelection(0);
-            updateChart(); // 👈 will run automatically
+            updateChart();
         }
 
         listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -173,7 +171,6 @@ public class BudgetFragment extends Fragment {
                 selectedList = titles.get(position);
                 updateChart();
             }
-
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
@@ -202,8 +199,7 @@ public class BudgetFragment extends Fragment {
                     if (shouldIncludeGift(gift)) {
                         try {
                             value += Float.parseFloat(gift.getPrice());
-                        } catch (Exception ignored) {
-                        }
+                        } catch (Exception ignored) {}
                     }
                 }
             }
@@ -216,9 +212,8 @@ public class BudgetFragment extends Fragment {
                         value,
                         listBudget
                 );
-
                 filtered.setGifts(gifts);
-                filtered.setAssignedColor(rawColors[colorIndex % rawColors.length]); // 🎯 assign matching color
+                filtered.setAssignedColor(rawColors[colorIndex % rawColors.length]);
                 colorIndex++;
 
                 filteredMembers.add(filtered);
@@ -230,18 +225,29 @@ public class BudgetFragment extends Fragment {
         }
 
         float remaining = (float) listBudget - totalSpent;
+        boolean isOverBudget = totalSpent > listBudget;
+
         if (remaining > 0) {
             stack.add(remaining);
             memberNames.add("Remaining");
             pieEntries.add(new PieEntry(remaining, "Remaining"));
         }
 
-
         if (isPie) {
             PieData pieData = getPieData(pieEntries, remaining, rawColors);
             pieChart.setData(pieData);
-            pieChart.setDescription(getChartDescription("Pie Chart"));
-            pieChart.setHoleColor(Color.TRANSPARENT);
+            pieChart.setDescription(getChartDescription(isOverBudget ? "Over Budget!" : "Pie Chart"));
+            pieChart.setHoleColor(isOverBudget ? Color.parseColor("#FFCCCC") : Color.TRANSPARENT);
+
+            if (isOverBudget) {
+                float overAmount = totalSpent - (float) listBudget;
+                pieChart.setCenterText("⚠️ Over Budget!\n($" + String.format("%.2f", overAmount) + ")");
+            } else {
+                pieChart.setCenterText("");
+            }
+
+            pieChart.setCenterTextSize(18f);
+            pieChart.setCenterTextColor(isOverBudget ? Color.RED : Color.BLACK);
             pieChart.invalidate();
         } else {
             if (!stack.isEmpty()) {
@@ -256,7 +262,7 @@ public class BudgetFragment extends Fragment {
                 List<Integer> barColors = new ArrayList<>();
                 for (int i = 0; i < stack.size(); i++) {
                     if (i == stack.size() - 1 && remaining > 0) {
-                        barColors.add(Color.WHITE);
+                        barColors.add(isOverBudget ? Color.RED : Color.WHITE);
                     } else {
                         barColors.add(rawColors[i % rawColors.length]);
                     }
@@ -275,7 +281,6 @@ public class BudgetFragment extends Fragment {
                     }
                 });
 
-
                 BarData barData = new BarData(barDataSet);
                 barData.setBarWidth(0.4f);
                 barChart.setData(barData);
@@ -285,7 +290,7 @@ public class BudgetFragment extends Fragment {
 
                 YAxis yAxis = barChart.getAxisLeft();
                 yAxis.setAxisMinimum(0f);
-                yAxis.setAxisMaximum((float) listBudget);
+                yAxis.setAxisMaximum(isOverBudget ? totalSpent * 1.1f : (float) listBudget);
                 yAxis.setGranularity(10f);
                 yAxis.setValueFormatter(new ValueFormatter() {
                     @Override
@@ -294,8 +299,19 @@ public class BudgetFragment extends Fragment {
                     }
                 });
 
+                // ➡️ Add Red Budget Line
+                yAxis.removeAllLimitLines();
+                if (listBudget > 0) {
+                    LimitLine budgetLine = new LimitLine((float) listBudget, "Budget");
+                    budgetLine.setLineColor(Color.RED);
+                    budgetLine.setLineWidth(2f);
+                    budgetLine.setTextColor(Color.RED);
+                    budgetLine.setTextSize(12f);
+                    yAxis.addLimitLine(budgetLine);
+                }
+
                 barChart.getAxisRight().setEnabled(false);
-                barChart.setDescription(getChartDescription("Spending vs Budget"));
+                barChart.setDescription(getChartDescription(""));
                 barChart.invalidate();
             }
         }
@@ -315,10 +331,17 @@ public class BudgetFragment extends Fragment {
             }
         }
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Budget Usage");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, " ");
         pieDataSet.setColors(pieColors);
-        pieDataSet.setValueTextColor(Color.BLACK);
+        pieDataSet.setValueTextColor(Color.BLACK); // value label like "$64.99" is black
         pieDataSet.setValueTextSize(14f);
+
+        // ⚡ ADDED: Move name labels outside slices and color black
+        pieDataSet.setValueLineColor(Color.BLACK);
+        pieDataSet.setValueLinePart1Length(0.3f);
+        pieDataSet.setValueLinePart2Length(0.4f);
+        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
         pieDataSet.setValueFormatter(new ValueFormatter() {
             @Override
             public String getPieLabel(float value, PieEntry entry) {
@@ -329,9 +352,10 @@ public class BudgetFragment extends Fragment {
         return new PieData(pieDataSet);
     }
 
+
     private int[] getChartColors() {
         return new int[]{
-                Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
+                Color.BLUE, Color.GREEN, Color.CYAN, Color.RED, Color.MAGENTA,
                 Color.YELLOW, Color.LTGRAY, Color.DKGRAY, Color.BLACK,
                 Color.parseColor("#FFA500"), Color.parseColor("#FFC0CB"), Color.parseColor("#00CED1"),
                 Color.parseColor("#FFD700"), Color.parseColor("#ADFF2F"), Color.parseColor("#8A2BE2"),

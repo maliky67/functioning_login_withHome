@@ -248,7 +248,7 @@ public class ListViewFragment extends Fragment {
                         } catch (Exception ignored) {}
 
                         if (updatedBudget != null && totalSpent > updatedBudget) {
-                            headerCard.setCardBackgroundColor(requireContext().getResources().getColor(android.R.color.holo_red_light));
+                            headerCard.setCardBackgroundColor(requireContext().getResources().getColor(R.color.overbudget_background));
                             headerTotalSpent.setTextColor(requireContext().getResources().getColor(android.R.color.holo_red_dark));
                             headerTitle.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
                             headerDesc.setTextColor(requireContext().getResources().getColor(R.color.christmas_blue));
