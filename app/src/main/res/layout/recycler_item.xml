@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
     android:layout_marginHorizontal="10dp"
@@ -14,28 +14,31 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/recImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/recImage"
-            android:src="@drawable/baseline_account_box_24"
             android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:scaleType="centerCrop"/>
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/baseline_account_box_24" />
 
         <TextView
             android:id="@+id/recTitle"
-            android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/recImage"
+            android:layout_toStartOf="@id/totalSpent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:text="@string/list_name"
             android:textColor="@color/BorderBlue"
-            android:textSize="20sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@id/recImage"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/recDesc"
@@ -43,10 +46,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/recTitle"
             android:layout_toEndOf="@id/recImage"
+            android:layout_toStartOf="@id/totalBudget"
             android:layout_marginStart="20dp"
             android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="12dp"
-            android:maxLines="1"
             android:text="No Members Yet"
             android:textColor="@color/BorderBlue"
             android:textSize="14sp" />
@@ -56,8 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@id/recTitle"
             android:layout_marginEnd="12dp"
+            android:layout_marginTop="10dp"
             android:text="Total Spent: $0"
             android:textColor="@color/BorderBlue"
             android:textSize="14sp" />
@@ -66,9 +70,10 @@
             android:id="@+id/totalBudget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_below="@id/totalSpent"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="12dp"
+            android:layout_marginTop="4dp"
             android:text="Total Budget: $0"
             android:textColor="@color/BorderBlue"
             android:textSize="14sp" />
