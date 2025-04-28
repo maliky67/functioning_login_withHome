@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment {
         MaterialButton addListButton = view.findViewById(R.id.addListButton);
         SearchView searchView = view.findViewById(R.id.search);
         emptyTextView = view.findViewById(R.id.emptyTextView);
-        progressOverlay = view.findViewById(R.id.progressOverlay); // ✅ new
+        progressOverlay = view.findViewById(R.id.progressOverlay);
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
@@ -119,7 +119,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDataFromFirebase() {
-        if (progressOverlay != null) progressOverlay.setVisibility(View.VISIBLE); // 🌀 show spinner
+        if (isFetching) {
+            Log.d("HOME_FRAGMENT", "fetchDataFromFirebase: Already fetching, skipping...");
+            return;
+        }
+        isFetching = true;
+
+        if (progressOverlay != null) progressOverlay.setVisibility(View.VISIBLE);
 
         databaseReference.child("lists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -148,7 +154,7 @@ public class HomeFragment extends Fragment {
 
                 adapter.updateData(dataList);
                 emptyTextView.setVisibility(dataList.isEmpty() ? View.VISIBLE : View.GONE);
-                if (progressOverlay != null) progressOverlay.setVisibility(View.GONE); // ✅ hide spinner
+                if (progressOverlay != null) progressOverlay.setVisibility(View.GONE);
                 isFetching = false;
             }
 
@@ -181,6 +187,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
+                if (position < 0 || position >= dataList.size()) {
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+
                 GiftList toDelete = dataList.get(position);
 
                 new android.app.AlertDialog.Builder(requireContext())
@@ -197,17 +208,14 @@ public class HomeFragment extends Fragment {
 
                             listRef.removeValue()
                                     .addOnSuccessListener(unused -> {
-                                        if (position >= 0 && position < dataList.size()) {
-                                            dataList.remove(position);
-                                            adapter.notifyItemRemoved(position);
-                                        } else {
-                                            adapter.notifyDataSetChanged();
-                                        }
+                                        // Fetch the updated data from Firebase to ensure UI matches
+                                        fetchDataFromFirebase();
                                         Toast.makeText(requireContext(), "List deleted 🎄", Toast.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(e -> {
+                                        // Fetch the updated data to ensure UI matches Firebase state
+                                        fetchDataFromFirebase();
                                         Toast.makeText(requireContext(), "Failed to delete ❌", Toast.LENGTH_SHORT).show();
-                                        adapter.notifyItemChanged(position);
                                     });
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> adapter.notifyItemChanged(position))
@@ -218,5 +226,4 @@ public class HomeFragment extends Fragment {
 
         new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView);
     }
-
 }
