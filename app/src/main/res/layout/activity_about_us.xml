@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Logo o Imagen -->
+        <ImageView
+            android:id="@+id/about_logo"
+            android:layout_width="166dp"
+            android:layout_height="158dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="App Logo"
+            android:src="@drawable/joytechv1" />
+
+
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/about_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Somos un grupo de desarrolladores apasionados por crear herramientas útiles. Esta aplicación fue creada como parte de un proyecto académico para ayudar a organizar tus compras navideñas de forma eficiente y práctica."
+            android:textSize="16sp"
+            android:lineSpacingExtra="6dp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         else if (id == R.id.about) {
-            Toast.makeText(this, "Coming Soon! 🚧", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AboutUsActivity.class));
             return true;
 
         } else if (id == R.id.logout) {
