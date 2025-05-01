@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_home"
+            android:icon="@drawable/baseline_access_alarms_24"
+            android:title="Inicio" />
+        <item
+            android:id="@+id/drawer_about"
+            android:icon="@drawable/baseline_lightbulb_24"
+            android:title="Sobre nosotros" />
+        <item
+            android:id="@+id/drawer_logout"
+            android:icon="@drawable/baseline_exit_to_app_24"
+            android:title="Cerrar sesión" />
+    </group>
+</menu>
