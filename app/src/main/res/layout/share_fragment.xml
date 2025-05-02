@@ -12,6 +12,7 @@
         <TextView
             android:text="@string/select_a_list_to_share"
             android:textSize="18sp"
+            android:id="@+id/preview_text"
             android:layout_marginBottom="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -20,15 +21,6 @@
             android:id="@+id/list_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/preview_text"
-            android:text="@string/list_preview"
-            android:layout_marginTop="20dp"
-            android:textColor="#444"
-            android:textSize="16sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/share_button"
