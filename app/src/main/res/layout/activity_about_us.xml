@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_us_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="24dp">
+    tools:context=".HomePageUIClasses.AboutUsActivity"
+    android:background="@color/light_blue">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_about"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="About Us"
+        android:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <!-- Logo o Imagen -->
-        <ImageView
-            android:id="@+id/about_logo"
-            android:layout_width="166dp"
-            android:layout_height="158dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="App Logo"
-            android:src="@drawable/joytechv1" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="16dp">
 
-
-
-        <!-- Descripción -->
-        <TextView
-            android:id="@+id/about_description"
+        <LinearLayout
+            android:id="@+id/member_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Somos un grupo de desarrolladores apasionados por crear herramientas útiles. Esta aplicación fue creada como parte de un proyecto académico para ayudar a organizar tus compras navideñas de forma eficiente y práctica."
-            android:textSize="16sp"
-            android:lineSpacingExtra="6dp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="24dp" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal" />
 
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

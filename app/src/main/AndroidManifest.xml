@@ -19,7 +19,7 @@
         <activity
             android:name=".HomePageUIClasses.MainActivity"
             android:exported="false" />
-        <activity android:name=".HomePageUIClasses.AboutUsActivity" />
+        <activity android:name=".NavDrawerUIClasses.AboutUsActivity" />
         <activity
             android:name=".LoginUIClasses.AuthActivity"
             android:exported="true">
