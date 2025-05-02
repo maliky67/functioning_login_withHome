@@ -1,6 +1,9 @@
 package com.example.functioninglogin.HomePageUIClasses.GiftManagment;
 
 import android.text.TextUtils;
+
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.functioninglogin.HomePageUIClasses.MemberManagment.MemberDataClass;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,4 +72,7 @@ public class GiftList {
 
         return result;
     }
+
+
+
 }
