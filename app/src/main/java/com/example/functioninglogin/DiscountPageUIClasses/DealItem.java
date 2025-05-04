@@ -1,8 +1,9 @@
 package com.example.functioninglogin.DiscountPageUIClasses;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class DealItem implements Serializable {
+public class DealItem implements Parcelable {
 
     private String deal_title;
     private String deal_photo;
@@ -11,6 +12,30 @@ public class DealItem implements Serializable {
     private DealPrice list_price;
     private int savings_percentage;
     private String deal_badge;
+
+    public DealItem() {}
+
+    protected DealItem(Parcel in) {
+        deal_title = in.readString();
+        deal_photo = in.readString();
+        deal_url = in.readString();
+        deal_price = in.readParcelable(DealPrice.class.getClassLoader());
+        list_price = in.readParcelable(DealPrice.class.getClassLoader());
+        savings_percentage = in.readInt();
+        deal_badge = in.readString();
+    }
+
+    public static final Creator<DealItem> CREATOR = new Creator<DealItem>() {
+        @Override
+        public DealItem createFromParcel(Parcel in) {
+            return new DealItem(in);
+        }
+
+        @Override
+        public DealItem[] newArray(int size) {
+            return new DealItem[size];
+        }
+    };
 
     public String getDeal_title() {
         return deal_title;
@@ -40,16 +65,59 @@ public class DealItem implements Serializable {
         return deal_badge;
     }
 
-    // Add a method to get a description (since the API doesn't provide one, we'll return a placeholder)
     public String getDescription() {
-        return "Savings: " + savings_percentage + "% off"; // Placeholder description
+        return "Savings: " + savings_percentage + "% off";
     }
 
-    public static class DealPrice {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(deal_title);
+        parcel.writeString(deal_photo);
+        parcel.writeString(deal_url);
+        parcel.writeParcelable(deal_price, i);
+        parcel.writeParcelable(list_price, i);
+        parcel.writeInt(savings_percentage);
+        parcel.writeString(deal_badge);
+    }
+
+    public static class DealPrice implements Parcelable {
         private String amount;
+
+        public DealPrice() {}
+
+        protected DealPrice(Parcel in) {
+            amount = in.readString();
+        }
+
+        public static final Creator<DealPrice> CREATOR = new Creator<DealPrice>() {
+            @Override
+            public DealPrice createFromParcel(Parcel in) {
+                return new DealPrice(in);
+            }
+
+            @Override
+            public DealPrice[] newArray(int size) {
+                return new DealPrice[size];
+            }
+        };
 
         public String getAmount() {
             return amount;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(amount);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
     }
 }

@@ -45,7 +45,7 @@ public class DealDetailsFragment extends Fragment {
     public static DealDetailsFragment newInstance(DealItem deal) {
         DealDetailsFragment fragment = new DealDetailsFragment();
         Bundle args = new Bundle();
-        args.putSerializable("deal", deal);
+        args.putParcelable("deal", deal); // ✅ Correct way for Parcelable
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +58,7 @@ public class DealDetailsFragment extends Fragment {
 
         // Retrieve the deal from arguments
         if (getArguments() != null) {
-            deal = (DealItem) getArguments().getSerializable("deal");
+            deal =  getArguments().getParcelable("deal");
         }
 
         // Initialize views
