@@ -3,6 +3,7 @@ package com.example.functioninglogin.HomePageUIClasses.MemberManagment;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +72,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 giftView.setTextColor(context.getResources().getColor(R.color.blue));
                 giftView.setTextSize(14);
                 giftView.setPadding(0, 4, 0, 0);
+                giftView.setMaxLines(1); // ✅ Limit to 1 line
+                giftView.setEllipsize(TextUtils.TruncateAt.END); // ✅ Add ellipsis
+                giftView.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
                 holder.giftListContainer.addView(giftView);
+
             }
 
             updateTextAnimated(holder.price, "$" + String.format("%.2f", total));
