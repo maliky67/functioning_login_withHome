@@ -262,6 +262,9 @@ public class DealDetailsFragment extends Fragment {
         giftMap.put("notes", "");
         giftMap.put("status", "Idea");
 
+        // ✅ Add the gift image URL
+        giftMap.put("imageUrl", deal.getDeal_photo());
+
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference giftRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
@@ -283,9 +286,9 @@ public class DealDetailsFragment extends Fragment {
         giftRef.child(giftId).setValue(giftMap)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(getContext(), "🎁 Gift added to member!", Toast.LENGTH_SHORT).show();
-                    // Pop back to the DiscountsFragment
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to add gift: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
 }

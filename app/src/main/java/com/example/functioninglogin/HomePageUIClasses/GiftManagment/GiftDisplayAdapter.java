@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.functioninglogin.R;
 
 import java.util.List;
@@ -41,6 +42,17 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
         holder.giftName.setText(gift.getName());
         holder.giftUrl.setText(gift.getWebsite());
         holder.giftPrice.setText("$" + gift.getPrice());
+
+
+        if (gift.getImageUrl() != null && !gift.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(gift.getImageUrl())
+                    .placeholder(R.drawable.baseline_card_giftcard_24) // Placeholder while loading
+                    .error(R.drawable.baseline_clear_24) // If URL is broken
+                    .into(holder.giftImage);
+        } else {
+            holder.giftImage.setImageResource(R.drawable.baseline_ac_unit_24);
+        }
 
         // Set gift status image based on status
         String status = gift.getStatus();
@@ -81,7 +93,7 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
 
     static class GiftViewHolder extends RecyclerView.ViewHolder {
         TextView giftName, giftUrl, giftPrice;
-        ImageView giftStatus;
+        ImageView giftStatus,giftImage;
 
         public GiftViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,6 +101,8 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
             giftUrl = itemView.findViewById(R.id.giftURL);
             giftPrice = itemView.findViewById(R.id.giftPrice);
             giftStatus = itemView.findViewById(R.id.giftStatus);
+            giftImage = itemView.findViewById(R.id.giftImage);       // ✅ New image view
+
         }
     }
 }

@@ -13,15 +13,15 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- 🟢 Gift Image -->
+        <!-- 🖼️ Gift Image -->
         <ImageView
-            android:id="@+id/giftStatus"
+            android:id="@+id/giftImage"
             android:layout_width="70dp"
             android:layout_height="90dp"
             android:layout_marginEnd="16dp"
             android:scaleType="centerCrop"
-            android:contentDescription="Gift Image"
-            android:src="@drawable/baseline_lightbulb_24"
+            android:src="@drawable/baseline_card_giftcard_24"
+            android:contentDescription="@string/gift_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,9 +37,9 @@
             android:textStyle="bold"
             android:maxLines="2"
             android:ellipsize="end"
-            app:layout_constraintStart_toEndOf="@id/giftStatus"
+            app:layout_constraintStart_toEndOf="@id/giftImage"
             app:layout_constraintEnd_toStartOf="@id/giftPrice"
-            app:layout_constraintTop_toTopOf="@id/giftStatus" />
+            app:layout_constraintTop_toTopOf="@id/giftImage" />
 
         <!-- 🔗 Gift URL -->
         <TextView
@@ -64,7 +64,19 @@
             android:textSize="14sp"
             android:textColor="@color/BorderBlue"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="@id/giftStatus"
+            app:layout_constraintTop_toTopOf="@id/giftImage"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- ✅ Status Icon -->
+        <ImageView
+            android:id="@+id/giftStatus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="18dp"
+            android:contentDescription="Status Icon"
+            android:src="@drawable/baseline_lightbulb_24"
+            app:layout_constraintTop_toBottomOf="@id/giftPrice"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
