@@ -21,12 +21,72 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <!-- NEW HORIZONTAL BAR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Filter Icon -->
+            <ImageButton
+                android:id="@+id/toggleFilterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Toggle Filters"
+                android:src="@drawable/baseline_ac_unit_24" />
+
+            <!-- Expandable filter box (inline now) -->
+            <LinearLayout
+                android:id="@+id/priceFilterContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="4dp">
+
+                <EditText
+                    android:id="@+id/minPriceEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Min $"
+                    android:inputType="numberDecimal"
+                    android:background="@drawable/borderblue"
+                    android:padding="8dp" />
+
+                <EditText
+                    android:id="@+id/maxPriceEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Max $"
+                    android:inputType="numberDecimal"
+                    android:background="@drawable/borderblue"
+                    android:layout_marginStart="8dp"
+                    android:padding="8dp" />
+
+                <Button
+                    android:id="@+id/applyFilterButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filter"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- DEALS LIST -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dealsRecycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
+
 
     <!-- 🌀 LOADING OVERLAY -->
     <include
