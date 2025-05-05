@@ -37,6 +37,16 @@
                     android:textColor="@color/christmas_blue"
                     android:textSize="30sp"
                     android:paddingBottom="12dp"/>
+                <ImageView
+                    android:id="@+id/editGiftImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="16dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/baseline_account_box_24"
+                    android:contentDescription="Gift Image"/>
+
 
                 <!-- Status Label -->
                 <TextView
