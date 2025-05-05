@@ -24,7 +24,7 @@ import java.util.*;
 public class MemberViewFragment extends Fragment {
 
     private String listKey, memberKey;
-    private TextView memberName, memberRole, memberTotalSpent;
+    private TextView memberName, memberRole, memberTotalSpent, emptyGiftText;
     private ImageView memberImage;
 
     private final List<GiftItem> giftList = new ArrayList<>();
@@ -44,10 +44,9 @@ public class MemberViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_member_view, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            listKey = args.getString("listKey");
-            memberKey = args.getString("memberKey");
+        if (getArguments() != null) {
+            listKey = getArguments().getString("listKey");
+            memberKey = getArguments().getString("memberKey");
         }
 
         if (listKey == null || memberKey == null) {
@@ -60,6 +59,8 @@ public class MemberViewFragment extends Fragment {
         memberRole = view.findViewById(R.id.memberRole);
         memberImage = view.findViewById(R.id.memberImage);
         memberTotalSpent = view.findViewById(R.id.memberTotalSpent);
+        emptyGiftText = view.findViewById(R.id.emptyGiftText); // 👈 make sure this TextView exists in XML
+
         RecyclerView giftRecyclerView = view.findViewById(R.id.giftRecyclerView);
         MaterialButton addGiftButton = view.findViewById(R.id.addGiftButton);
         CardView memberHeaderCard = view.findViewById(R.id.memberHeaderCard);
@@ -125,25 +126,26 @@ public class MemberViewFragment extends Fragment {
                                         .child(toDelete.getKey())
                                         .removeValue()
                                         .addOnSuccessListener(unused -> {
-                                            // ✅ Defensive check
                                             if (giftList.contains(toDelete)) {
                                                 int safeIndex = giftList.indexOf(toDelete);
                                                 giftList.remove(safeIndex);
                                                 giftAdapter.notifyItemRemoved(safeIndex);
                                             }
                                             Toast.makeText(requireContext(), "Gift deleted", Toast.LENGTH_SHORT).show();
+                                            toggleEmptyText();
                                         })
                                         .addOnFailureListener(e -> {
                                             Toast.makeText(requireContext(), "Failed to delete gift", Toast.LENGTH_SHORT).show();
-                                            giftAdapter.notifyItemChanged(position); // rollback
+                                            giftAdapter.notifyItemChanged(position);
                                         });
                             } else {
                                 giftList.remove(position);
                                 giftAdapter.notifyItemRemoved(position);
+                                toggleEmptyText();
                             }
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> {
-                            giftAdapter.notifyItemChanged(position); // rollback
+                            giftAdapter.notifyItemChanged(position);
                             dialog.dismiss();
                         })
                         .setCancelable(false)
@@ -152,7 +154,6 @@ public class MemberViewFragment extends Fragment {
 
         }).attachToRecyclerView(giftRecyclerView);
 
-        // 🔄 Firebase loads
         loadMemberInfo();
         loadGiftData();
 
@@ -222,6 +223,7 @@ public class MemberViewFragment extends Fragment {
 
                 memberTotalSpent.setText(String.format("$%.2f", totalSpent));
                 giftAdapter.notifyDataSetChanged();
+                toggleEmptyText();
             }
 
             @Override
@@ -229,5 +231,11 @@ public class MemberViewFragment extends Fragment {
                 Toast.makeText(requireContext(), "❌ Error loading gifts", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void toggleEmptyText() {
+        if (emptyGiftText != null) {
+            emptyGiftText.setVisibility(giftList.isEmpty() ? View.VISIBLE : View.GONE);
+        }
     }
 }

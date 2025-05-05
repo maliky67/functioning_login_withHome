@@ -18,7 +18,7 @@ import com.example.functioninglogin.NavDrawer.AboutUsActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.example.functioninglogin.GeneratorPage.ShoppingListFragment;
+import com.example.functioninglogin.GeneratorPage.GeneratorFragment;
 import com.example.functioninglogin.LoginUI.AuthActivity;
 import com.example.functioninglogin.NavDrawer.LocaleHelper;
 import com.example.functioninglogin.NavDrawer.SettingsFragment;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.Discounts) {
             selectedFragment = new DiscountsFragment();
         } else if (id == R.id.Generator) {
-            selectedFragment = new ShoppingListFragment();
+            selectedFragment = new GeneratorFragment();
         }
         return selectedFragment;
     }

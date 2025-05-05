@@ -93,9 +93,9 @@
             android:layout_height="wrap_content"
             android:text="No members in this list yet!"
             android:textAlignment="center"
-            android:textColor="@color/christmas_blue"
-            android:textSize="18sp"
             android:padding="16dp"
+            android:textColor="@color/christmas_blue"
+            android:textSize="20sp"
             android:visibility="gone" />
 
         <!-- ♻️ Member Recycler -->

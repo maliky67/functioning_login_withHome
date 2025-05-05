@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main Content -->
+    <!-- 🧾 Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,15 +20,31 @@
             android:gravity="center"
             android:textStyle="bold" />
 
+        <!-- ❌ Empty Text -->
+        <TextView
+            android:id="@+id/emptyListText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎄 No lists yet!\nCreate a Christmas list first to view it here."
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:paddingTop="40dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/blue_background"
+            android:visibility="gone" />
+
+        <!-- ✅ List Recycler -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/shoppingRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="16dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
             android:clipToPadding="false" />
     </LinearLayout>
 
-    <!-- Progress Overlay -->
+    <!-- 🌀 Loading Overlay -->
     <FrameLayout
         android:id="@+id/progressOverlay"
         android:layout_width="match_parent"

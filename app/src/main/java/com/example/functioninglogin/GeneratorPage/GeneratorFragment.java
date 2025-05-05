@@ -3,8 +3,7 @@ package com.example.functioninglogin.GeneratorPage;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.Toast;
-import android.widget.FrameLayout;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,18 +16,18 @@ import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class ShoppingListFragment extends Fragment {
+public class GeneratorFragment extends Fragment {
 
     private ShoppingListAdapter adapter;
     private final List<ShoppingListItem> shoppingList = new ArrayList<>();
     private FrameLayout progressOverlay;
-    private ValueEventListener shoppingListListener; // To keep track of the listener for cleanup
+    private TextView emptyListText;
+    private RecyclerView shoppingRecyclerView;
+    private ValueEventListener shoppingListListener;
 
-    public ShoppingListFragment() {}
+    public GeneratorFragment() {}
 
     @Nullable
     @Override
@@ -36,11 +35,13 @@ public class ShoppingListFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_shopping_list, container, false);
-        RecyclerView shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
-        shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        View view = inflater.inflate(R.layout.fragment_generator, container, false);
 
+        shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
+        emptyListText = view.findViewById(R.id.emptyListText);
         progressOverlay = view.findViewById(R.id.progressOverlay);
+
+        shoppingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ShoppingListAdapter(shoppingList);
         shoppingRecyclerView.setAdapter(adapter);
 
@@ -64,7 +65,6 @@ public class ShoppingListFragment extends Fragment {
                 .child(userId)
                 .child("lists");
 
-        // Remove any existing listener to prevent duplicates
         if (shoppingListListener != null) {
             dbRef.removeEventListener(shoppingListListener);
         }
@@ -98,8 +98,8 @@ public class ShoppingListFragment extends Fragment {
                     }
                 }
 
-                Log.d("SHOPPING_FETCH", "Total Items: " + shoppingList.size());
                 adapter.notifyDataSetChanged();
+                updateEmptyStateVisibility();
                 hideLoading();
             }
 
@@ -138,10 +138,19 @@ public class ShoppingListFragment extends Fragment {
                 );
     }
 
+    private void updateEmptyStateVisibility() {
+        if (shoppingList.isEmpty()) {
+            emptyListText.setVisibility(View.VISIBLE);
+            shoppingRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyListText.setVisibility(View.GONE);
+            shoppingRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Clean up the listener when the fragment's view is destroyed
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance()
                 .getReference("Unique User ID")
