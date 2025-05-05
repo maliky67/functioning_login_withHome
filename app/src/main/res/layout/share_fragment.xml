@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
@@ -7,13 +8,25 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
+        <!-- 📝 Title -->
         <TextView
-            android:text="@string/select_a_list_to_share"
-            android:textSize="18sp"
-            android:id="@+id/preview_text"
+            android:text="@string/share_a_gift_list"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_background"
             android:layout_marginBottom="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- 📂 Spinner -->
+        <TextView
+            android:id="@+id/preview_text"
+            android:text="@string/select_a_list_to_share"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -22,11 +35,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/share_button"
-            android:layout_marginTop="32dp"
-            android:text="@string/share_list"
+        <!-- 🧾 Preview Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/previewCard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- 🔄 Dynamic preview will go here -->
+                <TextView
+                    android:id="@+id/previewData"
+                    android:text="@string/your_pdf_preview_will_appear_here_after_selecting_a_list"
+                    android:textColor="@color/BorderBlue"
+                    android:textSize="14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 📤 Share Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/share_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_list"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/BorderBlue"
+            android:layout_margin="16dp"
+            app:cornerRadius="8dp" />
     </LinearLayout>
 </ScrollView>

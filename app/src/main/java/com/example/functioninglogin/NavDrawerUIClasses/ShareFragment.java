@@ -3,14 +3,8 @@ package com.example.functioninglogin.NavDrawerUIClasses;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,11 +22,11 @@ import java.util.List;
 public class ShareFragment extends Fragment {
 
     private Spinner listSpinner;
-    private TextView previewText;
+    private TextView previewText, previewDataText;
 
     private final List<String> listNames = new ArrayList<>();
-    private final List<String> listDescriptions = new ArrayList<>();
     private final List<String> listKeys = new ArrayList<>();
+    private final List<String> listBudgets = new ArrayList<>();
     private final List<GiftMember> giftMemberList = new ArrayList<>();
 
     private DatabaseReference databaseReference;
@@ -48,6 +42,7 @@ public class ShareFragment extends Fragment {
         listSpinner = view.findViewById(R.id.list_spinner);
         Button shareButton = view.findViewById(R.id.share_button);
         previewText = view.findViewById(R.id.preview_text);
+        previewDataText = view.findViewById(R.id.previewData);
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance()
@@ -60,7 +55,7 @@ public class ShareFragment extends Fragment {
         shareButton.setOnClickListener(v -> {
             int position = listSpinner.getSelectedItemPosition();
             if (position >= 0 && position < listNames.size()) {
-                fetchMemberDataAndShare(listKeys.get(position));
+                fetchMemberDataAndShare(listKeys.get(position), listNames.get(position), listBudgets.get(position));
             } else {
                 Toast.makeText(getContext(), "Please select a list", Toast.LENGTH_SHORT).show();
             }
@@ -74,16 +69,18 @@ public class ShareFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listNames.clear();
-                listDescriptions.clear();
                 listKeys.clear();
+                listBudgets.clear();
 
                 for (DataSnapshot listSnapshot : snapshot.getChildren()) {
                     String title = listSnapshot.child("listTitle").getValue(String.class);
-                    String desc = listSnapshot.child("listDesc").getValue(String.class);
+                    Object budgetObj = listSnapshot.child("totalBudget").getValue();
+                    double budgetVal = (budgetObj != null) ? Double.parseDouble(budgetObj.toString()) : 0.0;
+                    String budget = String.format("%.2f", budgetVal);
 
                     listNames.add(title != null ? title : "Unnamed List");
-                    listDescriptions.add(desc != null ? desc : "(No description)");
                     listKeys.add(listSnapshot.getKey());
+                    listBudgets.add(budget);
                 }
 
                 setupSpinner();
@@ -96,7 +93,7 @@ public class ShareFragment extends Fragment {
         });
     }
 
-    private void fetchMemberDataAndShare(String listId) {
+    private void fetchMemberDataAndShare(String listId, String listTitle, String budget) {
         giftMemberList.clear();
         databaseReference.child(listId).child("members")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,19 +111,16 @@ public class ShareFragment extends Fragment {
                                 String price = giftSnap.child("price").getValue(String.class);
                                 String status = giftSnap.child("status").getValue(String.class);
                                 String website = giftSnap.child("website").getValue(String.class);
+                                String imageUrl = giftSnap.child("imageUrl").getValue(String.class);
 
-                                GiftItem item = new GiftItem(giftName, notes, price, status, website);
+                                GiftItem item = new GiftItem(giftName, notes, price, status, website, imageUrl);
                                 member.addGift(item);
                             }
 
                             giftMemberList.add(member);
                         }
 
-                        // Call PDF Util
-                        String title = listNames.get(listSpinner.getSelectedItemPosition());
-                        String desc = listDescriptions.get(listSpinner.getSelectedItemPosition());
-
-                        Uri pdfUri = PDFUtil.createDetailedListPdf(requireContext(), title, desc, giftMemberList);
+                        Uri pdfUri = PDFUtil.createDetailedListPdf(requireContext(), listTitle, budget, giftMemberList);
 
                         if (pdfUri != null) {
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -155,16 +149,79 @@ public class ShareFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         listSpinner.setAdapter(adapter);
 
-        listSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+        listSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String preview = "🎁 " + listNames.get(position) + ":\n" + listDescriptions.get(position);
-                previewText.setText(preview);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String listId = listKeys.get(position);
+                String listTitle = listNames.get(position);
+                String listBudget = listBudgets.get(position);
+
+                previewDataText.setText("🔄 Loading preview...");
+
+                databaseReference.child(listId).child("members")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                giftMemberList.clear();
+
+                                StringBuilder previewBuilder = new StringBuilder();
+                                previewBuilder.append("📄 ").append(listTitle).append("\n");
+                                previewBuilder.append("💰 Total Budget: $").append(listBudget).append("\n\n");
+
+                                for (DataSnapshot memberSnap : snapshot.getChildren()) {
+                                    String name = memberSnap.child("name").getValue(String.class);
+                                    String role = memberSnap.child("role").getValue(String.class);
+
+                                    previewBuilder.append("👤 ").append(name != null ? name : "Unknown")
+                                            .append(" (").append(role != null ? role : "").append(")\n");
+
+                                    GiftMember member = new GiftMember(name, role);
+
+                                    for (DataSnapshot giftSnap : memberSnap.child("gifts").getChildren()) {
+                                        String giftName = giftSnap.child("name").getValue(String.class);
+                                        String price = giftSnap.child("price").getValue(String.class);
+                                        String status = giftSnap.child("status").getValue(String.class);
+                                        String website = giftSnap.child("website").getValue(String.class);
+                                        String notes = giftSnap.child("notes").getValue(String.class);
+                                        String imageUrl = giftSnap.child("imageUrl").getValue(String.class);
+
+                                        // 🔁 Map status emoji
+                                        String emoji = "💡";
+                                        if (status != null) {
+                                            switch (status.toLowerCase()) {
+                                                case "bought": emoji = "💸"; break;
+                                                case "arrived": emoji = "📦"; break;
+                                                case "wrapped": emoji = "🎁"; break;
+                                            }
+                                        }
+
+                                        previewBuilder.append("   ").append(emoji).append(" ").append(giftName);
+                                        if (status != null) previewBuilder.append(" - ").append(status);
+                                        if (price != null && !price.isEmpty())
+                                            previewBuilder.append(" 💵 $").append(price);
+                                        previewBuilder.append("\n");
+
+                                        GiftItem item = new GiftItem(giftName, notes, price, status, website, imageUrl);
+                                        member.addGift(item);
+                                    }
+
+                                    giftMemberList.add(member);
+                                    previewBuilder.append("\n");
+                                }
+
+                                previewDataText.setText(previewBuilder.toString());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                previewDataText.setText("⚠️ Failed to load preview.");
+                            }
+                        });
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                previewText.setText("");
+            public void onNothingSelected(AdapterView<?> parent) {
+                previewDataText.setText("Select a list to see a preview.");
             }
         });
     }

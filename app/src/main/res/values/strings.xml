@@ -67,4 +67,6 @@
     <string name="add_gift">Add Gift</string>
     <string name="default_web_client_id">\n</string>
     <string name="gift_image">Gift Image</string>
+    <string name="your_pdf_preview_will_appear_here_after_selecting_a_list">Your PDF preview will appear here after selecting a list.</string>
+    <string name="share_a_gift_list">📤 Share a Gift List</string>
 </resources>
