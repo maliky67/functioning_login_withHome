@@ -3,6 +3,7 @@ package com.example.functioninglogin.HomePage;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -89,7 +90,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.home);
         }
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_notifications) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_fragment_container, new NotificationFragment())
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Nullable
     private static Fragment getSelectedFragment(MenuItem item) {
