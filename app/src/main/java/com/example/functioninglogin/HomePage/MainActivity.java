@@ -3,8 +3,11 @@ package com.example.functioninglogin.HomePage;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,8 +99,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_toolbar, menu);
+
+        MenuItem notificationItem = menu.findItem(R.id.action_notifications);
+
+        View actionView = notificationItem.getActionView();
+        if (actionView == null) {
+            actionView = LayoutInflater.from(this).inflate(R.layout.notification_badge_layout, null);
+            notificationItem.setActionView(actionView);
+        }
+
+        updateNotificationBadge(actionView);
+
+        actionView.setOnClickListener(v -> onOptionsItemSelected(notificationItem));
         return true;
     }
+
+    private void updateNotificationBadge(View actionView) {
+        TextView badge = actionView.findViewById(R.id.badge_text);
+        int count = NotificationManager.getInstance().getUnreadCount();
+
+        if (count > 0) {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(String.valueOf(count));
+        } else {
+            badge.setVisibility(View.GONE);
+        }
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

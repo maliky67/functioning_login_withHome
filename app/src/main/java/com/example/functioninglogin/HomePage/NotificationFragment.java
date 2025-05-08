@@ -33,7 +33,7 @@ public class NotificationFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.notificationRecyclerView);
         emptyText = view.findViewById(R.id.emptyNotificationsText);
-
+        notificationList = new ArrayList<>(NotificationManager.getInstance().getNotifications());
         // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         notificationList = getMockNotifications();
@@ -70,6 +70,8 @@ public class NotificationFragment extends Fragment {
     public void onResume() {
         super.onResume();
         requireActivity().setTitle(" ");
+        NotificationManager.getInstance().markAllRead(); // 🧹 Clear badge count
+        requireActivity().invalidateOptionsMenu();
     }
 
     private List<NotificationItem> getMockNotifications() {
