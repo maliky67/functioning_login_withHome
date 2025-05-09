@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.*;
 
+import android.widget.ImageView;
+import androidx.appcompat.app.AlertDialog;
+
 import com.example.functioninglogin.R;
 
 import java.util.ArrayList;
@@ -39,6 +42,16 @@ public class DiscountsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_discounts, container, false);
+
+        ImageView helpButton = view.findViewById(R.id.help_button_discounts);
+        helpButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("How to use discounts?")
+                    .setMessage("Here you'll see updated offers that could help you save. You can filter by price and explore discounted gift ideas.")
+                    .setPositiveButton("Ok!", null)
+                    .show();
+        });
+
 
         RecyclerView recyclerView = view.findViewById(R.id.dealsRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

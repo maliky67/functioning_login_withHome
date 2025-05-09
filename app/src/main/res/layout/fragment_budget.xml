@@ -111,5 +111,18 @@
         android:gravity="center">
 
         <include layout="@layout/progress_layout" />
+
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/help_button_budget"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_help"
+        android:contentDescription="Help"
+        android:background="@drawable/circle_mask"
+        android:padding="8dp" />
+
 </FrameLayout>

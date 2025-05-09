@@ -16,6 +16,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.widget.ImageView;
+import androidx.appcompat.app.AlertDialog;
+
+
 import com.example.functioninglogin.HomePage.GiftManagment.GiftItem;
 import com.example.functioninglogin.R;
 import com.github.mikephil.charting.charts.BarChart;
@@ -51,6 +55,16 @@ public class BudgetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_budget, container, false);
+
+        ImageView helpButton = view.findViewById(R.id.help_button_budget);
+        helpButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("How does the budget work?")
+                    .setMessage("Here you can set and view the total budget allocated for your registry. You can also see how much you've spent and how much you have left.")
+                    .setPositiveButton("Ok!", null)
+                    .show();
+        });
+
 
         RecyclerView budgetRecyclerView = view.findViewById(R.id.budgetRecyclerView);
         ImageButton chartToggleButton = view.findViewById(R.id.chartToggleButton);

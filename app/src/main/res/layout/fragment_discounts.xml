@@ -93,4 +93,16 @@
         android:id="@+id/loadingOverlay"
         layout="@layout/progress_layout"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/help_button_discounts"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_help"
+        android:contentDescription="Ayuda"
+        android:background="@drawable/circle_mask"
+        android:padding="8dp" />
+
 </FrameLayout>

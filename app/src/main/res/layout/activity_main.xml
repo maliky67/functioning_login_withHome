@@ -28,6 +28,7 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 android:elevation="8dp"/>
 
+
             <!-- Fragment Container -->
             <FrameLayout
                 android:id="@+id/home_fragment_container"
@@ -35,6 +36,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="@color/light_blue"/>
+
+
 
             <!-- Bottom Navigation -->
             <com.google.android.material.bottomnavigation.BottomNavigationView

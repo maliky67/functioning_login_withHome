@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.widget.ImageView;
+import androidx.appcompat.app.AlertDialog;
+
+
 import com.example.functioninglogin.HomePage.GiftManagment.GiftItem;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +40,16 @@ public class GeneratorFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_generator, container, false);
+
+        ImageView helpButton = view.findViewById(R.id.help_button_generator);
+        helpButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("What does the generator do?")
+                    .setMessage("This screen generates gift ideas based on interests and budget. You can customize options and add suggested gifts to your registry.")
+                    .setPositiveButton("Ok!", null)
+                    .show();
+        });
+
 
         shoppingRecyclerView = view.findViewById(R.id.shoppingRecyclerView);
         emptyListText = view.findViewById(R.id.emptyListText);

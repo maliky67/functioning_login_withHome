@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import android.widget.ImageView;
+import androidx.appcompat.app.AlertDialog;
+
 
 import com.example.functioninglogin.HomePage.GiftManagment.GiftList;
 import com.example.functioninglogin.HomePage.ListManagment.ListViewFragment;
@@ -51,6 +54,16 @@ public class HomeFragment extends Fragment {
         SearchView searchView = view.findViewById(R.id.search);
         emptyTextView = view.findViewById(R.id.emptyTextView);
         progressOverlay = view.findViewById(R.id.progressOverlay);
+
+        ImageView helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("What can you do here?")
+                    .setMessage("On the Home screen, you can view your lists, search for them, and create new ones. Use the 'Add List' button to start a new gift list.")
+                    .setPositiveButton("Ok!", null)
+                    .show();
+        });
+
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         dataList = new ArrayList<>();
