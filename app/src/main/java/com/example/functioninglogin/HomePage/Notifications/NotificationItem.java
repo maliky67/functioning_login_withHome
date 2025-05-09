@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePage;
+package com.example.functioninglogin.HomePage.Notifications;
 
 public class NotificationItem {
     public String title;

@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePage;
+package com.example.functioninglogin.HomePage.Notifications;
 
 import java.util.ArrayList;
 import java.util.List;

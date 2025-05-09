@@ -18,6 +18,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.functioninglogin.HomePage.Notifications.NotificationFragment;
+import com.example.functioninglogin.HomePage.Notifications.NotificationManager;
 import com.example.functioninglogin.NavDrawer.AboutUsActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;

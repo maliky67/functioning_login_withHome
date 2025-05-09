@@ -1,4 +1,4 @@
-package com.example.functioninglogin.HomePage;
+package com.example.functioninglogin.HomePage.Notifications;
 
 import android.view.LayoutInflater;
 import android.view.View;
