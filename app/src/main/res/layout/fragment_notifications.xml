@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 🔷 Main Content Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/light_blue">
+
+        <!-- 📣 Notifications Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔔 Notifications"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/blue_background" />
+
+        <!-- 📴 Empty State Text -->
+        <TextView
+            android:id="@+id/emptyNotificationsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📭 No new notifications!"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:paddingTop="40dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/blue_background"
+            android:visibility="gone" />
+
+        <!-- ✅ Notifications List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notificationRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+
+    <!-- ⏳ Loading Indicator -->
+    <FrameLayout
+        android:id="@+id/progressOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80FFFFFF"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <include layout="@layout/progress_layout" />
+    </FrameLayout>
+</FrameLayout>

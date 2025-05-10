@@ -3,7 +3,11 @@ package com.example.functioninglogin.HomePage;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +18,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.functioninglogin.HomePage.Notifications.NotificationFragment;
+import com.example.functioninglogin.HomePage.Notifications.NotificationManager;
 import com.example.functioninglogin.NavDrawer.AboutUsActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -89,7 +95,53 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null) {
             bottomNavigationView.setSelectedItemId(R.id.home);
         }
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_toolbar, menu);
+
+        MenuItem notificationItem = menu.findItem(R.id.action_notifications);
+
+        View actionView = notificationItem.getActionView();
+        if (actionView == null) {
+            actionView = LayoutInflater.from(this).inflate(R.layout.notification_badge_layout, null);
+            notificationItem.setActionView(actionView);
+        }
+
+        updateNotificationBadge(actionView);
+
+        actionView.setOnClickListener(v -> onOptionsItemSelected(notificationItem));
+        return true;
+    }
+
+    private void updateNotificationBadge(View actionView) {
+        TextView badge = actionView.findViewById(R.id.badge_text);
+        int count = NotificationManager.getInstance().getUnreadCount();
+
+        if (count > 0) {
+            badge.setVisibility(View.VISIBLE);
+            badge.setText(String.valueOf(count));
+        } else {
+            badge.setVisibility(View.GONE);
+        }
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_notifications) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_fragment_container, new NotificationFragment())
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Nullable
     private static Fragment getSelectedFragment(MenuItem item) {
