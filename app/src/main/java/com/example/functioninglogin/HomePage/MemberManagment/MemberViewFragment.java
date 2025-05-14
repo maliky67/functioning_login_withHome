@@ -179,7 +179,9 @@ public class MemberViewFragment extends Fragment {
                     memberRole.setText(member.getRole());
 
                     if (member.getImageUrl() != null && !member.getImageUrl().isEmpty()) {
-                        Glide.with(requireContext()).load(member.getImageUrl()).into(memberImage);
+                        if (isAdded() && getContext() != null) {
+                            Glide.with(requireContext()).load(member.getImageUrl()).into(memberImage);
+                        }
                     } else {
                         memberImage.setImageResource(R.drawable.baseline_account_box_24);
                     }
