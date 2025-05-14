@@ -78,6 +78,12 @@ public class NotificationFragment extends Fragment {
         List<NotificationItem> list = new ArrayList<>();
         list.add(new NotificationItem("🎉 Welcome!", "Thanks for installing the app!"));
         list.add(new NotificationItem("💸 Budget Alert", "You’ve hit 90% of your budget."));
+        list.add(new NotificationItem("✅ Gift Bought!", "You marked \"Bluetooth Speaker\" as bought."));
+        list.add(new NotificationItem("👤 New Member Added", "\"Uncle Mike\" was added to your Christmas list."));
+        list.add(new NotificationItem("💸 Over Budget", "You've exceeded your list budget by $25. 😬"));
+        list.add(new NotificationItem("⏰ 10 Days Left!", "Just 10 days until Christmas — time to wrap it up! 🎄"));
+        list.add(new NotificationItem("🦖 Dinosaur Meat?!", "Just kidding... but it *is* on your wishlist. 😂"));
+
         return list;
     }
 

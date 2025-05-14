@@ -1,8 +1,13 @@
 package com.example.functioninglogin.HomePage.GiftManagment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.functioninglogin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
+import com.google.firebase.storage.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +27,17 @@ public class AddGiftFragment extends Fragment {
 
     private EditText giftNameEdit, giftPriceEdit, giftWebsiteEdit, giftNotesEdit;
     private RadioGroup statusGroup;
+    private ImageView addGiftImage;
+    private Uri selectedImageUri;
+    private StorageReference storageRef;
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    addGiftImage.setImageURI(selectedImageUri);
+                }
+            });
 
     public static AddGiftFragment newInstance(String listKey, String memberKey) {
         AddGiftFragment fragment = new AddGiftFragment();
@@ -42,7 +59,6 @@ public class AddGiftFragment extends Fragment {
             memberKey = getArguments().getString("memberKey");
         }
 
-        // ❗ Validate input
         if (listKey == null || memberKey == null) {
             Toast.makeText(requireContext(), "Missing list or member ID!", Toast.LENGTH_SHORT).show();
             return new FrameLayout(requireContext());
@@ -54,7 +70,16 @@ public class AddGiftFragment extends Fragment {
         giftPriceEdit = view.findViewById(R.id.giftPriceEdit);
         giftWebsiteEdit = view.findViewById(R.id.giftWebsiteEdit);
         giftNotesEdit = view.findViewById(R.id.giftNotesEdit);
+        addGiftImage = view.findViewById(R.id.addGiftImage);
         Button saveGiftButton = view.findViewById(R.id.saveGiftButton);
+
+        storageRef = FirebaseStorage.getInstance().getReference("gift_images");
+
+        addGiftImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            imagePickerLauncher.launch(intent);
+        });
 
         saveGiftButton.setOnClickListener(v -> uploadGiftToFirebase());
 
@@ -84,31 +109,42 @@ public class AddGiftFragment extends Fragment {
                 .child("gifts");
 
         String giftId = giftRef.push().getKey();
-
         if (giftId == null) {
             Toast.makeText(requireContext(), "Failed to create gift ID", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (selectedImageUri != null) {
+            String fileName = "gift_" + System.currentTimeMillis() + ".jpg";
+            StorageReference imageRef = storageRef.child(fileName);
+
+            imageRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                        saveGiftToDatabase(giftRef, giftId, name, price, website, notes, status, downloadUri.toString());
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show());
+        } else {
+            saveGiftToDatabase(giftRef, giftId, name, price, website, notes, status, "");
+        }
+    }
+
+    private void saveGiftToDatabase(DatabaseReference giftRef, String giftId, String name, String price, String website, String notes, String status, String imageUrl) {
         Map<String, Object> giftMap = new HashMap<>();
         giftMap.put("name", name);
         giftMap.put("price", price);
         giftMap.put("website", website);
         giftMap.put("notes", notes);
         giftMap.put("status", status);
+        giftMap.put("imageUrl", imageUrl);
         giftMap.put("key", giftId);
 
         giftRef.child(giftId).setValue(giftMap)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(requireContext(), "🎁 Gift added!", Toast.LENGTH_SHORT).show();
-
-                    // Clear the form fields to prevent duplicates
                     clearForm();
-
-                    // Pop this fragment from the back stack
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
-                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to save gift: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to save gift", Toast.LENGTH_SHORT).show());
     }
 
     private String getStatusFromRadio() {
@@ -125,6 +161,8 @@ public class AddGiftFragment extends Fragment {
         giftPriceEdit.setText("");
         giftWebsiteEdit.setText("");
         giftNotesEdit.setText("");
-        statusGroup.check(R.id.radioIdea); // Reset to default status
+        statusGroup.check(R.id.radioIdea);
+        addGiftImage.setImageResource(R.drawable.baseline_account_box_24);
+        selectedImageUri = null;
     }
 }

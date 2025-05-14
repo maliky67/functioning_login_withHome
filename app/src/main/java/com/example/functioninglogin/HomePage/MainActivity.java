@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import com.google.firebase.auth.FirebaseUser;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,6 +65,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // 🧠 Set user name in nav drawer header
+        View headerView = navigationView.getHeaderView(0);
+        TextView welcomeText = headerView.findViewById(R.id.navHeaderWelcome); // make sure your TextView has this ID
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && user.getDisplayName() != null) {
+            String displayName = user.getDisplayName();
+            welcomeText.setText(getString(R.string.welcome) + " " + displayName);
+        }
 
         // Google Sign-In Client setup
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
