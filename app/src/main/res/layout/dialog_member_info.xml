@@ -18,7 +18,7 @@
         android:id="@+id/dialog_member_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nombre"
+        android:text="@string/name"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="4dp" />
@@ -27,7 +27,7 @@
         android:id="@+id/dialog_member_role"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rol"
+        android:text="@string/role"
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
@@ -35,6 +35,6 @@
         android:id="@+id/dialog_member_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Descripción"
+        android:text="@string/description"
         android:textSize="14sp" />
 </LinearLayout>

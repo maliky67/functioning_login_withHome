@@ -83,7 +83,7 @@
             android:id="@+id/emptyTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No data available 😢"
+            android:text="@string/no_data_available"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/blue_background"
@@ -121,7 +121,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_help"
-        android:contentDescription="Help"
+        android:contentDescription="@string/help"
         android:background="@drawable/circle_mask"
         android:padding="8dp" />
 

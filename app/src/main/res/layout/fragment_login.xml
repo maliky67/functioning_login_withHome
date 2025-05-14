@@ -55,7 +55,7 @@
                 android:background="@drawable/borderblue"
                 android:drawableStart="@drawable/baseline_account_box_24"
                 android:drawablePadding="8dp"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:padding="8dp"
                 android:textColor="@color/black" />
 

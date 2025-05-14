@@ -64,4 +64,83 @@
     <string name="santa_s_helper">Ayudante de Santa</string>
     <string name="no_gifts_added_yet_for_this_member">¡Aún no se han agregado regalos para este miembro!</string>
     <string name="add_gift">Agregar regalo</string>
+    <string name="gift_image">Imagen del regalo</string>
+    <string name="your_pdf_preview_will_appear_here_after_selecting_a_list">La vista previa en PDF aparecerá aquí después de seleccionar una lista.</string>
+    <string name="share_a_gift_list">📤 Compartir una lista de regalos</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="role">Rol</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="member_photo">Foto del miembro</string>
+    <string name="description">Descripción</string>
+    <string name="today_s_deals">Ofertas de hoy 🎁</string>
+    <string name="toggle_filters">Alternar filtros</string>
+    <string name="filter">Filtro</string>
+    <string name="max">Máx $</string>
+    <string name="min">Mín $</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="perfil">Perfil</string>
+
+    <!-- Member Names -->
+    <string name="name_derek">Derek Gonzalez Fuentes</string>
+    <string name="name_joshua">Joshua Perez Guzman</string>
+    <string name="name_jose">José Tavarez Novas</string>
+    <string name="name_adrian">Adrian Torres Gonzalez</string>
+    <string name="name_fernando">Fernando La Menza Escalante</string>
+    <string name="name_jose_mojica">José Mojica Meléndez</string>
+
+    <!-- Member Roles -->
+    <string name="role_derek">Desarrollador Principal</string>
+    <string name="role_joshua">Investigador y Diseñador de Base de Datos</string>
+    <string name="role_jose">Diseñador de UI/UX</string>
+    <string name="role_adrian">Especialista en Documentación e Informes</string>
+    <string name="role_fernando">Tester/Control de Calidad</string>
+    <string name="role_jose_mojica">Gerente de Proyecto</string>
+
+    <!-- Descriptions -->
+    <string name="desc_derek">Derek es el motor técnico detrás del proyecto. Su experiencia en desarrollo de software ha sido esencial para la implementación de las funcionalidades clave de la aplicación. Como líder de desarrollo, ha coordinado la estructura del código, guiado decisiones técnicas y asegurado el buen funcionamiento del sistema.</string>
+    <string name="desc_joshua">Joshua se ha encargado de investigar tecnologías adecuadas y diseñar la base de datos del sistema. Gracias a su enfoque meticuloso y estructurado, el backend de la aplicación cuenta con una arquitectura sólida, eficiente y segura.</string>
+    <string name="desc_jose">José Tavarez ha sido responsable del diseño visual y la experiencia del usuario. Desde la navegación intuitiva hasta los colores y la disposición visual, su trabajo ha garantizado una interfaz atractiva y accesible para todos los usuarios.</string>
+    <string name="desc_adrian">Adrian ha documentado todos los aspectos técnicos y funcionales del proyecto. Su trabajo permite comprender fácilmente cómo está construido el sistema y facilita su mantenimiento y presentación ante terceros.</string>
+    <string name="desc_fernando">Fernando ha asegurado que la aplicación funcione correctamente, identificando y reportando errores durante el proceso de desarrollo. Su atención al detalle ha sido clave para entregar un producto estable y confiable.</string>
+    <string name="desc_jose_mojica">José Mojica ha liderado la planificación y coordinación del equipo. Ha supervisado el progreso del proyecto, asignado tareas y asegurado que todos los objetivos se cumplieran a tiempo, manteniendo al equipo enfocado y motivado.</string>
+
+    <!-- Prefix + Dialog Button -->
+    <string name="role_prefix">Rol: </string>
+    <string name="close">Cerrar</string>
+    <string name="add_list">Añadir Lista</string>
+
+    <string name="save_gift">Guardar regalo</string>
+    <string name="edit_gift">Editar regalo</string>
+    <string name="no_data_available">No hay datos disponibles 😢</string>
+    <string name="help">Ayuda</string>
+    <string name="deal_details">Detalles de la oferta</string>
+    <string name="deal_image">Imagen de la oferta</string>
+    <string name="deal_name">Nombre de la oferta</string>
+    <string name="_0_00">$0.00</string>
+    <string name="https_www_example_com">https://www.example.com</string>
+    <string name="add_to_gift_list">Agregar a la lista de regalos</string>
+    <string name="add_gift_to_member">Agregar regalo al miembro</string>
+    <string name="enter_your_registered_email">Ingresa tu correo electrónico registrado</string>
+    <string name="send_reset_link">Enviar enlace de restablecimiento</string>
+    <string name="no_lists_yet_ncreate_a_christmas_list_first_to_view_it_here">🎄 ¡Aún no hay listas!\nCrea una lista navideña para verla aquí.</string>
+    <string name="no_members_yet">Aún no hay miembros</string>
+    <string name="total_spent_0">Total gastado: $0</string>
+    <string name="total_budget_0">Presupuesto total: $0</string>
+    <string name="no_members_in_this_list_yet">¡Aún no hay miembros en esta lista!</string>
+    <string name="add_member">Agregar miembro</string>
+    <string name="you_haven_t_added_any_gifts_yet">Aún no has agregado ningún regalo 🎁</string>
+    <string name="no_new_notifications">📭 ¡Sin nuevas notificaciones!</string>
+    <string name="gift_name">Nombre del regalo</string>
+    <string name="https_example_com">https://example.com</string>
+    <string name="_30">$30</string>
+    <string name="status_icon">Ícono de estado</string>
+    <string name="product_image">Imagen del producto</string>
+    <string name="king_size_4_piece_sheet_set">Juego de sábanas tamaño king de 4 piezas</string>
+    <string name="https_www_amazon_com_king_size_piece_sheet_set_dp_b01lwmwaxv">https://www.amazon.com/King-Size-Piece-Sheet-Set/dp/B01LWMWAXV</string>
+    <string name="_24_49">$24.49</string>
+    <string name="message_body_text">Texto del cuerpo del mensaje</string>
+    <string name="title">Título</string>
+    <string name="loading">Cargando...</string>
+
 </resources>

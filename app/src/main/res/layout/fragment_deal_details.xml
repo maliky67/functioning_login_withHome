@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deal Details"
+            android:text="@string/deal_details"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_gravity="center"
@@ -42,13 +42,13 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
                     android:scaleType="centerCrop"
-                    android:contentDescription="Deal Image" />
+                    android:contentDescription="@string/deal_image" />
 
                 <TextView
                     android:id="@+id/dealNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deal Name"
+                    android:text="@string/deal_name"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/BorderBlue" />
@@ -57,7 +57,7 @@
                     android:id="@+id/dealPriceTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$0.00"
+                    android:text="@string/_0_00"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/BorderBlue" />
@@ -66,7 +66,7 @@
                     android:id="@+id/dealUrlTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="https://www.example.com"
+                    android:text="@string/https_www_example_com"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:maxLines="2"
@@ -77,7 +77,7 @@
                     android:id="@+id/dealDescriptionTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Description"
+                    android:text="@string/description"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/BorderBlue" />
@@ -87,7 +87,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add to Gift List"
+            android:text="@string/add_to_gift_list"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -109,7 +109,7 @@
             android:id="@+id/addGiftButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Gift to Member"
+            android:text="@string/add_gift_to_member"
             android:backgroundTint="@color/BorderBlue"
             android:textColor="@android:color/white" />
     </LinearLayout>

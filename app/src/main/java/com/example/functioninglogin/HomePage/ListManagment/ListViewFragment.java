@@ -259,7 +259,7 @@ public class ListViewFragment extends Fragment {
                             headerDesc.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
                             headerTotalBudget.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
                             headerTotalSpent.setTextColor(requireContext().getResources().getColor(R.color.BorderBlue));
-                            ;
+
                         }
                     }
                 });

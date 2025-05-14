@@ -24,7 +24,7 @@
             android:src="@drawable/joytechv1"
             android:scaleType="centerCrop"
             android:background="@drawable/circle_mask"
-            android:contentDescription="Member Photo"/>
+            android:contentDescription="@string/member_photo"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,7 +36,7 @@
                 android:id="@+id/member_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre Apellido"
+                android:text="@string/full_name"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:id="@+id/member_role"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rol: Desarrollador"
+                android:text="@string/role"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"/>
         </LinearLayout>

@@ -25,7 +25,7 @@
             android:id="@+id/emptyListText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🎄 No lists yet!\nCreate a Christmas list first to view it here."
+            android:text="@string/no_lists_yet_ncreate_a_christmas_list_first_to_view_it_here"
             android:textSize="16sp"
             android:textAlignment="center"
             android:gravity="center"
@@ -63,7 +63,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_help"
-        android:contentDescription="Help"
+        android:contentDescription="@string/help"
         android:background="@drawable/circle_mask"
         android:padding="8dp" />
 

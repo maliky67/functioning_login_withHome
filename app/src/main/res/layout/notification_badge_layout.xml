@@ -8,7 +8,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/baseline_circle_notifications_24"
-        android:contentDescription="Notifications" />
+        android:contentDescription="@string/notifications" />
 
     <TextView
         android:id="@+id/badge_text"

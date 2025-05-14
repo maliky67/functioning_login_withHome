@@ -73,7 +73,7 @@
                 android:drawablePadding="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Gift Idea"
+                android:text="@string/gift_idea"
                 android:textColor="@color/BorderBlue"
                 android:textSize="14sp"
                 app:drawableStartCompat="@drawable/baseline_card_giftcard_24" />
@@ -88,7 +88,7 @@
             android:id="@+id/memberTotalSpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$30"
+            android:text="@string/_30"
             android:textSize="16sp"
             android:textColor="@color/BorderBlue"
             android:layout_alignParentEnd="true"

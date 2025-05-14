@@ -32,7 +32,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Edit Gift"
+                    android:text="@string/edit_gift"
                     android:textAlignment="center"
                     android:textColor="@color/christmas_blue"
                     android:textSize="30sp"
@@ -45,7 +45,7 @@
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:src="@drawable/baseline_account_box_24"
-                    android:contentDescription="Gift Image"/>
+                    android:contentDescription="@string/gift_image"/>
 
 
                 <!-- Status Label -->
@@ -154,7 +154,7 @@
                     android:layout_height="60dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/rounded_blue"
-                    android:text="Edit Gift"
+                    android:text="@string/edit_gift"
                     android:textSize="18sp"
                     android:textColor="@android:color/white" />
             </LinearLayout>
