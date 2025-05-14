@@ -112,7 +112,7 @@ public class EditGiftFragment extends Fragment {
                                 .error(R.drawable.baseline_clear_24)
                                 .into(giftImageView);
                     } else {
-                        giftImageView.setImageResource(R.drawable.baseline_clear_24);
+                        giftImageView.setImageResource(R.drawable.gifticon);
                     }
 
                     // 🎯 Status

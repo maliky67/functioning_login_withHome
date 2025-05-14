@@ -53,7 +53,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         if (member.getImageUrl() != null && !member.getImageUrl().isEmpty()) {
             Glide.with(context).load(member.getImageUrl()).into(holder.image);
         } else {
-            holder.image.setImageResource(R.drawable.baseline_ac_unit_24);
+            holder.image.setImageResource(R.drawable.baseline_account_box_24);
         }
 
         // Handle gifts

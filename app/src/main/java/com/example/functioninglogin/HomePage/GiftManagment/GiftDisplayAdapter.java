@@ -51,7 +51,7 @@ public class GiftDisplayAdapter extends RecyclerView.Adapter<GiftDisplayAdapter.
                     .error(R.drawable.baseline_clear_24) // If URL is broken
                     .into(holder.giftImage);
         } else {
-            holder.giftImage.setImageResource(R.drawable.baseline_ac_unit_24);
+            holder.giftImage.setImageResource(R.drawable.gifticon);
         }
 
         // Set gift status image based on status

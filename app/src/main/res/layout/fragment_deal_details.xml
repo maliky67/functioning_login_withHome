@@ -19,7 +19,7 @@
             android:textStyle="bold"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@color/blue_background" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                     android:text="Deal Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/BorderBlue" />
 
                 <TextView
                     android:id="@+id/dealPriceTextView"
@@ -60,7 +60,7 @@
                     android:text="$0.00"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/BorderBlue" />
 
                 <TextView
                     android:id="@+id/dealUrlTextView"
@@ -80,7 +80,7 @@
                     android:text="Description"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@color/BorderBlue" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -91,7 +91,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@color/blue_background" />
 
         <Spinner
             android:id="@+id/listSpinner"
